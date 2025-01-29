@@ -57,7 +57,7 @@ git push origin feature/nom-fonctionnalite
 ---
 
 ## 👥 Équipe
-👤 **Jules Blanchard** - Développeur/Testeur 
+👤 **Jules Blanchard** - Développeur/Testeur   
 👤 **Hugo Cellier** - Développeur/Testeur  
 👤 **Simon Launay** - Développeur/Testeur  
 👤 **Théo Versepuech** - Développeur/Testeur  
