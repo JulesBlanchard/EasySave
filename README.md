@@ -32,17 +32,20 @@ dotnet run
 ## 🚀 Workflow Git
 
 ### **1. Cloner le dépôt**
+Via ligne de commande : 
 ```bash
 git clone https://github.com/JulesBlanchard/EasySave.git
 cd EasySave
 ```
 
 ### **2. Créer une nouvelle branche pour une fonctionnalité**
+Via ligne de commande : 
 ```bash
 git checkout -b feature/nom-fonctionnalite
 ```
 
 ### **3. Commiter et pousser les modifications**
+Via ligne de commande : 
 ```bash
 git add .
 git commit -m "Ajout de la fonctionnalité X"
