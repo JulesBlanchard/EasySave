@@ -2,11 +2,15 @@ using System.Collections.Generic;
 
 namespace EasySave.Utils
 {
+    /// <summary>
+    /// Provides bilingual messages for the user interface and other outputs.
+    /// </summary>
     public static class Messages
     {
-        // Messages en français
+        // French messages.
         public static Dictionary<string, string> French = new Dictionary<string, string>
         {
+            // Menu
             { "MenuTitle", "=== EasySave ===" },
             { "MenuOption1", "1. Créer un backup" },
             { "MenuOption2", "2. Lister les backups" },
@@ -14,10 +18,14 @@ namespace EasySave.Utils
             { "MenuOption4", "4. Quitter" },
             { "PromptChoice", "Choix : " },
             { "InvalidOption", "Option inconnue. Veuillez réessayer." },
+
+            // Language selection
             { "LanguagePrompt", "Choisissez la langue / Select language :" },
             { "LanguageOption1", "1. Français" },
             { "LanguageOption2", "2. English" },
             { "LanguageChoice", "Votre choix / Your choice : " },
+
+            // Backup creation
             { "BackupCreationTitle", "=== Création d'un Backup ===" },
             { "EnterBackupName", "Nom du backup : " },
             { "EnterSourcePath", "Chemin source : " },
@@ -29,15 +37,47 @@ namespace EasySave.Utils
             { "TargetNotExist", "Le répertoire cible n'existe pas." },
             { "CreateTargetPrompt", "Voulez-vous le créer ? (O/N) : " },
             { "TargetCreated", "Répertoire créé." },
+            { "CannotCreateMoreBackups", "Impossible de créer plus de 5 backups." },
+            { "InvalidBackupType", "Type invalide : veuillez choisir (full/diff) : " },
+            { "DifferentTargetPath", "Veuillez entrer un chemin cible différent" },
+
+
+
+            // Backup execution
             { "BackupExecutionTitle", "=== Exécution d'un Backup ===" },
             { "EnterBackupIndex", "Indice du backup à exécuter : " },
             { "EnterValidNumber", "Veuillez entrer un nombre valide." },
-            { "CannotCreateMoreBackups", "Impossible de créer plus de 5 backups." }
+
+            // Controller messages
+            { "ControllerBackupCreated", "[Controller] Backup '{name}' créé avec stratégie={strategy}." },
+            { "ControllerInvalidIndex", "[BackupManager] Index invalide." },
+            { "ControllerExecutingBackup", "[BackupManager] Exécution du backup '{name}' (index={index})." },
+            { "ControllerExecutingAll", "[BackupManager] Exécution de {count} backup(s)..." },
+            { "ControllerBackupAdded", "[BackupManager] Backup '{name}' ajouté. (count={count})" },
+
+            // DiffBackup strategy messages
+            { "DiffBackup_Executing", "[DiffBackup] Exécution d'une sauvegarde DIFFÉRENTIELLE pour '{name}'..." },
+            { "DiffBackup_Copied", "[DiffBackup] Copié : {name}" },
+            { "DiffBackup_ErrorCopy", "[DiffBackup] Erreur lors de la copie de {name} : {error}" },
+            { "DiffBackup_Skipped", "[DiffBackup] Ignoré (à jour) : {name}" },
+            { "DiffBackup_Progress", "Progression : {progress}% - Temps restant estimé : {time}" },
+            { "DiffBackup_Finished", "[DiffBackup] Terminé. {count} fichier(s) copié(s)." },
+
+            // FullBackup strategy messages
+            { "FullBackup_Executing", "[FullBackup] Exécution d'une sauvegarde FULL pour '{name}'..." },
+            { "FullBackup_Copied", "[FullBackup] Copié : {name}" },
+            { "FullBackup_ErrorCopy", "[FullBackup] Erreur lors de la copie de {name} : {error}" },
+            { "FullBackup_Progress", "Progression : {progress}% - Temps restant estimé : {time}" },
+            { "FullBackup_Finished", "[FullBackup] Sauvegarde terminée pour '{name}'." },
+
+            // Listing backups
+            { "ListBackupsTitle", "Sauvegardes courantes:" }
         };
 
-        // Messages en anglais
+        // English messages.
         public static Dictionary<string, string> English = new Dictionary<string, string>
         {
+            // Menu
             { "MenuTitle", "=== EasySave ===" },
             { "MenuOption1", "1. Create a backup" },
             { "MenuOption2", "2. List backups" },
@@ -45,10 +85,14 @@ namespace EasySave.Utils
             { "MenuOption4", "4. Quit" },
             { "PromptChoice", "Choice: " },
             { "InvalidOption", "Unknown option. Please try again." },
+
+            // Language selection
             { "LanguagePrompt", "Select language / Choisissez la langue:" },
             { "LanguageOption1", "1. Français" },
             { "LanguageOption2", "2. English" },
             { "LanguageChoice", "Your choice / Votre choix: " },
+
+            // Backup creation
             { "BackupCreationTitle", "=== Create a Backup ===" },
             { "EnterBackupName", "Backup Name: " },
             { "EnterSourcePath", "Source Path: " },
@@ -60,10 +104,41 @@ namespace EasySave.Utils
             { "TargetNotExist", "Target directory does not exist." },
             { "CreateTargetPrompt", "Do you want to create it? (Y/N): " },
             { "TargetCreated", "Directory created." },
+            { "CannotCreateMoreBackups", "Cannot create more than 5 backups." },
+            { "InvalidBackupType", "Invalid type. Please enter 'full' or 'diff'." },
+            { "DifferentTargetPath", "Please enter a different target path." },
+
+
+
+            // Backup execution
             { "BackupExecutionTitle", "=== Execute a Backup ===" },
             { "EnterBackupIndex", "Enter backup index to execute: " },
             { "EnterValidNumber", "Please enter a valid number." },
-            { "CannotCreateMoreBackups", "Cannot create more than 5 backups." }
+
+            // Controller messages
+            { "ControllerBackupCreated", "[Controller] Backup '{name}' created with strategy={strategy}." },
+            { "ControllerInvalidIndex", "[BackupManager] Invalid index." },
+            { "ControllerExecutingBackup", "[BackupManager] Executing backup '{name}' (index={index})." },
+            { "ControllerExecutingAll", "[BackupManager] Executing {count} backup(s)..." },
+            { "ControllerBackupAdded", "[BackupManager] Backup '{name}' added. (count={count})" },
+
+            // DiffBackup strategy messages
+            { "DiffBackup_Executing", "[DiffBackup] Executing differential backup for '{name}'..." },
+            { "DiffBackup_Copied", "[DiffBackup] Copied: {name}" },
+            { "DiffBackup_ErrorCopy", "[DiffBackup] Error copying {name}: {error}" },
+            { "DiffBackup_Skipped", "[DiffBackup] Skipped (up-to-date): {name}" },
+            { "DiffBackup_Progress", "Progress: {progress}% - Estimated time remaining: {time}" },
+            { "DiffBackup_Finished", "[DiffBackup] Finished. {count} file(s) copied." },
+
+            // FullBackup strategy messages
+            { "FullBackup_Executing", "[FullBackup] Executing full backup for '{name}'..." },
+            { "FullBackup_Copied", "[FullBackup] Copied: {name}" },
+            { "FullBackup_ErrorCopy", "[FullBackup] Error copying {name}: {error}" },
+            { "FullBackup_Progress", "Progress: {progress}% - Estimated time remaining: {time}" },
+            { "FullBackup_Finished", "[FullBackup] Backup completed for '{name}'." },
+
+            // Listing backups
+            { "ListBackupsTitle", "Current Backups:" }
         };
     }
 }

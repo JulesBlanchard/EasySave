@@ -1,42 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
-using EasySave;
 using EasySave.Controllers;
-using EasySave.Logging;
 
 namespace EasySave
 {
+    /// <summary>
+    /// Entry point for the EasySave application.
+    /// </summary>
     class Program
     {
         static void Main(string[] args)
         {
             if (args.Length > 0)
             {
-                // Si des arguments sont passés, on les interprète pour exécuter automatiquement des backups.
+                // If command-line arguments are provided, parse them to execute backups automatically.
                 List<int> indices = ParseIndices(args[0]);
                 BackupController controller = new BackupController();
                 foreach (int i in indices)
                 {
-                    // On suppose que l'indice dans le fichier est 1-indexé, on décrémente donc de 1.
+                    // Assume indices are 1-indexed; subtract 1 for 0-indexed.
                     controller.ExecuteBackup(i - 1);
                 }
             }
             else
             {
-                // Sinon, on démarre l'interface interactive
+                // Otherwise, launch the interactive console interface.
                 var view = new Views.ConsoleView();
                 view.Start();
             }
         }
 
         /// <summary>
-        /// Parse une chaîne d'arguments pour obtenir une liste d'indices.
-        /// Supporte des formats comme "1-3" (plage) et "1;3" (séparés par point-virgule).
+        /// Parses an argument string to obtain a list of indices.
+        /// Supports formats like "1-3" (range) and "1;3" (semicolon-separated).
         /// </summary>
         static List<int> ParseIndices(string arg)
         {
             List<int> indices = new List<int>();
-            // On peut supporter les deux séparateurs : '-' pour plage, ';' pour liste
             if (arg.Contains("-"))
             {
                 var parts = arg.Split('-');
@@ -63,7 +63,6 @@ namespace EasySave
             }
             else
             {
-                // Si l'argument est un seul indice
                 if (int.TryParse(arg, out int index))
                 {
                     indices.Add(index);

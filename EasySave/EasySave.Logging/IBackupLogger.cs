@@ -2,16 +2,19 @@ using System;
 
 namespace EasySave.Logging
 {
+    /// <summary>
+    /// Defines the logging methods for backup operations.
+    /// </summary>
     public interface IBackupLogger
     {
         /// <summary>
-        /// Loggue un transfert de fichier réussi.
+        /// Logs a successful file transfer.
         /// </summary>
-        /// <param name="backupName">Le nom du Backup</param>
-        /// <param name="sourceFile">Chemin complet du fichier source</param>
-        /// <param name="destFile">Chemin complet du fichier cible</param>
-        /// <param name="fileSize">Taille du fichier en octets</param>
-        /// <param name="transferTimeMs">Temps de transfert en millisecondes</param>
+        /// <param name="backupName">Backup name</param>
+        /// <param name="sourceFile">Full source file path</param>
+        /// <param name="destFile">Full destination file path</param>
+        /// <param name="fileSize">File size in bytes</param>
+        /// <param name="transferTimeMs">Transfer time in milliseconds</param>
         void LogTransfer(
             string backupName,
             string sourceFile,
@@ -21,12 +24,12 @@ namespace EasySave.Logging
         );
 
         /// <summary>
-        /// Loggue une erreur (exception) lors d'un transfert de fichier.
+        /// Logs an error that occurs during a file transfer.
         /// </summary>
-        /// <param name="backupName">Le nom du Backup</param>
-        /// <param name="sourceFile">Chemin complet du fichier source</param>
-        /// <param name="destFile">Chemin complet du fichier cible</param>
-        /// <param name="ex">L'exception générée</param>
+        /// <param name="backupName">Backup name</param>
+        /// <param name="sourceFile">Full source file path</param>
+        /// <param name="destFile">Full destination file path</param>
+        /// <param name="ex">The exception that was thrown</param>
         void LogError(
             string backupName,
             string sourceFile,

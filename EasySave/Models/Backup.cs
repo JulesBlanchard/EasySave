@@ -1,28 +1,32 @@
-using System.Text.Json.Serialization;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json.Serialization;
 using EasySave.Logging;
-    
+
 namespace EasySave.Models
 {
+    /// <summary>
+    /// Represents a backup job with a name, source/target paths, and a backup type.
+    /// </summary>
     public class Backup
     {
-        // Propriétés avec getters et setters publics pour la désérialisation
         public string Name { get; set; }
         public string SourcePath { get; set; }
         public string TargetPath { get; set; }
-
-        // Propriété pour stocker le type de sauvegarde ("full" ou "diff")
         public string BackupType { get; set; }
 
-        // Cette propriété ne sera pas sérialisée/désérialisée car on la recréera ensuite
+        // Not serialized, as the strategy is reinitialized when loading.
         [JsonIgnore]
         public IBackupStrategy Strategy { get; set; }
 
-        // Constructeur par défaut nécessaire pour la désérialisation
+        /// <summary>
+        /// Default constructor for deserialization.
+        /// </summary>
         public Backup() { }
 
-        // Constructeur habituel pour la création en code
+        /// <summary>
+        /// Constructor used for creating a backup in code.
+        /// </summary>
         public Backup(string name, string source, string target, string backupType = null)
         {
             Name = name;
@@ -32,7 +36,7 @@ namespace EasySave.Models
         }
 
         /// <summary>
-        /// Retourne la liste des fichiers du répertoire source (et sous-répertoires)
+        /// Returns the list of files in the source directory (including subdirectories).
         /// </summary>
         public List<FileInfo> GetFileList()
         {
@@ -49,7 +53,7 @@ namespace EasySave.Models
         }
 
         /// <summary>
-        /// Exécute le backup en passant le logger à la stratégie associée.
+        /// Executes the backup using the specified logger and the chosen strategy.
         /// </summary>
         public void Execute(IBackupLogger logger)
         {
@@ -59,7 +63,7 @@ namespace EasySave.Models
             }
             else
             {
-                System.Console.WriteLine($"[Backup] Aucune stratégie définie pour '{Name}'. Rien à faire.");
+                Console.WriteLine($"[Backup] No strategy defined for '{Name}'. Nothing to do.");
             }
         }
     }

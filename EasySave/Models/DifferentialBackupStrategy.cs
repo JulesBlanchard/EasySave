@@ -2,20 +2,23 @@ using System;
 using System.IO;
 using System.Linq;
 using EasySave.Logging;
+using EasySave.Utils;
 
 namespace EasySave.Models
 {
+    /// <summary>
+    /// Implements a differential backup strategy. Copies only new or modified files.
+    /// </summary>
     public class DifferentialBackupStrategy : IBackupStrategy
     {
         public void Execute(Backup backup, IBackupLogger logger)
         {
-            Console.WriteLine($"[DiffBackup] Exécution d'une sauvegarde DIFFÉRENTIELLE pour '{backup.Name}'...");
+            Console.WriteLine(LocalizationManager.CurrentMessages["DiffBackup_Executing"].Replace("{name}", backup.Name));
 
             var files = backup.GetFileList();
             int totalFiles = files.Count;
             long totalSize = files.Sum(f => f.Length);
 
-            // Initialisation de l'état avec le format imposé
             var state = new BackupState
             {
                 Name = backup.Name,
@@ -38,21 +41,9 @@ namespace EasySave.Models
                 var relativePath = fileInfo.FullName.Substring(backup.SourcePath.Length).TrimStart('\\', '/');
                 var destFilePath = Path.Combine(backup.TargetPath, relativePath);
 
-                bool needCopy = false;
-                if (!File.Exists(destFilePath))
-                {
-                    needCopy = true;
-                }
-                else
-                {
-                    var destInfo = new FileInfo(destFilePath);
-                    if (fileInfo.LastWriteTime > destInfo.LastWriteTime)
-                    {
-                        needCopy = true;
-                    }
-                }
+                bool needCopy = !File.Exists(destFilePath) ||
+                                (new FileInfo(destFilePath).LastWriteTime < fileInfo.LastWriteTime);
 
-                // Mise à jour de l'état : fichier en cours de traitement
                 state.SourceFilePath = fileInfo.FullName;
                 state.TargetFilePath = destFilePath;
                 StateManager.UpdateState(state);
@@ -65,22 +56,21 @@ namespace EasySave.Models
                     {
                         File.Copy(fileInfo.FullName, destFilePath, true);
                         copiedCount++;
-                        var endTime = DateTime.Now;
-                        long transferTimeMs = (long)((endTime - startTime).TotalMilliseconds);
-
-                        // Loggue le transfert au format imposé
+                        long transferTimeMs = (long)((DateTime.Now - startTime).TotalMilliseconds);
                         logger.LogTransfer(backup.Name, fileInfo.FullName, destFilePath, fileInfo.Length, transferTimeMs);
-                        Console.WriteLine($"[DiffBackup] Copié : {fileInfo.Name}");
+                        Console.WriteLine(LocalizationManager.CurrentMessages["DiffBackup_Copied"].Replace("{name}", fileInfo.Name));
                     }
                     catch (Exception ex)
                     {
                         logger.LogError(backup.Name, fileInfo.FullName, destFilePath, ex);
-                        Console.WriteLine($"[DiffBackup] Erreur lors de la copie de {fileInfo.Name} : {ex.Message}");
+                        Console.WriteLine(LocalizationManager.CurrentMessages["DiffBackup_ErrorCopy"]
+                            .Replace("{name}", fileInfo.Name)
+                            .Replace("{error}", ex.Message));
                     }
                 }
                 else
                 {
-                    Console.WriteLine($"[DiffBackup] Ignoré (à jour) : {fileInfo.Name}");
+                    Console.WriteLine(LocalizationManager.CurrentMessages["DiffBackup_Skipped"].Replace("{name}", fileInfo.Name));
                 }
 
                 processedFiles++;
@@ -88,18 +78,18 @@ namespace EasySave.Models
                 state.Progression = (int)((processedFiles / (double)totalFiles) * 100);
                 StateManager.UpdateState(state);
 
-                // Affichage de la progression et du temps restant estimé
                 TimeSpan elapsed = DateTime.Now - startTimeGlobal;
                 double averageTimePerFile = elapsed.TotalMilliseconds / processedFiles;
                 int filesRemaining = totalFiles - processedFiles;
                 double estimatedMsRemaining = filesRemaining * averageTimePerFile;
-                Console.Write($"\rProgression : {state.Progression}% - Temps restant estimé : {TimeSpan.FromMilliseconds(estimatedMsRemaining):hh\\:mm\\:ss}");
+                string progressMsg = LocalizationManager.CurrentMessages["DiffBackup_Progress"]
+                                        .Replace("{progress}", state.Progression.ToString())
+                                        .Replace("{time}", TimeSpan.FromMilliseconds(estimatedMsRemaining).ToString(@"hh\:mm\:ss"));
+                Console.Write($"\r{progressMsg}");
             }
-            Console.WriteLine(); // Passage à la ligne après la boucle
+            Console.WriteLine();
+            Console.WriteLine(LocalizationManager.CurrentMessages["DiffBackup_Finished"].Replace("{count}", copiedCount.ToString()));
 
-            Console.WriteLine($"[DiffBackup] Terminé. {copiedCount} fichier(s) copié(s).");
-
-            // Fin du backup : on passe l'état à "END" et on vide les chemins en cours
             state.Status = BackupStatus.End;
             state.SourceFilePath = "";
             state.TargetFilePath = "";

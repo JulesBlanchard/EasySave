@@ -7,6 +7,10 @@ using EasySave.Logging;
 
 namespace EasySave.Views
 {
+    /// <summary>
+    /// Handles user interaction via the console.
+    /// Provides a bilingual interface (French/English) with robust input validation.
+    /// </summary>
     public class ConsoleView
     {
         private BackupController controller;
@@ -15,13 +19,13 @@ namespace EasySave.Views
         public ConsoleView()
         {
             controller = new BackupController();
-            // Par défaut, on prend le français
+            // Default language is French.
             messages = Messages.French;
             SelectLanguage();
         }
 
         /// <summary>
-        /// Permet à l'utilisateur de choisir la langue.
+        /// Prompts the user to select a language and sets the current messages.
         /// </summary>
         private void SelectLanguage()
         {
@@ -30,13 +34,18 @@ namespace EasySave.Views
             Console.WriteLine(Messages.French["LanguageOption2"]);
             Console.Write(Messages.French["LanguageChoice"]);
             string choice = Console.ReadLine().Trim();
-            // Si l'utilisateur choisit "2", on prend l'anglais, sinon le français.
             if (choice == "2")
                 messages = Messages.English;
             else
                 messages = Messages.French;
+
+            // Update the global localization manager.
+            LocalizationManager.CurrentMessages = messages;
         }
 
+        /// <summary>
+        /// Starts the interactive console interface.
+        /// </summary>
         public void Start()
         {
             bool exit = false;
@@ -74,6 +83,9 @@ namespace EasySave.Views
             }
         }
 
+        /// <summary>
+        /// Displays the main menu.
+        /// </summary>
         private void DisplayMenu()
         {
             Console.WriteLine(messages["MenuTitle"]);
@@ -83,34 +95,34 @@ namespace EasySave.Views
             Console.WriteLine(messages["MenuOption4"]);
         }
 
+        /// <summary>
+        /// Guides the user through the backup creation process.
+        /// </summary>
         private void CreateBackupFlow()
         {
             Console.WriteLine(messages["BackupCreationTitle"]);
 
-            // Demander le nom du backup
             string name = GetNonEmptyInput(messages["EnterBackupName"]);
-            // Demander et vérifier le chemin source
             string source = GetValidSourcePath(messages["EnterSourcePath"]);
-            // Demander et vérifier le chemin cible
             string target = GetValidTargetPath(messages["EnterTargetPath"]);
-            // Demander le type de sauvegarde
             string typeStr = GetValidBackupType(messages["EnterBackupType"]);
 
             controller.CreateBackup(name, source, target, typeStr);
-
             Console.WriteLine(messages["BackupCreated"]);
         }
 
+        /// <summary>
+        /// Guides the user through the backup execution process.
+        /// </summary>
         private void ExecuteBackupFlow()
         {
             Console.WriteLine(messages["BackupExecutionTitle"]);
             int idx = GetValidIndex(messages["EnterBackupIndex"]);
-            // On décrémente de 1 si l'index est 1-indexé.
-            controller.ExecuteBackup(idx - 1);
+            controller.ExecuteBackup(idx - 1); // Convert from 1-indexed to 0-indexed.
         }
 
         /// <summary>
-        /// Demande à l'utilisateur une saisie non vide.
+        /// Prompts the user for a non-empty input.
         /// </summary>
         private string GetNonEmptyInput(string prompt)
         {
@@ -128,7 +140,7 @@ namespace EasySave.Views
         }
 
         /// <summary>
-        /// Demande à l'utilisateur un chemin source valide (le répertoire doit exister).
+        /// Prompts the user for a valid source directory (which must exist).
         /// </summary>
         private string GetValidSourcePath(string prompt)
         {
@@ -151,8 +163,8 @@ namespace EasySave.Views
         }
 
         /// <summary>
-        /// Demande à l'utilisateur un chemin cible valide.
-        /// Si le répertoire n'existe pas, propose de le créer.
+        /// Prompts the user for a valid target directory.
+        /// If it does not exist, offers to create it.
         /// </summary>
         private string GetValidTargetPath(string prompt)
         {
@@ -180,13 +192,13 @@ namespace EasySave.Views
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("Erreur : " + ex.Message);
+                            Console.WriteLine("Error: " + ex.Message);
                             continue;
                         }
                     }
                     else
                     {
-                        Console.WriteLine("Veuillez saisir un autre chemin cible.");
+                        Console.WriteLine(messages["DifferentTargetPath"]);
                         continue;
                     }
                 }
@@ -195,7 +207,7 @@ namespace EasySave.Views
         }
 
         /// <summary>
-        /// Demande à l'utilisateur de saisir un type de sauvegarde valide ("full" ou "diff").
+        /// Prompts the user for a valid backup type ("full" or "diff").
         /// </summary>
         private string GetValidBackupType(string prompt)
         {
@@ -214,13 +226,13 @@ namespace EasySave.Views
                 }
                 else
                 {
-                    Console.WriteLine("Type invalide. Veuillez saisir 'full' ou 'diff'.");
+                    Console.WriteLine(messages["InvalidBackupType"]);
                 }
             }
         }
 
         /// <summary>
-        /// Demande à l'utilisateur de saisir un indice numérique valide.
+        /// Prompts the user for a valid numeric index.
         /// </summary>
         private int GetValidIndex(string prompt)
         {
