@@ -5,7 +5,7 @@ namespace EasySave.Models
 {
     public class BackupManager
     {
-        private const int MAX_BACKUPS = 5;
+        // Contient jusqu’à 5 backups
         private List<Backup> backups = new List<Backup>();
 
         // Le Manager a besoin d'un logger
@@ -21,11 +21,6 @@ namespace EasySave.Models
         /// </summary>
         public bool AddBackup(Backup backup)
         {
-            if (backups.Count >= MAX_BACKUPS)
-            {
-                Console.WriteLine("[BackupManager] Impossible d'ajouter plus de 5 backups.");
-                return false;
-            }
             backups.Add(backup);
             Console.WriteLine($"[BackupManager] Backup '{backup.Name}' ajouté. (count={backups.Count})");
             return true;

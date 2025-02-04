@@ -44,6 +44,11 @@ namespace EasySave.Controllers
         {
             manager.ExecuteBackup(index);
         }
+        
+        public int GetBackupCount()
+        {
+            return manager.GetBackups().Count;
+        }
 
         /// <summary>
         /// Liste tous les backups (avec leur stratégie)
