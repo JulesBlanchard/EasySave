@@ -1,2 +1,13 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using EasySave.Views;
+
+namespace EasySave
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ConsoleView view = new ConsoleView();
+            view.Start();
+        }
+    }
+}
