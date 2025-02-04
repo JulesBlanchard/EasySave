@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;  
 
 namespace EasySave.Models
 {
@@ -37,7 +38,9 @@ namespace EasySave.Models
                 {
                     WriteIndented = true
                 };
-
+                // Ajoutez le convertisseur pour sérialiser les enums sous forme de chaînes
+                options.Converters.Add(new JsonStringEnumConverter());
+                
                 // Sérialise la liste des états en un tableau JSON
                 string json = JsonSerializer.Serialize(states.Values.ToList(), options);
                 File.WriteAllText(stateFilePath, json);
