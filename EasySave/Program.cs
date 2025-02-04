@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using EasySave;
 using EasySave.Controllers;
+using EasySave.Logging;
 
 namespace EasySave
 {

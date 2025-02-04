@@ -1,3 +1,5 @@
+using EasySave.Logging;
+
 namespace EasySave.Models
 {
     public interface IBackupStrategy

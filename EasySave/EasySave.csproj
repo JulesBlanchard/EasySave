@@ -7,4 +7,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>    
+</PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="EasySave.Logging\EasySave.Logging.csproj" />
+  </ItemGroup>
+
 </Project>

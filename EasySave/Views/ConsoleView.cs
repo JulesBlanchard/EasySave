@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using EasySave.Controllers;
 using EasySave.Utils;
+using EasySave.Logging;
 
 namespace EasySave.Views
 {

@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Text.Json;
 
-namespace EasySave.Models
+namespace EasySave.Logging
 {
     public class JsonBackupLogger : IBackupLogger
     {

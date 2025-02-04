@@ -1,7 +1,8 @@
 using System.Text.Json.Serialization;
 using System.Collections.Generic;
 using System.IO;
-
+using EasySave.Logging;
+    
 namespace EasySave.Models
 {
     public class Backup

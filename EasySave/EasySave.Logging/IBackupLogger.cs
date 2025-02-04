@@ -1,6 +1,6 @@
 using System;
 
-namespace EasySave.Models
+namespace EasySave.Logging
 {
     public interface IBackupLogger
     {
