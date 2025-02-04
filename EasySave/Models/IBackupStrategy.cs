@@ -3,9 +3,8 @@ namespace EasySave.Models
     public interface IBackupStrategy
     {
         /// <summary>
-        /// Exécute la sauvegarde pour le Backup spécifié.
+        /// Exécute la sauvegarde pour le Backup spécifié, en logguant via IBackupLogger.
         /// </summary>
-        /// <param name="backup">Référence à l'objet Backup</param>
-        void Execute(Backup backup);
+        void Execute(Backup backup, IBackupLogger logger);
     }
 }

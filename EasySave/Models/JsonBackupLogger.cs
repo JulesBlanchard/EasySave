@@ -1,27 +1,74 @@
+using System;
+using System.IO;
+using System.Text.Json;
+
 namespace EasySave.Models
 {
     public class JsonBackupLogger : IBackupLogger
     {
-        // Par exemple, on peut stocker un chemin de fichier log
-        private string dailyLogFilePath;
+        private string logDirectory;
 
         public JsonBackupLogger(string logDirectory)
         {
-            // TODO: Construire un chemin style "2025-xx-xx-Log.json" 
-            // ou juste stocker "logDirectory"
-            this.dailyLogFilePath = System.IO.Path.Combine(
-                logDirectory, "Log.json"
-            );
+            this.logDirectory = logDirectory;
+
+            // S'assurer que le dossier existe
+            Directory.CreateDirectory(logDirectory);
         }
 
         public void LogTransfer(string backupName, string sourceFile, string destFile, long fileSize, long transferTimeMs)
         {
-            // TODO: Écriture d'une entrée JSON de transfert réussi dans dailyLogFilePath
+            var entry = new
+            {
+                Timestamp = DateTime.Now.ToString("O"),    // format ISO8601
+                EventType = "Transfer",
+                BackupName = backupName,
+                SourceFile = sourceFile,
+                DestFile = destFile,
+                FileSize = fileSize,
+                TransferTimeMs = transferTimeMs
+            };
+
+            WriteLogEntry(entry);
         }
 
-        public void LogError(string backupName, string sourceFile, string destFile, System.Exception ex)
+        public void LogError(string backupName, string sourceFile, string destFile, Exception ex)
         {
-            // TODO: Écriture d'une entrée JSON pour logguer l'erreur
+            var entry = new
+            {
+                Timestamp = DateTime.Now.ToString("O"),
+                EventType = "Error",
+                BackupName = backupName,
+                SourceFile = sourceFile,
+                DestFile = destFile,
+                ErrorMessage = ex.Message,
+                TransferTimeMs = -1
+            };
+
+            WriteLogEntry(entry);
+        }
+
+        private void WriteLogEntry(object logEntry)
+        {
+            // Nom de fichier style "2023-01-01-Log.json"
+            string fileName = DateTime.Now.ToString("yyyy-MM-dd") + "-Log.json";
+            string filePath = Path.Combine(logDirectory, fileName);
+
+            try
+            {
+                // Sérialiser en JSON
+                string jsonLine = JsonSerializer.Serialize(logEntry);
+
+                // Ajouter la ligne dans le fichier
+                using (var writer = new StreamWriter(filePath, append: true))
+                {
+                    writer.WriteLine(jsonLine);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[JsonBackupLogger] Failed to write log: " + e.Message);
+            }
         }
     }
 }
