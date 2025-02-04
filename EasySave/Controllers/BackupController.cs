@@ -21,7 +21,8 @@ namespace EasySave.Controllers
         /// </summary>
         public void CreateBackup(string name, string source, string target, string strategyType)
         {
-            var backup = new Backup(name, source, target);
+            // On passe le type dans le constructeur
+            var backup = new Backup(name, source, target, strategyType);
             if (strategyType.ToLower().StartsWith("f"))
             {
                 backup.Strategy = new FullBackupStrategy();
@@ -36,6 +37,7 @@ namespace EasySave.Controllers
                 Console.WriteLine($"[Controller] Backup '{name}' created with strategy={strategyType}.");
             }
         }
+
 
         /// <summary>
         /// Exécute un backup par son index
@@ -56,14 +58,16 @@ namespace EasySave.Controllers
         public void ListBackups()
         {
             var list = manager.GetBackups();
-            Console.WriteLine("[Controller] Current backups:");
+            Console.WriteLine("[Controller] Sauvegardes courantes:");
             for (int i = 0; i < list.Count; i++)
             {
                 var b = list[i];
+                // Affichage du nom et éventuellement du type de sauvegarde
                 var strategyName = (b.Strategy == null) ? "None" : b.Strategy.GetType().Name;
                 Console.WriteLine($"  {i + 1} - {b.Name} [Strategy={strategyName}] => Source={b.SourcePath}, Target={b.TargetPath}");
             }
         }
+
 
 
         /// <summary>

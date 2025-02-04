@@ -50,7 +50,7 @@ namespace EasySave.Views
 
         private void DisplayMenu()
         {
-            Console.WriteLine("=== EasySave - Feature: Strategy ===");
+            Console.WriteLine("=== EasySave ===");
             Console.WriteLine("1. Créer un backup");
             Console.WriteLine("2. Lister les backups");
             Console.WriteLine("3. Exécuter un backup");
