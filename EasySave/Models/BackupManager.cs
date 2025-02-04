@@ -6,9 +6,15 @@ namespace EasySave.Models
     public class BackupManager
     {
         private const int MAX_BACKUPS = 5;
-
-        // Contient jusqu’à 5 backups
         private List<Backup> backups = new List<Backup>();
+
+        // Le Manager a besoin d'un logger
+        private IBackupLogger logger;
+
+        public BackupManager(IBackupLogger logger)
+        {
+            this.logger = logger;
+        }
 
         /// <summary>
         /// Ajoute un backup si on n’a pas dépassé le max (5).
@@ -37,7 +43,9 @@ namespace EasySave.Models
             }
             var backup = backups[index];
             Console.WriteLine($"[BackupManager] Exécution du backup '{backup.Name}' (index={index})");
-            backup.Execute();
+            
+            // On appelle backup.Execute(logger) pour logguer
+            backup.Execute(logger);
         }
 
         /// <summary>

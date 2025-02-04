@@ -9,8 +9,7 @@ namespace EasySave.Models
         public string Name { get; private set; }
         public string SourcePath { get; private set; }
         public string TargetPath { get; private set; }
-
-        // Référence à la stratégie de sauvegarde (optionnelle pour le moment).
+        
         public IBackupStrategy Strategy { get; set; }
 
         public Backup(string name, string source, string target)
@@ -21,14 +20,13 @@ namespace EasySave.Models
         }
 
         /// <summary>
-        /// Exécute la sauvegarde en utilisant la stratégie.
+        /// On reçoit un logger, on passe tout à Strategy.Execute(...)
         /// </summary>
-        public void Execute()
+        public void Execute(IBackupLogger logger)
         {
-            // S'il y a une stratégie, on l'appelle ; sinon, on affiche un message minimal.
             if (Strategy != null)
             {
-                Strategy.Execute(this);
+                Strategy.Execute(this, logger);
             }
             else
             {
@@ -36,23 +34,18 @@ namespace EasySave.Models
             }
         }
 
-        /// <summary>
-        /// Méthode éventuelle pour lister tous les fichiers du répertoire source.
-        /// (Utile dans une future feature de copie).
-        /// </summary>
-        /// <returns>Une liste de FileInfo.</returns>
         public List<FileInfo> GetFileList()
         {
-            var files = new List<FileInfo>();
+            var result = new List<FileInfo>();
             if (Directory.Exists(SourcePath))
             {
-                string[] allFiles = Directory.GetFiles(SourcePath, "*.*", SearchOption.AllDirectories);
-                foreach (var file in allFiles)
+                var allFiles = Directory.GetFiles(SourcePath, "*.*", SearchOption.AllDirectories);
+                foreach (var f in allFiles)
                 {
-                    files.Add(new FileInfo(file));
+                    result.Add(new FileInfo(f));
                 }
             }
-            return files;
+            return result;
         }
     }
 }

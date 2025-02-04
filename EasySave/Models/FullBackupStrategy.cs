@@ -5,15 +5,10 @@ namespace EasySave.Models
 {
     public class FullBackupStrategy : IBackupStrategy
     {
-        /// <summary>
-        /// Sauvegarde complète : copie tous les fichiers du répertoire source 
-        /// vers le répertoire cible, en écrasant si besoin.
-        /// </summary>
-        public void Execute(Backup backup)
+        public void Execute(Backup backup, IBackupLogger logger)
         {
             Console.WriteLine($"[FullBackup] Executing FULL backup for '{backup.Name}'...");
-            
-            // On récupère la liste de fichiers depuis backup.GetFileList().
+
             var files = backup.GetFileList();
             if (files.Count == 0)
             {
@@ -23,26 +18,38 @@ namespace EasySave.Models
 
             foreach (var fileInfo in files)
             {
-                // Chemin relatif par rapport au source
                 var relativePath = fileInfo.FullName.Substring(backup.SourcePath.Length).TrimStart('\\','/');
-                // Construct le chemin cible
                 var destFilePath = Path.Combine(backup.TargetPath, relativePath);
 
-                // Créer le dossier cible s'il n'existe pas
                 Directory.CreateDirectory(Path.GetDirectoryName(destFilePath));
+
+                var startTime = DateTime.Now;  // pour calculer le temps de transfert
 
                 try
                 {
                     File.Copy(fileInfo.FullName, destFilePath, true);
+                    var endTime = DateTime.Now;
+
+                    long transferTimeMs = (long)((endTime - startTime).TotalMilliseconds);
+
+                    // On loggue le succès
+                    logger.LogTransfer(
+                        backup.Name,
+                        fileInfo.FullName,
+                        destFilePath,
+                        fileInfo.Length,
+                        transferTimeMs
+                    );
+
                     Console.WriteLine($"[FullBackup] Copied: {fileInfo.Name}");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[FullBackup] Error copying file {fileInfo.Name}: {ex.Message}");
+                    // On loggue l'erreur
+                    logger.LogError(backup.Name, fileInfo.FullName, destFilePath, ex);
+                    Console.WriteLine($"[FullBackup] Error copying {fileInfo.Name}: {ex.Message}");
                 }
             }
-
-            Console.WriteLine($"[FullBackup] Finished copying {files.Count} file(s).");
         }
     }
 }
