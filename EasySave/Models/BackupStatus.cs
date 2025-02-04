@@ -1,6 +1,10 @@
-namespace EasySave.Models;
-
-public class BackupStatus
+namespace EasySave.Models
 {
-    
+    public enum BackupStatus
+    {
+        NotStarted,
+        Active,
+        End,
+        Error
+    }
 }
