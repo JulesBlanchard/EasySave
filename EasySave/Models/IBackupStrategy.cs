@@ -1,10 +1,17 @@
+using EasySave.Logging;
+
 namespace EasySave.Models
 {
+    /// <summary>
+    /// Defines the interface for backup strategies.
+    /// </summary>
     public interface IBackupStrategy
     {
         /// <summary>
-        /// Exécute la sauvegarde pour le Backup spécifié, en logguant via IBackupLogger.
+        /// Executes the backup using the specified logger.
         /// </summary>
+        /// <param name="backup">The backup job to execute</param>
+        /// <param name="logger">Logger to record the backup process</param>
         void Execute(Backup backup, IBackupLogger logger);
     }
 }

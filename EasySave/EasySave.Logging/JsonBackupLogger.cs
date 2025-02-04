@@ -1,16 +1,20 @@
 using System;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
-namespace EasySave.Models
+namespace EasySave.Logging
 {
+    /// <summary>
+    /// Implements IBackupLogger to log backup operations in JSON format.
+    /// </summary>
     public class JsonBackupLogger : IBackupLogger
     {
         private string logDirectory;
 
         public JsonBackupLogger(string logDirectory)
         {
-            // Ici, le chemin peut être relatif ou construit à partir du répertoire d'exécution.
+            // The log directory can be relative or absolute; it's built from the execution directory.
             this.logDirectory = Path.Combine(AppContext.BaseDirectory, logDirectory);
             Directory.CreateDirectory(this.logDirectory);
         }
@@ -23,15 +27,14 @@ namespace EasySave.Models
                 FileSource = sourceFile,
                 FileTarget = destFile,
                 FileSize = fileSize,
-                FileSizeUnit = "octets",            // Unité pour la taille
+                FileSizeUnit = "octets",            // Unit for file size
                 FileTransferTime = transferTimeMs,
-                FileTransferTimeUnit = "ms",         // Unité pour le temps de transfert
+                FileTransferTimeUnit = "ms",         // Unit for transfer time
                 time = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")
             };
 
             WriteLogEntry(entry);
         }
-
 
         public void LogError(string backupName, string sourceFile, string destFile, Exception ex)
         {
@@ -41,9 +44,9 @@ namespace EasySave.Models
                 FileSource = sourceFile,
                 FileTarget = destFile,
                 FileSize = 0,
-                FileSizeUnit = "octets",            // Unité pour la taille (même en cas d'erreur)
-                FileTransferTime = -1,              // Pour signaler une erreur, par exemple -1
-                FileTransferTimeUnit = "ms",        // Unité pour le temps
+                FileSizeUnit = "octets",            // Unit for file size (even on error)
+                FileTransferTime = -1,              // Negative value indicates error
+                FileTransferTimeUnit = "ms",
                 time = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"),
                 Error = ex.Message
             };
@@ -51,22 +54,18 @@ namespace EasySave.Models
             WriteLogEntry(entry);
         }
 
-
         private void WriteLogEntry(object logEntry)
         {
-            // Nom du fichier journalier au format "yyyy-MM-dd-Log.json"
+            // Log file name format: "yyyy-MM-dd-Log.json"
             string fileName = DateTime.Now.ToString("yyyy-MM-dd") + "-Log.json";
             string filePath = Path.Combine(logDirectory, fileName);
 
             try
             {
-                var options = new JsonSerializerOptions
-                {
-                    WriteIndented = true
-                };
-                // Sérialisation de l'objet log
+                var options = new JsonSerializerOptions { WriteIndented = true };
+                // Serialize the log entry
                 string jsonLine = JsonSerializer.Serialize(logEntry, options);
-                // On ajoute la ligne au fichier (chaque objet sur sa propre ligne)
+                // Append the log entry to the file (each entry on a separate line)
                 using (var writer = new StreamWriter(filePath, append: true))
                 {
                     writer.WriteLine(jsonLine);
@@ -74,7 +73,7 @@ namespace EasySave.Models
             }
             catch (Exception e)
             {
-                Console.WriteLine("[JsonBackupLogger] Erreur lors de l'écriture du log : " + e.Message);
+                Console.WriteLine("[JsonBackupLogger] Error writing log: " + e.Message);
             }
         }
     }

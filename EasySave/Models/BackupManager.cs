@@ -2,67 +2,76 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using EasySave.Logging;
+using EasySave.Utils;
 
 namespace EasySave.Models
 {
+    /// <summary>
+    /// Manages the collection of backups. Limits to 5 backups, persists them in backups.json, and orchestrates execution.
+    /// </summary>
     public class BackupManager
     {
         private const int MAX_BACKUPS = 5;
         private List<Backup> backups = new List<Backup>();
         private IBackupLogger logger;
-        // Chemin vers le fichier de persistance des backups
         private readonly string backupFilePath;
 
         public BackupManager(IBackupLogger logger)
         {
             this.logger = logger;
-            // On enregistre le fichier backups.json dans le répertoire d'exécution
             backupFilePath = Path.Combine(AppContext.BaseDirectory, "backups.json");
             LoadBackups();
         }
 
         /// <summary>
-        /// Ajoute un backup et sauvegarde la liste sur le disque
+        /// Adds a backup and saves the list to disk.
         /// </summary>
         public bool AddBackup(Backup backup)
         {
             if (backups.Count >= MAX_BACKUPS)
             {
-                Console.WriteLine("[BackupManager] Impossible d'ajouter plus de 5 backups.");
+                Console.WriteLine(LocalizationManager.CurrentMessages["CannotCreateMoreBackups"]);
                 return false;
             }
             backups.Add(backup);
             SaveBackups();
-            Console.WriteLine($"[BackupManager] Backup '{backup.Name}' ajouté. (count={backups.Count})");
+            string msg = LocalizationManager.CurrentMessages["ControllerBackupAdded"];
+            msg = msg.Replace("{name}", backup.Name).Replace("{count}", backups.Count.ToString());
+            Console.WriteLine(msg);
             return true;
         }
 
         /// <summary>
-        /// Exécute un backup par son index
+        /// Executes a backup by its index.
         /// </summary>
         public void ExecuteBackup(int index)
         {
             if (index < 0 || index >= backups.Count)
             {
-                Console.WriteLine("[BackupManager] Index invalide.");
+                Console.WriteLine(LocalizationManager.CurrentMessages["ControllerInvalidIndex"]);
                 return;
             }
             var backup = backups[index];
-            Console.WriteLine($"[BackupManager] Exécution du backup '{backup.Name}' (index={index})");
+            string execMsg = LocalizationManager.CurrentMessages["ControllerExecutingBackup"];
+            execMsg = execMsg.Replace("{name}", backup.Name).Replace("{index}", index.ToString());
+            Console.WriteLine(execMsg);
             backup.Execute(logger);
         }
 
         /// <summary>
-        /// Exécute tous les backups séquentiellement
+        /// Executes all backups sequentially.
         /// </summary>
         public void ExecuteAll()
         {
             if (backups.Count == 0)
             {
-                Console.WriteLine("[BackupManager] Aucun backup à exécuter.");
+                Console.WriteLine("[BackupManager] No backups to execute.");
                 return;
             }
-            Console.WriteLine($"[BackupManager] Exécution de {backups.Count} backup(s)...");
+            string execAllMsg = LocalizationManager.CurrentMessages["ControllerExecutingAll"];
+            execAllMsg = execAllMsg.Replace("{count}", backups.Count.ToString());
+            Console.WriteLine(execAllMsg);
             for (int i = 0; i < backups.Count; i++)
             {
                 ExecuteBackup(i);
@@ -70,7 +79,7 @@ namespace EasySave.Models
         }
 
         /// <summary>
-        /// Retourne la liste des backups
+        /// Returns the list of backups.
         /// </summary>
         public List<Backup> GetBackups()
         {
@@ -78,7 +87,7 @@ namespace EasySave.Models
         }
 
         /// <summary>
-        /// Sauvegarde la liste des backups dans backups.json
+        /// Saves the list of backups to backups.json.
         /// </summary>
         private void SaveBackups()
         {
@@ -90,12 +99,12 @@ namespace EasySave.Models
             }
             catch (Exception ex)
             {
-                Console.WriteLine("[BackupManager] Erreur lors de la sauvegarde des backups : " + ex.Message);
+                Console.WriteLine("[BackupManager] Error saving backups: " + ex.Message);
             }
         }
 
         /// <summary>
-        /// Charge la liste des backups depuis backups.json s'il existe
+        /// Loads the list of backups from backups.json if it exists.
         /// </summary>
         private void LoadBackups()
         {
@@ -108,7 +117,6 @@ namespace EasySave.Models
                     if (loadedBackups != null)
                     {
                         backups = loadedBackups;
-                        // Pour chaque backup, recréer la stratégie en fonction du BackupType
                         foreach (var backup in backups)
                         {
                             if (!string.IsNullOrEmpty(backup.BackupType))
@@ -123,10 +131,9 @@ namespace EasySave.Models
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("[BackupManager] Erreur lors du chargement des backups : " + ex.Message);
+                    Console.WriteLine(LocalizationManager.CurrentMessages["BackupManager_LoadError"].Replace("{error}", ex.Message));
                 }
             }
         }
-
     }
 }

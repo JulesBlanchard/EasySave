@@ -1,26 +1,29 @@
 namespace EasySave.Models
 {
+    /// <summary>
+    /// Represents the state of a backup, including progress and file statistics.
+    /// </summary>
     public class BackupState
     {
-        // Nom du travail de sauvegarde
+        // Backup name.
         public string Name { get; set; }
-        // Chemin du fichier source actuellement en cours de copie (vide si aucun)
+        // Current source file path being processed (empty if none).
         public string SourceFilePath { get; set; }
-        // Chemin du fichier destination actuellement en cours de copie (vide si aucun)
+        // Current target file path being processed (empty if none).
         public string TargetFilePath { get; set; }
-        // Etat du backup : maintenant de type BackupStatus
+        // Backup status (enum: NotStarted, Active, End, Error).
         public BackupStatus Status { get; set; } = BackupStatus.NotStarted;
-        // Nombre total de fichiers à copier
+        // Total number of files to copy.
         public int TotalFilesToCopy { get; set; }
-        // Taille totale de tous les fichiers à copier (en octets)
+        // Total size of all files to copy (in bytes).
         public long TotalFilesSize { get; set; }
-        // Unité de la taille totale
+        // Unit for the total file size.
         public string TotalFilesSizeUnit { get; set; } = "octets";
-        // Nombre de fichiers restant à copier
+        // Number of files left to copy.
         public int NbFilesLeftToDo { get; set; }
-        // Progression en pourcentage (0 à 100)
+        // Progress percentage (0 to 100).
         public int Progression { get; set; }
-        // (Optionnel) Horodatage de la dernière action
+        // Timestamp of the last action.
         public string LastActionTimestamp { get; set; }
     }
 }

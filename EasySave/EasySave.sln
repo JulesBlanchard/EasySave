@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasySave", "EasySave.csproj", "{9907C13E-AFA8-4F62-AF33-5F09340120DF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasySave.Logging", "EasySave.Logging\EasySave.Logging.csproj", "{B60377FC-8D88-4E45-B7D0-1FCC76F4EA58}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{9907C13E-AFA8-4F62-AF33-5F09340120DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9907C13E-AFA8-4F62-AF33-5F09340120DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9907C13E-AFA8-4F62-AF33-5F09340120DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B60377FC-8D88-4E45-B7D0-1FCC76F4EA58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B60377FC-8D88-4E45-B7D0-1FCC76F4EA58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B60377FC-8D88-4E45-B7D0-1FCC76F4EA58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B60377FC-8D88-4E45-B7D0-1FCC76F4EA58}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

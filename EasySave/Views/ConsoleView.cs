@@ -1,33 +1,65 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using EasySave.Controllers;
-using EasySave.Models;
+using EasySave.Utils;
+using EasySave.Logging;
 
 namespace EasySave.Views
 {
+    /// <summary>
+    /// Handles user interaction via the console.
+    /// Provides a bilingual interface (French/English) with robust input validation.
+    /// </summary>
     public class ConsoleView
     {
         private BackupController controller;
+        private Dictionary<string, string> messages;
 
         public ConsoleView()
         {
             controller = new BackupController();
+            // Default language is French.
+            messages = Messages.French;
+            SelectLanguage();
         }
 
+        /// <summary>
+        /// Prompts the user to select a language and sets the current messages.
+        /// </summary>
+        private void SelectLanguage()
+        {
+            Console.WriteLine(Messages.French["LanguagePrompt"]);
+            Console.WriteLine(Messages.French["LanguageOption1"]);
+            Console.WriteLine(Messages.French["LanguageOption2"]);
+            Console.Write(Messages.French["LanguageChoice"]);
+            string choice = Console.ReadLine().Trim();
+            if (choice == "2")
+                messages = Messages.English;
+            else
+                messages = Messages.French;
+
+            // Update the global localization manager.
+            LocalizationManager.CurrentMessages = messages;
+        }
+
+        /// <summary>
+        /// Starts the interactive console interface.
+        /// </summary>
         public void Start()
         {
             bool exit = false;
             while (!exit)
             {
                 DisplayMenu();
-                Console.Write("Choix : ");
+                Console.Write(messages["PromptChoice"]);
                 var input = Console.ReadLine();
                 switch (input)
                 {
                     case "1":
                         if (controller.GetBackupCount() >= 5)
                         {
-                            Console.WriteLine("Impossible de créer plus de 5 backups.");
+                            Console.WriteLine(messages["CannotCreateMoreBackups"]);
                         }
                         else
                         {
@@ -45,76 +77,71 @@ namespace EasySave.Views
                         exit = true;
                         break;
                     default:
-                        Console.WriteLine("Option inconnue.");
+                        Console.WriteLine(messages["InvalidOption"]);
                         break;
                 }
             }
         }
 
+        /// <summary>
+        /// Displays the main menu.
+        /// </summary>
         private void DisplayMenu()
         {
-            Console.WriteLine("=== EasySave ===");
-            Console.WriteLine("1. Créer un backup");
-            Console.WriteLine("2. Lister les backups");
-            Console.WriteLine("3. Exécuter un backup");
-            Console.WriteLine("4. Quitter");
-        }
-
-        private void CreateBackupFlow()
-        {
-            Console.WriteLine("=== Création d'un Backup ===");
-
-            // Saisie du nom du backup (doit être non vide)
-            string name = GetNonEmptyInput("Nom du backup : ");
-
-            // Saisie et vérification du chemin source (le répertoire doit exister)
-            string source = GetValidSourcePath("Chemin source : ");
-
-            // Saisie et vérification du chemin cible (s'il n'existe pas, possibilité de le créer)
-            string target = GetValidTargetPath("Chemin cible : ");
-
-            // Saisie du type de sauvegarde (full/diff)
-            string typeStr = GetValidBackupType("Type de sauvegarde (full/diff) : ");
-
-            // Appel à la méthode CreateBackup du contrôleur qui prend en compte la stratégie
-            controller.CreateBackup(name, source, target, typeStr);
-
-            Console.WriteLine("Backup créé avec succès !");
-        }
-
-        private void ExecuteBackupFlow()
-        {
-            Console.WriteLine("=== Exécution d'un Backup ===");
-            int idx = GetValidIndex("Indice du backup à exécuter : ");
-            // Dans votre code initial, on décrémente de 1 pour correspondre à l'indexation (si nécessaire)
-            controller.ExecuteBackup(idx - 1);
+            Console.WriteLine(messages["MenuTitle"]);
+            Console.WriteLine(messages["MenuOption1"]);
+            Console.WriteLine(messages["MenuOption2"]);
+            Console.WriteLine(messages["MenuOption3"]);
+            Console.WriteLine(messages["MenuOption4"]);
         }
 
         /// <summary>
-        /// Demande à l'utilisateur une saisie non vide.
+        /// Guides the user through the backup creation process.
         /// </summary>
-        /// <param name="prompt">Le message à afficher.</param>
-        /// <returns>La saisie de l'utilisateur non vide.</returns>
+        private void CreateBackupFlow()
+        {
+            Console.WriteLine(messages["BackupCreationTitle"]);
+
+            string name = GetNonEmptyInput(messages["EnterBackupName"]);
+            string source = GetValidSourcePath(messages["EnterSourcePath"]);
+            string target = GetValidTargetPath(messages["EnterTargetPath"]);
+            string typeStr = GetValidBackupType(messages["EnterBackupType"]);
+
+            controller.CreateBackup(name, source, target, typeStr);
+            Console.WriteLine(messages["BackupCreated"]);
+        }
+
+        /// <summary>
+        /// Guides the user through the backup execution process.
+        /// </summary>
+        private void ExecuteBackupFlow()
+        {
+            Console.WriteLine(messages["BackupExecutionTitle"]);
+            int idx = GetValidIndex(messages["EnterBackupIndex"]);
+            controller.ExecuteBackup(idx - 1); // Convert from 1-indexed to 0-indexed.
+        }
+
+        /// <summary>
+        /// Prompts the user for a non-empty input.
+        /// </summary>
         private string GetNonEmptyInput(string prompt)
         {
-            string input = "";
+            string input;
             do
             {
                 Console.Write(prompt);
                 input = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(input))
                 {
-                    Console.WriteLine("L'entrée ne peut pas être vide. Veuillez réessayer.");
+                    Console.WriteLine(messages["InvalidInput"]);
                 }
             } while (string.IsNullOrWhiteSpace(input));
             return input.Trim();
         }
 
         /// <summary>
-        /// Demande à l'utilisateur de saisir un chemin source valide (le répertoire doit exister).
+        /// Prompts the user for a valid source directory (which must exist).
         /// </summary>
-        /// <param name="prompt">Le message à afficher.</param>
-        /// <returns>Un chemin source valide.</returns>
         private string GetValidSourcePath(string prompt)
         {
             while (true)
@@ -123,12 +150,12 @@ namespace EasySave.Views
                 string path = Console.ReadLine().Trim();
                 if (string.IsNullOrWhiteSpace(path))
                 {
-                    Console.WriteLine("Le chemin source ne peut pas être vide.");
+                    Console.WriteLine(messages["InvalidInput"]);
                     continue;
                 }
                 if (!Directory.Exists(path))
                 {
-                    Console.WriteLine("Le répertoire source n'existe pas. Veuillez vérifier le chemin.");
+                    Console.WriteLine(messages["SourceNotExist"]);
                     continue;
                 }
                 return path;
@@ -136,11 +163,9 @@ namespace EasySave.Views
         }
 
         /// <summary>
-        /// Demande à l'utilisateur de saisir un chemin cible valide.
-        /// Si le répertoire n'existe pas, il propose de le créer.
+        /// Prompts the user for a valid target directory.
+        /// If it does not exist, offers to create it.
         /// </summary>
-        /// <param name="prompt">Le message à afficher.</param>
-        /// <returns>Un chemin cible valide.</returns>
         private string GetValidTargetPath(string prompt)
         {
             while (true)
@@ -149,31 +174,31 @@ namespace EasySave.Views
                 string path = Console.ReadLine().Trim();
                 if (string.IsNullOrWhiteSpace(path))
                 {
-                    Console.WriteLine("Le chemin cible ne peut pas être vide.");
+                    Console.WriteLine(messages["InvalidInput"]);
                     continue;
                 }
                 if (!Directory.Exists(path))
                 {
-                    Console.WriteLine("Le répertoire cible n'existe pas.");
-                    Console.Write("Voulez-vous le créer ? (O/N) : ");
+                    Console.WriteLine(messages["TargetNotExist"]);
+                    Console.Write(messages["CreateTargetPrompt"]);
                     string rep = Console.ReadLine().Trim().ToLower();
-                    if (rep == "o" || rep == "oui")
+                    if (rep == "o" || rep == "oui" || rep == "y" || rep == "yes")
                     {
                         try
                         {
                             Directory.CreateDirectory(path);
-                            Console.WriteLine("Répertoire créé.");
+                            Console.WriteLine(messages["TargetCreated"]);
                             return path;
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("Erreur lors de la création du répertoire : " + ex.Message);
+                            Console.WriteLine("Error: " + ex.Message);
                             continue;
                         }
                     }
                     else
                     {
-                        Console.WriteLine("Veuillez saisir un autre chemin cible.");
+                        Console.WriteLine(messages["DifferentTargetPath"]);
                         continue;
                     }
                 }
@@ -182,10 +207,8 @@ namespace EasySave.Views
         }
 
         /// <summary>
-        /// Demande à l'utilisateur de saisir un type de sauvegarde valide ("full" ou "diff").
+        /// Prompts the user for a valid backup type ("full" or "diff").
         /// </summary>
-        /// <param name="prompt">Le message à afficher.</param>
-        /// <returns>Le type de sauvegarde validé.</returns>
         private string GetValidBackupType(string prompt)
         {
             while (true)
@@ -194,7 +217,7 @@ namespace EasySave.Views
                 string type = Console.ReadLine().Trim().ToLower();
                 if (string.IsNullOrWhiteSpace(type))
                 {
-                    Console.WriteLine("Le type de sauvegarde ne peut pas être vide.");
+                    Console.WriteLine(messages["InvalidInput"]);
                     continue;
                 }
                 if (type.StartsWith("f") || type.StartsWith("d"))
@@ -203,16 +226,14 @@ namespace EasySave.Views
                 }
                 else
                 {
-                    Console.WriteLine("Type invalide. Veuillez saisir 'full' ou 'diff'.");
+                    Console.WriteLine(messages["InvalidBackupType"]);
                 }
             }
         }
 
         /// <summary>
-        /// Demande à l'utilisateur de saisir un indice numérique valide.
+        /// Prompts the user for a valid numeric index.
         /// </summary>
-        /// <param name="prompt">Le message à afficher.</param>
-        /// <returns>L'indice validé.</returns>
         private int GetValidIndex(string prompt)
         {
             while (true)
@@ -222,7 +243,7 @@ namespace EasySave.Views
                 if (int.TryParse(input, out int index))
                     return index;
                 else
-                    Console.WriteLine("Veuillez entrer un nombre valide.");
+                    Console.WriteLine(messages["EnterValidNumber"]);
             }
         }
     }
