@@ -1,5 +1,6 @@
 using System;
 using EasySave.Controllers;
+using EasySave.Models;
 
 namespace EasySave.Views
 {
@@ -22,12 +23,20 @@ namespace EasySave.Views
                 switch (input)
                 {
                     case "1":
-                        CreateBackupFlow();
+                        if (controller.GetBackupCount() == 5)
+                        {
+                            Console.WriteLine("Impossible de créer plus de 5 backups.");
+                        }
+                        else
+                        {
+                            CreateBackupFlow();
+                        }
                         break;
                     case "2":
                         controller.ListBackups();
                         break;
                     case "3":
+                        controller.ListBackups();
                         ExecuteBackupFlow();
                         break;
                     case "4":
@@ -71,7 +80,7 @@ namespace EasySave.Views
             Console.Write("Indice du backup à exécuter : ");
             if (int.TryParse(Console.ReadLine(), out int idx))
             {
-                controller.ExecuteBackup(idx);
+                controller.ExecuteBackup(idx - 1);
             }
             else
             {

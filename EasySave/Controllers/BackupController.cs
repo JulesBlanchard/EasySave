@@ -44,6 +44,11 @@ namespace EasySave.Controllers
         {
             manager.ExecuteBackup(index);
         }
+        
+        public int GetBackupCount()
+        {
+            return manager.GetBackups().Count;
+        }
 
         /// <summary>
         /// Liste tous les backups (avec leur stratégie)
@@ -56,7 +61,7 @@ namespace EasySave.Controllers
             {
                 var b = list[i];
                 var strategyName = (b.Strategy == null) ? "None" : b.Strategy.GetType().Name;
-                Console.WriteLine($"  {i} - {b.Name} [Strategy={strategyName}] => Source={b.SourcePath}, Target={b.TargetPath}");
+                Console.WriteLine($"  {i + 1} - {b.Name} [Strategy={strategyName}] => Source={b.SourcePath}, Target={b.TargetPath}");
             }
         }
 
