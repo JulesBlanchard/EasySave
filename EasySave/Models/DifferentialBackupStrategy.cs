@@ -20,7 +20,7 @@ namespace EasySave.Models
                 Name = backup.Name,
                 SourceFilePath = "",
                 TargetFilePath = "",
-                State = "ACTIVE",
+                Status = BackupStatus.Active,
                 TotalFilesToCopy = totalFiles,
                 TotalFilesSize = totalSize,
                 NbFilesLeftToDo = totalFiles,
@@ -99,7 +99,7 @@ namespace EasySave.Models
             Console.WriteLine($"[DiffBackup] Terminé. {copiedCount} fichier(s) copié(s).");
 
             // Fin du backup : on passe l'état à "END" et on vide les chemins en cours
-            state.State = "END";
+            state.Status = BackupStatus.End;
             state.SourceFilePath = "";
             state.TargetFilePath = "";
             StateManager.UpdateState(state);
