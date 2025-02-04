@@ -36,6 +36,7 @@ namespace EasySave.Views
                         controller.ListBackups();
                         break;
                     case "3":
+                        controller.ListBackups();
                         ExecuteBackupFlow();
                         break;
                     case "4":
@@ -79,7 +80,7 @@ namespace EasySave.Views
             Console.Write("Indice du backup à exécuter : ");
             if (int.TryParse(Console.ReadLine(), out int idx))
             {
-                controller.ExecuteBackup(idx);
+                controller.ExecuteBackup(idx - 1);
             }
             else
             {

@@ -17,7 +17,7 @@ namespace EasySave.Models
         }
 
         /// <summary>
-        /// Ajoute un backup si on n’a pas dépassé le max (5).
+        /// Ajoute un backup.
         /// </summary>
         public bool AddBackup(Backup backup)
         {
