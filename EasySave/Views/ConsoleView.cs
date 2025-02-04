@@ -28,18 +28,10 @@ namespace EasySave.Views
                         controller.ListBackups();
                         break;
                     case "3":
-                        Console.Write("Indice du backup à exécuter : ");
-                        if (int.TryParse(Console.ReadLine(), out int idx))
-                        {
-                            controller.ExecuteBackup(idx);
-                        }
-                        else
-                        {
-                            Console.WriteLine("Indice invalide.");
-                        }
+                        ExecuteBackupFlow();
                         break;
                     case "4":
-                        return; // Quitter
+                        return;
                     default:
                         Console.WriteLine("Option inconnue.");
                         break;
@@ -49,7 +41,7 @@ namespace EasySave.Views
 
         private void DisplayMenu()
         {
-            Console.WriteLine("=== EasySave (Feature: Implement Backup) ===");
+            Console.WriteLine("=== EasySave - Feature: Strategy ===");
             Console.WriteLine("1. Créer un backup");
             Console.WriteLine("2. Lister les backups");
             Console.WriteLine("3. Exécuter un backup");
@@ -67,7 +59,24 @@ namespace EasySave.Views
             Console.Write("Chemin cible: ");
             var target = Console.ReadLine();
 
-            controller.CreateBackup(name, source, target);
+            Console.Write("Type de sauvegarde (full/diff)? ");
+            var typeStr = Console.ReadLine();
+
+            // On appelle la méthode "CreateBackup" qui prend en compte la stratégie
+            controller.CreateBackup(name, source, target, typeStr);
+        }
+
+        private void ExecuteBackupFlow()
+        {
+            Console.Write("Indice du backup à exécuter : ");
+            if (int.TryParse(Console.ReadLine(), out int idx))
+            {
+                controller.ExecuteBackup(idx);
+            }
+            else
+            {
+                Console.WriteLine("Indice invalide.");
+            }
         }
     }
 }
