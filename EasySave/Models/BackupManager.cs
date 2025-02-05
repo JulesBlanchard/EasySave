@@ -113,10 +113,17 @@ namespace EasySave.Models
                 try
                 {
                     string json = File.ReadAllText(backupFilePath);
+                    // Check if the file is empty or contains only whitespace.
+                    if (string.IsNullOrWhiteSpace(json))
+                    {
+                        backups = new List<Backup>();
+                        return;
+                    }
                     List<Backup> loadedBackups = JsonSerializer.Deserialize<List<Backup>>(json);
                     if (loadedBackups != null)
                     {
                         backups = loadedBackups;
+                        // For each backup, recreate the strategy based on its BackupType.
                         foreach (var backup in backups)
                         {
                             if (!string.IsNullOrEmpty(backup.BackupType))

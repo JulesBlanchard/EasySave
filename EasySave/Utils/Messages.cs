@@ -71,7 +71,10 @@ namespace EasySave.Utils
             { "FullBackup_Finished", "[FullBackup] Sauvegarde terminée pour '{name}'." },
 
             // Listing backups
-            { "ListBackupsTitle", "Sauvegardes courantes:" }
+            { "ListBackupsTitle", "Sauvegardes courantes:" },
+            
+            { "BackupManager_LoadError", "[BackupManager] Erreur lors du chargement des backups : {error}" }
+
         };
 
         // English messages.
@@ -138,7 +141,9 @@ namespace EasySave.Utils
             { "FullBackup_Finished", "[FullBackup] Backup completed for '{name}'." },
 
             // Listing backups
-            { "ListBackupsTitle", "Current Backups:" }
+            { "ListBackupsTitle", "Current Backups:" },
+            
+            { "BackupManager_LoadError", "[BackupManager] Error loading backups: {error}" }
         };
     }
 }
