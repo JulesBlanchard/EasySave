@@ -56,25 +56,45 @@ namespace EasySave.Logging
 
         private void WriteLogEntry(object logEntry)
         {
-            // Log file name format: "yyyy-MM-dd-Log.json"
+            // Daily log file named "yyyy-MM-dd-Log.json"
             string fileName = DateTime.Now.ToString("yyyy-MM-dd") + "-Log.json";
             string filePath = Path.Combine(logDirectory, fileName);
 
-            try
+            List<object> logEntries = new List<object>();
+
+            // 1. If the file exists and is not empty, attempt to read existing entries
+            if (File.Exists(filePath) && new FileInfo(filePath).Length > 0)
             {
-                var options = new JsonSerializerOptions { WriteIndented = true };
-                // Serialize the log entry
-                string jsonLine = JsonSerializer.Serialize(logEntry, options);
-                // Append the log entry to the file (each entry on a separate line)
-                using (var writer = new StreamWriter(filePath, append: true))
+                try
                 {
-                    writer.WriteLine(jsonLine);
+                    string existingJson = File.ReadAllText(filePath);
+                    // Deserialize the existing JSON array into a list
+                    logEntries = JsonSerializer.Deserialize<List<object>>(existingJson);
+                    if (logEntries == null)
+                    {
+                        logEntries = new List<object>();
+                    }
+                }
+                catch
+                {
+                    // If the file is not valid JSON, re-initialize the list
+                    logEntries = new List<object>();
                 }
             }
-            catch (Exception e)
+
+            // 2. Add the new entry to the list
+            logEntries.Add(logEntry);
+
+            // 3. Serialize the entire list as a JSON array
+            var options = new JsonSerializerOptions
             {
-                Console.WriteLine("[JsonBackupLogger] Error writing log: " + e.Message);
-            }
+                WriteIndented = true
+            };
+
+            string newJson = JsonSerializer.Serialize(logEntries, options);
+
+            // 4. Overwrite the file with the updated JSON array
+            File.WriteAllText(filePath, newJson);
         }
     }
 }
