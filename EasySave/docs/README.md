@@ -131,3 +131,79 @@ Dans Rider, ouvrez le fichier EasySave.sln. Cela charge tous les projets (y comp
 3. **Compiler la Solution :**
 
 Dans Rider, sélectionnez Build > Rebuild Solution pour compiler tous les projets.
+
+# Utilisation de l'Application
+
+EasySave est une application de sauvegarde en mode console qui peut être utilisée en mode interactif ou lancée directement via la ligne de commande avec des arguments. Cette section décrit en détail les deux modes de fonctionnement ainsi que quelques exemples d'utilisation.
+
+---
+
+## Mode Interactif
+
+En l'absence d'arguments en ligne de commande, EasySave démarre en mode interactif. Dans ce mode, l'application vous guide à travers un menu et vous demande de saisir les informations nécessaires pour créer et exécuter des backups.
+
+### Fonctionnement
+
+1. **Démarrage de l'application**
+    - Lancez EasySave (par exemple, via Rider ou en exécutant la commande `dotnet EasySave.dll` sans arguments).
+    - L'application affiche une invitation à sélectionner la langue (Français ou English).
+
+2. **Affichage du Menu**  
+   Une fois la langue choisie, le menu principal s'affiche, par exemple :
+    - **1. Créer un backup**
+    - **2. Lister les backups**
+    - **3. Exécuter un backup**
+    - **4. Quitter**
+
+3. **Création d'un Backup**
+    - Si vous choisissez l'option 1, l'application vous demande :
+        - Le **nom** du backup.
+        - Le **chemin source** (le répertoire source doit exister).
+        - Le **chemin cible** (si le répertoire n'existe pas, vous serez invité à le créer).
+        - Le **type de sauvegarde** (entrez "full" pour une sauvegarde complète ou "diff" pour une sauvegarde différentielle).
+    - Une fois ces informations validées, le backup est créé et enregistré dans le fichier `backups.json`.
+
+4. **Exécution d'un Backup**
+    - L'option 3 vous permet d'exécuter un backup.
+    - Après avoir listé les backups existants, l'application vous demande de saisir l'indice du backup à exécuter (les indices affichés commencent à 1).
+    - L'application convertit cet indice en 0-indexé et exécute le backup correspondant, en effectuant la copie des fichiers selon la stratégie sélectionnée et en mettant à jour l'état en temps réel via `state.json`.
+
+5. **Liste des Backups**
+    - L'option 2 affiche la liste des backups existants, avec le nom, la stratégie, le chemin source et le chemin cible.
+
+---
+
+## Lancement en Ligne de Commande
+
+EasySave prend également en charge le lancement direct depuis la ligne de commande. Si vous fournissez des arguments lors du démarrage, l'application ne démarre pas le mode interactif, mais exécute directement les backups correspondants.
+
+### Comment cela fonctionne
+
+- **Argument de lancement :**  
+  Lorsque vous lancez l'application avec un argument, le programme interprète cet argument pour déterminer quels backups exécuter.  
+  L'argument peut être dans l'un des formats suivants :
+    - **Plage :** `"1-3"` pour exécuter les backups 1, 2 et 3.
+    - **Liste :** `"1;3"` pour exécuter uniquement les backups 1 et 3.
+    - **Indice unique :** `"2"` pour exécuter uniquement le backup 2.
+
+- **Conversion des indices :**  
+  Les indices fournis par l'utilisateur sont supposés être 1-indexés. Le programme les convertit en indices 0-indexés pour accéder aux backups dans la liste.
+
+### Commande de lancement
+
+Pour lancer EasySave depuis la ligne de commande, ouvrez un terminal dans le dossier contenant le fichier `EasySave.dll` (ou l'exécutable) et utilisez la commande suivante :
+
+```bash
+dotnet EasySave.dll "argument"
+```
+où "argument" est par exemple "1-3", "1;3" ou "2".
+
+#### Où se placer ? 
+
+- Pour exécuter la commande il faut se placer au niveau de répertoire : 
+```bash
+EasySave\EasySave\bin\Debug\net9.0
+```
+Car c'est dans ce dernier que se trouve EasySave.dll. Par la suite on pensera à publier l'application afin de pouvoir lancer cette ligne de commande depuis partout
+
+

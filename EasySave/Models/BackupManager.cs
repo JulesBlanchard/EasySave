@@ -53,11 +53,19 @@ namespace EasySave.Models
         /// </summary>
         public void DeleteBackup(int index)
         {
+            if (index < 0 || index >= backups.Count)
+            {
+                Console.WriteLine(LocalizationManager.CurrentMessages["ControllerInvalidIndex"]);
+                return;
+            }
             backups.RemoveAt(index);
+            SaveBackups();
             string deleteMsg = LocalizationManager.CurrentMessages["ControllerDeletingBackup"];
             deleteMsg = deleteMsg.Replace("{index}", (index + 1).ToString());
             Console.WriteLine(deleteMsg);
         }
+
+
 
         /// <summary>
         /// Executes a backup by its index.
@@ -83,7 +91,7 @@ namespace EasySave.Models
         {
             if (backups.Count == 0)
             {
-                Console.WriteLine("[BackupManager] No backups to execute.");
+                Console.WriteLine(LocalizationManager.CurrentMessages["NoBackupsToExecute"]);
                 return;
             }
             string execAllMsg = LocalizationManager.CurrentMessages["ControllerExecutingAll"];

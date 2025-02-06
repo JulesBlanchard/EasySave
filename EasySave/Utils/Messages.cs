@@ -16,7 +16,8 @@ namespace EasySave.Utils
             { "MenuOption2", "2. Lister les sauvegardes" },
             { "MenuOption3", "3. Exécuter une sauvegarde" },
             { "MenuOption4", "4. Supprimer une sauvegarde" },
-            { "MenuOption5", "5. Quitter" },
+            { "MenuOption5", "5. Exécuter toutes les sauvegardes" },
+            { "MenuOption6", "6. Quitter" },
             { "PromptChoice", "Choix : " },
             { "InvalidOption", "Option inconnue. Veuillez réessayer." },
 
@@ -28,55 +29,59 @@ namespace EasySave.Utils
 
             // Backup creation
             { "BackupCreationTitle", "=== Création d'un Backup ===" },
-            { "EnterBackupName", "Nom du backup : " },
+            { "EnterBackupName", "Nom de la sauvegarde : " },
             { "EnterSourcePath", "Chemin source : " },
             { "EnterTargetPath", "Chemin cible : " },
             { "EnterBackupType", "Type de sauvegarde (full/diff) : " },
-            { "BackupCreated", "Backup créé avec succès !" },
+            { "BackupCreated", "sauvegarde créé avec succès !" },
             { "InvalidInput", "L'entrée ne peut pas être vide. Veuillez réessayer." },
             { "SourceNotExist", "Le répertoire source n'existe pas. Veuillez vérifier le chemin." },
             { "TargetNotExist", "Le répertoire cible n'existe pas." },
             { "CreateTargetPrompt", "Voulez-vous le créer ? (O/N) : " },
             { "TargetCreated", "Répertoire créé." },
-            { "CannotCreateMoreBackups", "Impossible de créer plus de 5 backups." },
+            { "CannotCreateMoreBackups", "Impossible de créer plus de 5 sauvegarde." },
             { "InvalidBackupType", "Type invalide : veuillez choisir (full/diff) : " },
             { "DifferentTargetPath", "Veuillez entrer un chemin cible différent" },
 
 
 
             // Backup execution
-            { "BackupExecutionTitle", "=== Exécution d'un Backup ===" },
+            { "BackupExecutionTitle", "=== Exécution d'une sauvegarde ===" },
             { "BackupDeletionTitle", "=== Suppression d'une sauvegarde ===" },
             { "EnterBackupIndex", "Indice de la sauvegarde : " }, //exec et delete
             { "EnterValidNumber", "Veuillez entrer un nombre valide." },
+            { "NoBackupsToExecute", "Pas de sauvegarde à exécuter" },
+
 
             // Controller messages
-            { "ControllerBackupCreated", "[Controller] Backup '{name}' créé avec stratégie={strategy}." },
-            { "ControllerInvalidIndex", "[BackupManager] Index invalide." },
-            { "ControllerExecutingBackup", "[BackupManager] Exécution du backup '{name}' (index={index})." },
-            { "ControllerDeletingBackup", "[BackupManager] La sauvegarde {index} a été supprimée." },
-            { "ControllerExecutingAll", "[BackupManager] Exécution de {count} backup(s)..." },
-            { "ControllerBackupAdded", "[BackupManager] Backup '{name}' ajouté. (count={count})" },
+            { "ControllerBackupCreated", "Sauvegarde '{name}' créé avec stratégie={strategy}." },
+            { "ControllerInvalidIndex", "Index invalide." },
+            { "ControllerExecutingBackup", "Exécution du backup '{name}' (index={index})." },
+            { "ControllerDeletingBackup", "La sauvegarde {index} a été supprimée." },
+            { "ControllerExecutingAll", "Exécution de {count} sauvegarde(s)..." },
+            { "ControllerBackupAdded", "Sauvegarde '{name}' ajouté. (count={count})" },
+            {"NoBackupsToDelete", "Pas de sauvegarde à supprimer." },
+
 
             // DiffBackup strategy messages
-            { "DiffBackup_Executing", "[DiffBackup] Exécution d'une sauvegarde DIFFÉRENTIELLE pour '{name}'..." },
-            { "DiffBackup_Copied", "[DiffBackup] Copié : {name}" },
-            { "DiffBackup_ErrorCopy", "[DiffBackup] Erreur lors de la copie de {name} : {error}" },
-            { "DiffBackup_Skipped", "[DiffBackup] Ignoré (à jour) : {name}" },
+            { "DiffBackup_Executing", "Exécution d'une sauvegarde DIFFÉRENTIELLE pour '{name}'..." },
+            { "DiffBackup_Copied", "Copié : {name}" },
+            { "DiffBackup_ErrorCopy", "Erreur lors de la copie de {name} : {error}" },
+            { "DiffBackup_Skipped", "Ignoré (à jour) : {name}" },
             { "DiffBackup_Progress", "Progression : {progress}% - Temps restant estimé : {time}" },
-            { "DiffBackup_Finished", "[DiffBackup] Terminé. {count} fichier(s) copié(s)." },
+            { "DiffBackup_Finished", "Terminé. {count} fichier(s) copié(s)." },
 
             // FullBackup strategy messages
-            { "FullBackup_Executing", "[FullBackup] Exécution d'une sauvegarde FULL pour '{name}'..." },
-            { "FullBackup_Copied", "[FullBackup] Copié : {name}" },
-            { "FullBackup_ErrorCopy", "[FullBackup] Erreur lors de la copie de {name} : {error}" },
+            { "FullBackup_Executing", "Exécution d'une sauvegarde FULL pour '{name}'..." },
+            { "FullBackup_Copied", "Copié : {name}" },
+            { "FullBackup_ErrorCopy", "Erreur lors de la copie de {name} : {error}" },
             { "FullBackup_Progress", "Progression : {progress}% - Temps restant estimé : {time}" },
-            { "FullBackup_Finished", "[FullBackup] Sauvegarde terminée pour '{name}'." },
+            { "FullBackup_Finished", "Sauvegarde terminée pour '{name}'." },
 
             // Listing backups
             { "ListBackupsTitle", "Sauvegardes courantes:" },
             
-            { "BackupManager_LoadError", "[BackupManager] Erreur lors du chargement des backups : {error}" }
+            { "BackupManager_LoadError", "Erreur lors du chargement des sauvegardes : {error}" }
 
         };
 
@@ -89,7 +94,8 @@ namespace EasySave.Utils
             { "MenuOption2", "2. List backups" },
             { "MenuOption3", "3. Execute a backup" },
             { "MenuOption4", "4. Delete a backup" },
-            { "MenuOption5", "5. Quit" },
+            { "MenuOption5", "5. Execute all backups" },
+            { "MenuOption6", "6. Quit" },
             { "PromptChoice", "Choice: " },
             { "InvalidOption", "Unknown option. Please try again." },
 
@@ -122,34 +128,37 @@ namespace EasySave.Utils
             { "BackupDeletionTitle", "=== Delete a Backup ===" },
             { "EnterBackupIndex", "Enter backup index : " },
             { "EnterValidNumber", "Please enter a valid number." },
+            { "NoBackupsToExecute", "No backups to execute." },
+
 
             // Controller messages
-            { "ControllerBackupCreated", "[Controller] Backup '{name}' created with strategy={strategy}." },
-            { "ControllerInvalidIndex", "[BackupManager] Invalid index." },
-            { "ControllerExecutingBackup", "[BackupManager] Executing backup '{name}' (index={index})." },
-            { "ControllerDeletingBackup", "[BackupManager] Backup {index} deleted." },
-            { "ControllerExecutingAll", "[BackupManager] Executing {count} backup(s)..." },
-            { "ControllerBackupAdded", "[BackupManager] Backup '{name}' added. (count={count})" },
+            { "ControllerBackupCreated", "Backup '{name}' created with strategy={strategy}." },
+            { "ControllerInvalidIndex", "Invalid index." },
+            { "ControllerExecutingBackup", "Executing backup '{name}' (index={index})." },
+            { "ControllerDeletingBackup", "Backup {index} deleted." },
+            { "ControllerExecutingAll", "Executing {count} backup(s)..." },
+            { "ControllerBackupAdded", "Backup '{name}' added. (count={count})" },
+            {"NoBackupsToDelete", "No backups to delete." },
 
             // DiffBackup strategy messages
-            { "DiffBackup_Executing", "[DiffBackup] Executing differential backup for '{name}'..." },
-            { "DiffBackup_Copied", "[DiffBackup] Copied: {name}" },
-            { "DiffBackup_ErrorCopy", "[DiffBackup] Error copying {name}: {error}" },
-            { "DiffBackup_Skipped", "[DiffBackup] Skipped (up-to-date): {name}" },
+            { "DiffBackup_Executing", "Executing differential backup for '{name}'..." },
+            { "DiffBackup_Copied", "Copied: {name}" },
+            { "DiffBackup_ErrorCopy", "Error copying {name}: {error}" },
+            { "DiffBackup_Skipped", "Skipped (up-to-date): {name}" },
             { "DiffBackup_Progress", "Progress: {progress}% - Estimated time remaining: {time}" },
-            { "DiffBackup_Finished", "[DiffBackup] Finished. {count} file(s) copied." },
+            { "DiffBackup_Finished", "Finished. {count} file(s) copied." },
 
             // FullBackup strategy messages
-            { "FullBackup_Executing", "[FullBackup] Executing full backup for '{name}'..." },
-            { "FullBackup_Copied", "[FullBackup] Copied: {name}" },
-            { "FullBackup_ErrorCopy", "[FullBackup] Error copying {name}: {error}" },
+            { "FullBackup_Executing", "Executing full backup for '{name}'..." },
+            { "FullBackup_Copied", "Copied: {name}" },
+            { "FullBackup_ErrorCopy", "Error copying {name}: {error}" },
             { "FullBackup_Progress", "Progress: {progress}% - Estimated time remaining: {time}" },
-            { "FullBackup_Finished", "[FullBackup] Backup completed for '{name}'." },
+            { "FullBackup_Finished", "Backup completed for '{name}'." },
 
             // Listing backups
             { "ListBackupsTitle", "Current Backups:" },
             
-            { "BackupManager_LoadError", "[BackupManager] Error loading backups: {error}" }
+            { "BackupManager_LoadError", "Error loading backups: {error}" }
         };
     }
 }
