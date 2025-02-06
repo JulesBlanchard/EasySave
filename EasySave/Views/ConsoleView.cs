@@ -70,10 +70,39 @@ namespace EasySave.Views
                         controller.ListBackups();
                         break;
                     case "3":
-                        controller.ListBackups();
-                        ExecuteBackupFlow();
+                        if (controller.GetBackupCount() == 0)
+                        {
+                            Console.WriteLine(messages["NoBackupsToExecute"]);
+                        }
+                        else
+                        {
+                            controller.ListBackups();
+                            ExecuteBackupFlow();
+                        }
                         break;
                     case "4":
+                        if (controller.GetBackupCount() == 0)
+                        {
+                            Console.WriteLine(messages["NoBackupsToDelete"]);
+                        }
+                        else
+                        {
+                            controller.ListBackups();
+                            DeleteBackupFlow(); 
+                        }
+                        break;
+                    case "5":
+                        if (controller.GetBackupCount() ==0)
+                        {
+                            Console.WriteLine(messages["NoBackupsToExecute"]);
+                        }
+                        else
+                        {
+                            controller.ExecuteAllBackups();
+                        }
+
+                        break;
+                    case "6":
                         exit = true;
                         break;
                     default:
@@ -93,6 +122,8 @@ namespace EasySave.Views
             Console.WriteLine(messages["MenuOption2"]);
             Console.WriteLine(messages["MenuOption3"]);
             Console.WriteLine(messages["MenuOption4"]);
+            Console.WriteLine(messages["MenuOption5"]);
+            Console.WriteLine(messages["MenuOption6"]);
         }
 
         /// <summary>
@@ -119,6 +150,16 @@ namespace EasySave.Views
             Console.WriteLine(messages["BackupExecutionTitle"]);
             int idx = GetValidIndex(messages["EnterBackupIndex"]);
             controller.ExecuteBackup(idx - 1); // Convert from 1-indexed to 0-indexed.
+        }
+
+        /// <summary>
+        /// Guides the user through the backup deletion process.
+        /// </summary>
+        private void DeleteBackupFlow()
+        {
+            Console.WriteLine(messages["BackupDeletionTitle"]);
+            int idx = GetValidIndex(messages["EnterBackupIndex"]);
+            controller.DeleteBackup(idx - 1);
         }
 
         /// <summary>

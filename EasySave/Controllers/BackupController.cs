@@ -46,6 +46,15 @@ namespace EasySave.Controllers
         {
             manager.ExecuteBackup(index);
         }
+        
+        /// <summary>
+        /// Deletes a backup by its index.
+        /// </summary>
+        public void DeleteBackup(int index)
+        {
+            manager.DeleteBackup(index);
+        }
+        
 
         /// <summary>
         /// Returns the current number of backups.
