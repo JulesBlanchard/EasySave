@@ -27,6 +27,12 @@ namespace EasySave.Models
         /// <summary>
         /// Adds a backup and saves the list to disk.
         /// </summary>
+        ///
+        /// TODO : 
+        /// Le controle du nb de backup est fait dans la vue pour que le message soit affiché au bon moment
+        /// donc ca sert a rien de le faire ici.
+        /// Et à moins q'un truc m'échape je vois pas pk on renvoie un bool avec cette fct surtout étant donné
+        /// qu'on renvoie jamais false vu que si on a déjà 5 backups on rentre pas dans cette fct
         public bool AddBackup(Backup backup)
         {
             if (backups.Count >= MAX_BACKUPS)
@@ -40,6 +46,17 @@ namespace EasySave.Models
             msg = msg.Replace("{name}", backup.Name).Replace("{count}", backups.Count.ToString());
             Console.WriteLine(msg);
             return true;
+        }
+        
+        /// <summary>
+        /// Executes a backup by its index.
+        /// </summary>
+        public void DeleteBackup(int index)
+        {
+            backups.RemoveAt(index);
+            string deleteMsg = LocalizationManager.CurrentMessages["ControllerDeletingBackup"];
+            deleteMsg = deleteMsg.Replace("{index}", (index + 1).ToString());
+            Console.WriteLine(deleteMsg);
         }
 
         /// <summary>

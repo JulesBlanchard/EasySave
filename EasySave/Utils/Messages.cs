@@ -12,10 +12,11 @@ namespace EasySave.Utils
         {
             // Menu
             { "MenuTitle", "=== EasySave ===" },
-            { "MenuOption1", "1. Créer un backup" },
-            { "MenuOption2", "2. Lister les backups" },
-            { "MenuOption3", "3. Exécuter un backup" },
-            { "MenuOption4", "4. Quitter" },
+            { "MenuOption1", "1. Créer une sauvegarde" },
+            { "MenuOption2", "2. Lister les sauvegardes" },
+            { "MenuOption3", "3. Exécuter une sauvegarde" },
+            { "MenuOption4", "4. Supprimer une sauvegarde" },
+            { "MenuOption5", "5. Quitter" },
             { "PromptChoice", "Choix : " },
             { "InvalidOption", "Option inconnue. Veuillez réessayer." },
 
@@ -45,13 +46,15 @@ namespace EasySave.Utils
 
             // Backup execution
             { "BackupExecutionTitle", "=== Exécution d'un Backup ===" },
-            { "EnterBackupIndex", "Indice du backup à exécuter : " },
+            { "BackupDeletionTitle", "=== Suppression d'une sauvegarde ===" },
+            { "EnterBackupIndex", "Indice de la sauvegarde : " }, //exec et delete
             { "EnterValidNumber", "Veuillez entrer un nombre valide." },
 
             // Controller messages
             { "ControllerBackupCreated", "[Controller] Backup '{name}' créé avec stratégie={strategy}." },
             { "ControllerInvalidIndex", "[BackupManager] Index invalide." },
             { "ControllerExecutingBackup", "[BackupManager] Exécution du backup '{name}' (index={index})." },
+            { "ControllerDeletingBackup", "[BackupManager] La sauvegarde {index} a été supprimée." },
             { "ControllerExecutingAll", "[BackupManager] Exécution de {count} backup(s)..." },
             { "ControllerBackupAdded", "[BackupManager] Backup '{name}' ajouté. (count={count})" },
 
@@ -85,7 +88,8 @@ namespace EasySave.Utils
             { "MenuOption1", "1. Create a backup" },
             { "MenuOption2", "2. List backups" },
             { "MenuOption3", "3. Execute a backup" },
-            { "MenuOption4", "4. Quit" },
+            { "MenuOption4", "4. Delete a backup" },
+            { "MenuOption5", "5. Quit" },
             { "PromptChoice", "Choice: " },
             { "InvalidOption", "Unknown option. Please try again." },
 
@@ -115,13 +119,15 @@ namespace EasySave.Utils
 
             // Backup execution
             { "BackupExecutionTitle", "=== Execute a Backup ===" },
-            { "EnterBackupIndex", "Enter backup index to execute: " },
+            { "BackupDeletionTitle", "=== Delete a Backup ===" },
+            { "EnterBackupIndex", "Enter backup index : " },
             { "EnterValidNumber", "Please enter a valid number." },
 
             // Controller messages
             { "ControllerBackupCreated", "[Controller] Backup '{name}' created with strategy={strategy}." },
             { "ControllerInvalidIndex", "[BackupManager] Invalid index." },
             { "ControllerExecutingBackup", "[BackupManager] Executing backup '{name}' (index={index})." },
+            { "ControllerDeletingBackup", "[BackupManager] Backup {index} deleted." },
             { "ControllerExecutingAll", "[BackupManager] Executing {count} backup(s)..." },
             { "ControllerBackupAdded", "[BackupManager] Backup '{name}' added. (count={count})" },
 

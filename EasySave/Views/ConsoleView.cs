@@ -74,6 +74,10 @@ namespace EasySave.Views
                         ExecuteBackupFlow();
                         break;
                     case "4":
+                        controller.ListBackups();
+                        DeleteBackupFlow();
+                        break;
+                    case "5":
                         exit = true;
                         break;
                     default:
@@ -82,6 +86,7 @@ namespace EasySave.Views
                 }
             }
         }
+        
 
         /// <summary>
         /// Displays the main menu.
@@ -93,6 +98,7 @@ namespace EasySave.Views
             Console.WriteLine(messages["MenuOption2"]);
             Console.WriteLine(messages["MenuOption3"]);
             Console.WriteLine(messages["MenuOption4"]);
+            Console.WriteLine(messages["MenuOption5"]);
         }
 
         /// <summary>
@@ -119,6 +125,16 @@ namespace EasySave.Views
             Console.WriteLine(messages["BackupExecutionTitle"]);
             int idx = GetValidIndex(messages["EnterBackupIndex"]);
             controller.ExecuteBackup(idx - 1); // Convert from 1-indexed to 0-indexed.
+        }
+        
+        /// <summary>
+        /// Guides the user through the backup deletion process.
+        /// </summary>
+        private void DeleteBackupFlow()
+        {
+            Console.WriteLine(messages["BackupDeletionTitle"]);
+            int idx = GetValidIndex(messages["EnterBackupIndex"]);
+            controller.DeleteBackup(idx - 1);
         }
 
         /// <summary>
