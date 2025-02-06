@@ -30,13 +30,11 @@ namespace EasySave.Controllers
             else
                 backup.Strategy = new DifferentialBackupStrategy();
 
-            bool added = manager.AddBackup(backup);
-            if (added)
-            {
-                string message = LocalizationManager.CurrentMessages["ControllerBackupCreated"];
-                message = message.Replace("{name}", name).Replace("{strategy}", strategyType);
-                Console.WriteLine(message);
-            }
+
+            string message = LocalizationManager.CurrentMessages["ControllerBackupCreated"];
+            message = message.Replace("{name}", name).Replace("{strategy}", strategyType);
+            Console.WriteLine(message);
+            
         }
 
         /// <summary>
