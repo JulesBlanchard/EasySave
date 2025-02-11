@@ -17,7 +17,8 @@ namespace EasySave.Utils
             { "MenuOption3", "3. Exécuter une sauvegarde" },
             { "MenuOption4", "4. Supprimer une sauvegarde" },
             { "MenuOption5", "5. Exécuter toutes les sauvegardes" },
-            { "MenuOption6", "6. Quitter" },
+            { "MenuOption6", "6. Configurer le logiciel métier" },
+            { "MenuOption7", "7. Quitter" },
             { "PromptChoice", "Choix : " },
             { "InvalidOption", "Option inconnue. Veuillez réessayer." },
 
@@ -42,8 +43,14 @@ namespace EasySave.Utils
             { "InvalidBackupType", "Type invalide : veuillez choisir (full/diff) : " },
             { "DifferentTargetPath", "Veuillez entrer un chemin cible différent" },
 
+            
+            // Business software configure 
+            { "ConfigureBusinessSoftwareTitle", "=== Configuration du logiciel métier ===" },
+            { "EnterBusinessSoftwareName", "Entrez le nom du logiciel métier (ex: calc) : " },
+            { "BusinessSoftwareConfigured", "Le logiciel métier a été configuré : {name}" },
+            { "ExecutionNotAllowed", "Erreur : le logiciel métier est en cours d'exécution. Vous ne pouvez pas lancer cette sauvegarde." },
 
-
+            
             // Backup execution
             { "BackupExecutionTitle", "=== Exécution d'une sauvegarde ===" },
             { "BackupDeletionTitle", "=== Suppression d'une sauvegarde ===" },
@@ -94,7 +101,8 @@ namespace EasySave.Utils
             { "MenuOption3", "3. Execute a backup" },
             { "MenuOption4", "4. Delete a backup" },
             { "MenuOption5", "5. Execute all backups" },
-            { "MenuOption6", "6. Quit" },
+            { "MenuOption6", "6. Configure the business software" },
+            { "MenuOption7", "7. Quit" },
             { "PromptChoice", "Choice: " },
             { "InvalidOption", "Unknown option. Please try again." },
 
@@ -104,6 +112,13 @@ namespace EasySave.Utils
             { "LanguageOption2", "2. English" },
             { "LanguageChoice", "Your choice / Votre choix: " },
 
+            // Business software configure 
+            { "ConfigureBusinessSoftwareTitle", "=== Configure the business software ===" },
+            { "EnterBusinessSoftwareName", "Enter the business software name (ex: calc) : " },
+            { "BusinessSoftwareConfigured", "The business software has been set up : {name}" },
+            { "ExecutionNotAllowed", "Error : the business software is currently executing. You can't start any backups." },
+
+            
             // Backup creation
             { "BackupCreationTitle", "=== Create a Backup ===" },
             { "EnterBackupName", "Backup Name: " },
