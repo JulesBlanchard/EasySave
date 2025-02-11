@@ -57,14 +57,7 @@ namespace EasySave.Views
                 switch (input)
                 {
                     case "1":
-                        if (controller.GetBackupCount() >= 5)
-                        {
-                            Console.WriteLine(messages["CannotCreateMoreBackups"]);
-                        }
-                        else
-                        {
                             CreateBackupFlow();
-                        }
                         break;
                     case "2":
                         controller.ListBackups();
