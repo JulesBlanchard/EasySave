@@ -15,7 +15,8 @@ namespace EasySave.Controllers
 
         public BackupController()
         {
-            logger = new JsonBackupLogger("Logs");
+            // Use LoggingManager to get the appropriate logger (XML or JSON)
+            logger = LoggingManager.GetLogger("Logs");
             manager = new BackupManager(logger);
         }
 
@@ -30,11 +31,9 @@ namespace EasySave.Controllers
             else
                 backup.Strategy = new DifferentialBackupStrategy();
 
-
             string message = LocalizationManager.CurrentMessages["ControllerBackupCreated"];
             message = message.Replace("{name}", name).Replace("{strategy}", strategyType);
             Console.WriteLine(message);
-            
         }
 
         /// <summary>
@@ -44,7 +43,7 @@ namespace EasySave.Controllers
         {
             manager.ExecuteBackup(index);
         }
-        
+
         /// <summary>
         /// Deletes a backup by its index.
         /// </summary>
@@ -52,7 +51,6 @@ namespace EasySave.Controllers
         {
             manager.DeleteBackup(index);
         }
-        
 
         /// <summary>
         /// Returns the current number of backups.
