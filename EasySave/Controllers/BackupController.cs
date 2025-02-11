@@ -31,10 +31,14 @@ namespace EasySave.Controllers
             else
                 backup.Strategy = new DifferentialBackupStrategy();
 
+            // Ajout de la sauvegarde au manager
+            manager.AddBackup(backup);
+
             string message = LocalizationManager.CurrentMessages["ControllerBackupCreated"];
             message = message.Replace("{name}", name).Replace("{strategy}", strategyType);
             Console.WriteLine(message);
         }
+
 
         /// <summary>
         /// Executes a backup by its index.
