@@ -1,39 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using EasySave.Controllers;
+using EasySave.Logging;
 
 namespace EasySave
 {
-    /// <summary>
-    /// Entry point for the EasySave application.
-    /// </summary>
     class Program
     {
         static void Main(string[] args)
         {
+            // Prompt for log format selection
+            Console.WriteLine("Choose log format:");
+            Console.WriteLine("1. JSON");
+            Console.WriteLine("2. XML");
+            Console.Write("Your choice: ");
+            string formatChoice = Console.ReadLine().Trim();
+            if (formatChoice == "2")
+            {
+                LoggingManager.LogFormat = "XML";
+            }
+
+            // Then, launch the interactive interface (or process args as before)
             if (args.Length > 0)
             {
-                // If command-line arguments are provided, parse them to execute backups automatically.
+                // Command-line execution (unchanged)
                 List<int> indices = ParseIndices(args[0]);
                 BackupController controller = new BackupController();
                 foreach (int i in indices)
                 {
-                    // Assume indices are 1-indexed; subtract 1 for 0-indexed.
                     controller.ExecuteBackup(i - 1);
                 }
             }
             else
             {
-                // Otherwise, launch the interactive console interface.
                 var view = new Views.ConsoleView();
                 view.Start();
             }
         }
 
-        /// <summary>
-        /// Parses an argument string to obtain a list of indices.
-        /// Supports formats like "1-3" (range) and "1;3" (semicolon-separated).
-        /// </summary>
         static List<int> ParseIndices(string arg)
         {
             List<int> indices = new List<int>();
