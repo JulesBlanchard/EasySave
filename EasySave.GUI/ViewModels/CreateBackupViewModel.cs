@@ -5,8 +5,9 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using EasySave.Controllers;
-using EasySave.Models;
 using EasySave.Utils;
+using System.Windows.Forms;
+using MessageBox = System.Windows.MessageBox; // Pour FolderBrowserDialog
 
 namespace EasySave.GUI.ViewModels
 {
@@ -14,14 +15,6 @@ namespace EasySave.GUI.ViewModels
     {
         private BackupController backupController;
         private Window window;
-
-        public string WindowTitle { get; set; }
-        public string BackupNameLabel { get; set; }
-        public string SourcePathLabel { get; set; }
-        public string TargetPathLabel { get; set; }
-        public string BackupTypeLabel { get; set; }
-        public string CreateButtonText { get; set; }
-        public string CancelButtonText { get; set; }
 
         private string backupName;
         public string BackupName
@@ -53,80 +46,92 @@ namespace EasySave.GUI.ViewModels
 
         public ICommand CreateBackupCommand { get; }
         public ICommand CancelCommand { get; }
+        public ICommand BrowseSourceCommand { get; }
+        public ICommand BrowseTargetCommand { get; }
 
         public CreateBackupViewModel(Window window)
         {
             this.window = window;
-            backupController = new BackupController();
-
-            // Initialize labels from LocalizationManager if defined, or use default strings.
-            WindowTitle = LocalizationManager.CurrentMessages.ContainsKey("CreateBackupWindow_Title")
-                ? LocalizationManager.CurrentMessages["CreateBackupWindow_Title"]
-                : "Create Backup";
-            BackupNameLabel = LocalizationManager.CurrentMessages.ContainsKey("EnterBackupName")
-                ? LocalizationManager.CurrentMessages["EnterBackupName"]
-                : "Backup Name: ";
-            SourcePathLabel = LocalizationManager.CurrentMessages.ContainsKey("EnterSourcePath")
-                ? LocalizationManager.CurrentMessages["EnterSourcePath"]
-                : "Source Path: ";
-            TargetPathLabel = LocalizationManager.CurrentMessages.ContainsKey("EnterTargetPath")
-                ? LocalizationManager.CurrentMessages["EnterTargetPath"]
-                : "Target Path: ";
-            BackupTypeLabel = LocalizationManager.CurrentMessages.ContainsKey("EnterBackupType")
-                ? LocalizationManager.CurrentMessages["EnterBackupType"]
-                : "Backup Type (full/diff): ";
-            CreateButtonText = LocalizationManager.CurrentMessages.ContainsKey("CreateBackupWindow_CreateButton")
-                ? LocalizationManager.CurrentMessages["CreateBackupWindow_CreateButton"]
-                : "Create";
-            CancelButtonText = LocalizationManager.CurrentMessages.ContainsKey("CreateBackupWindow_CancelButton")
-                ? LocalizationManager.CurrentMessages["CreateBackupWindow_CancelButton"]
-                : "Cancel";
-
-            // Default value for backup type.
+            // Utilisation du singleton
+            backupController = BackupController.Instance;
             BackupType = "full";
-
             CreateBackupCommand = new RelayCommand(CreateBackup);
             CancelCommand = new RelayCommand(Cancel);
+            BrowseSourceCommand = new RelayCommand(BrowseSource);
+            BrowseTargetCommand = new RelayCommand(BrowseTarget);
         }
 
         private void CreateBackup()
         {
             if (string.IsNullOrWhiteSpace(BackupName))
             {
-                MessageBox.Show("Backup name cannot be empty.");
+                MessageBox.Show("Le nom de la sauvegarde ne peut pas être vide.", "Erreur de validation", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             if (string.IsNullOrWhiteSpace(SourcePath) || !Directory.Exists(SourcePath))
             {
-                MessageBox.Show("Source directory does not exist.");
+                MessageBox.Show("Le dossier source n'existe pas.", "Erreur de validation", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             if (string.IsNullOrWhiteSpace(TargetPath))
             {
-                MessageBox.Show("Target directory cannot be empty.");
+                MessageBox.Show("Le dossier cible ne peut pas être vide.", "Erreur de validation", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             if (!Directory.Exists(TargetPath))
             {
-                try
+                var result = MessageBox.Show($"Le dossier cible '{TargetPath}' n'existe pas. Voulez-vous le créer ?", 
+                    "Dossier non trouvé", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)
                 {
-                    Directory.CreateDirectory(TargetPath);
+                    try
+                    {
+                        Directory.CreateDirectory(TargetPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Erreur lors de la création du dossier cible : " + ex.Message, "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show("Error creating target directory: " + ex.Message);
                     return;
                 }
             }
 
             backupController.CreateBackup(BackupName, SourcePath, TargetPath, BackupType);
-            MessageBox.Show($"Backup '{BackupName}' created successfully.");
+            MessageBox.Show($"La sauvegarde '{BackupName}' a été créée avec succès.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
             window.Close();
         }
 
         private void Cancel()
         {
             window.Close();
+        }
+
+        private void BrowseSource()
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                dialog.Description = "Sélectionnez le dossier source";
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    SourcePath = dialog.SelectedPath;
+                }
+            }
+        }
+
+        private void BrowseTarget()
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                dialog.Description = "Sélectionnez le dossier cible";
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    TargetPath = dialog.SelectedPath;
+                }
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

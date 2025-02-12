@@ -1,27 +1,35 @@
 using System;
-using EasySave.Models;
+using System.Collections.Generic;
 using EasySave.Logging;
+using EasySave.Models;
 using EasySave.Utils;
 
 namespace EasySave.Controllers
 {
     /// <summary>
-    /// Controller class that orchestrates backup creation, listing, and execution.
+    /// Controller central pour gérer les sauvegardes.
+    /// Implémenté en singleton pour que toutes les vues utilisent la même instance.
     /// </summary>
     public class BackupController
     {
         private IBackupLogger logger;
         private BackupManager manager;
 
+        // Singleton
+        public static BackupController Instance { get; } = new BackupController();
+
+        // Événement notifiant du changement de la liste des sauvegardes
+        public event Action BackupsChanged;
+
+        // Constructeur privé
         public BackupController()
         {
-            // Use LoggingManager to get the appropriate logger (XML or JSON)
             logger = LoggingManager.GetLogger("Logs");
             manager = new BackupManager(logger);
         }
 
         /// <summary>
-        /// Creates a backup with the chosen strategy and adds it to the manager.
+        /// Crée une sauvegarde et la stocke dans le manager.
         /// </summary>
         public void CreateBackup(string name, string source, string target, string strategyType)
         {
@@ -31,64 +39,42 @@ namespace EasySave.Controllers
             else
                 backup.Strategy = new DifferentialBackupStrategy();
 
-            // Ajout de la sauvegarde au manager
             manager.AddBackup(backup);
+            OnBackupsChanged();
 
             string message = LocalizationManager.CurrentMessages["ControllerBackupCreated"];
             message = message.Replace("{name}", name).Replace("{strategy}", strategyType);
-            Console.WriteLine(message);
+            // Vous pouvez logger ou afficher ce message selon vos besoins.
         }
 
-
         /// <summary>
-        /// Executes a backup by its index.
+        /// Supprime une sauvegarde par index.
         /// </summary>
+        public void DeleteBackup(int index)
+        {
+            manager.DeleteBackup(index);
+            OnBackupsChanged();
+        }
+
         public void ExecuteBackup(int index)
         {
             manager.ExecuteBackup(index);
         }
 
-        /// <summary>
-        /// Deletes a backup by its index.
-        /// </summary>
-        public void DeleteBackup(int index)
+        public void ExecuteAllBackups()
         {
-            manager.DeleteBackup(index);
-        }
-
-        /// <summary>
-        /// Returns the current number of backups.
-        /// </summary>
-        public int GetBackupCount()
-        {
-            return manager.GetBackups().Count;
+            manager.ExecuteAll();
         }
 
         public List<Backup> GetBackups()
         {
             return manager.GetBackups();
         }
-        /// <summary>
-        /// Lists all backups.
-        /// </summary>
-        public void ListBackups()
-        {
-            var list = manager.GetBackups();
-            Console.WriteLine(LocalizationManager.CurrentMessages["ListBackupsTitle"]);
-            for (int i = 0; i < list.Count; i++)
-            {
-                var b = list[i];
-                string strategyName = (b.Strategy == null) ? "None" : b.Strategy.GetType().Name;
-                Console.WriteLine($"  {i + 1} - {b.Name} [Strategy={strategyName}] => Source={b.SourcePath}, Target={b.TargetPath}");
-            }
-        }
 
-        /// <summary>
-        /// Executes all backups sequentially.
-        /// </summary>
-        public void ExecuteAllBackups()
+        // Méthode privée pour notifier les abonnés
+        private void OnBackupsChanged()
         {
-            manager.ExecuteAll();
+            BackupsChanged?.Invoke();
         }
     }
 }

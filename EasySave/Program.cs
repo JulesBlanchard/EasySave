@@ -32,11 +32,7 @@ namespace EasySave
                     controller.ExecuteBackup(i - 1);
                 }
             }
-            else
-            {
-                var view = new Views.ConsoleView();
-                view.Start();
-            }
+
         }
 
         static List<int> ParseIndices(string arg)
