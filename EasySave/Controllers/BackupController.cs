@@ -64,6 +64,10 @@ namespace EasySave.Controllers
             return manager.GetBackups().Count;
         }
 
+        public List<Backup> GetBackups()
+        {
+            return manager.GetBackups();
+        }
         /// <summary>
         /// Lists all backups.
         /// </summary>
