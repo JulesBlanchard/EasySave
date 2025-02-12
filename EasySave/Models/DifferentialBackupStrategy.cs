@@ -7,12 +7,21 @@ using EasySave.Utils;
 namespace EasySave.Models
 {
     /// <summary>
-    /// Implements a differential backup strategy. Copies only new or modified files.
+    /// Implémente une stratégie de sauvegarde DIFFÉRENTIELLE.
     /// </summary>
     public class DifferentialBackupStrategy : IBackupStrategy
     {
         public void Execute(Backup backup, IBackupLogger logger)
         {
+            // Vérification avant de démarrer la sauvegarde.
+            if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
+            {
+                var ex = new Exception("Sauvegarde annulée : logiciel métier détecté avant démarrage.");
+                logger.LogError(backup.Name, "", "", ex);
+                Console.WriteLine("Sauvegarde annulée : logiciel métier détecté.");
+                return;
+            }
+
             Console.WriteLine(LocalizationManager.CurrentMessages["DiffBackup_Executing"].Replace("{name}", backup.Name));
 
             var files = backup.GetFileList();
@@ -38,6 +47,15 @@ namespace EasySave.Models
 
             foreach (var fileInfo in files)
             {
+                // Vérification au début de chaque itération.
+                if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
+                {
+                    var ex = new Exception("Sauvegarde interrompue : logiciel métier détecté durant l'exécution.");
+                    logger.LogError(backup.Name, fileInfo.FullName, "", ex);
+                    Console.WriteLine("Sauvegarde interrompue : logiciel métier détecté. Fin de la sauvegarde en cours.");
+                    break;
+                }
+
                 var relativePath = fileInfo.FullName.Substring(backup.SourcePath.Length).TrimStart('\\', '/');
                 var destFilePath = Path.Combine(backup.TargetPath, relativePath);
 

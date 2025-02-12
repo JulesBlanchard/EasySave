@@ -7,12 +7,21 @@ using EasySave.Utils;
 namespace EasySave.Models
 {
     /// <summary>
-    /// Implements a full backup strategy. Copies all files from the source to the target.
+    /// Implémente une stratégie de sauvegarde FULL.
     /// </summary>
     public class FullBackupStrategy : IBackupStrategy
     {
         public void Execute(Backup backup, IBackupLogger logger)
         {
+            // Si le logiciel métier est déjà lancé, on ne démarre pas la sauvegarde.
+            if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
+            {
+                var ex = new Exception("Sauvegarde annulée : logiciel métier détecté avant démarrage.");
+                logger.LogError(backup.Name, "", "", ex);
+                Console.WriteLine("Sauvegarde annulée : logiciel métier détecté.");
+                return;
+            }
+
             Console.WriteLine(LocalizationManager.CurrentMessages["FullBackup_Executing"].Replace("{name}", backup.Name));
 
             var files = backup.GetFileList();
@@ -37,6 +46,15 @@ namespace EasySave.Models
 
             foreach (var fileInfo in files)
             {
+                // Avant de lancer la copie d'un nouveau fichier, on vérifie si le logiciel métier est apparu.
+                if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
+                {
+                    var ex = new Exception("Sauvegarde interrompue : logiciel métier détecté durant l'exécution.");
+                    logger.LogError(backup.Name, fileInfo.FullName, "", ex);
+                    Console.WriteLine("Sauvegarde interrompue : logiciel métier détecté. Fin de la sauvegarde en cours.");
+                    break; // On arrête le traitement des fichiers suivants.
+                }
+
                 var relativePath = fileInfo.FullName.Substring(backup.SourcePath.Length).TrimStart('\\', '/');
                 var destFilePath = Path.Combine(backup.TargetPath, relativePath);
 

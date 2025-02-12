@@ -63,14 +63,21 @@ namespace EasySave.Views
                         controller.ListBackups();
                         break;
                     case "3":
-                        if (controller.GetBackupCount() == 0)
+                        if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
                         {
-                            Console.WriteLine(messages["NoBackupsToExecute"]);
+                            Console.WriteLine(LocalizationManager.CurrentMessages["ExecutionNotAllowed"]);
                         }
                         else
                         {
-                            controller.ListBackups();
-                            ExecuteBackupFlow();
+                            if (controller.GetBackupCount() == 0)
+                            {
+                                Console.WriteLine(messages["NoBackupsToExecute"]);
+                            }
+                            else
+                            {
+                                controller.ListBackups();
+                                ExecuteBackupFlow();
+                            }
                         }
                         break;
                     case "4":
@@ -85,17 +92,26 @@ namespace EasySave.Views
                         }
                         break;
                     case "5":
-                        if (controller.GetBackupCount() ==0)
+                        if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
                         {
-                            Console.WriteLine(messages["NoBackupsToExecute"]);
+                            Console.WriteLine(LocalizationManager.CurrentMessages["ExecutionNotAllowed"]);
                         }
                         else
                         {
-                            controller.ExecuteAllBackups();
+                            if (controller.GetBackupCount() ==0)
+                            {
+                                Console.WriteLine(messages["NoBackupsToExecute"]);
+                            }
+                            else
+                            {
+                                controller.ExecuteAllBackups();
+                            } 
                         }
-
                         break;
                     case "6":
+                        ConfigureBusinessSoftware();
+                        break;
+                    case "7":
                         exit = true;
                         break;
                     default:
@@ -117,6 +133,7 @@ namespace EasySave.Views
             Console.WriteLine(messages["MenuOption4"]);
             Console.WriteLine(messages["MenuOption5"]);
             Console.WriteLine(messages["MenuOption6"]);
+            Console.WriteLine(messages["MenuOption7"]);
         }
 
         /// <summary>
@@ -153,6 +170,24 @@ namespace EasySave.Views
             Console.WriteLine(messages["BackupDeletionTitle"]);
             int idx = GetValidIndex(messages["EnterBackupIndex"]);
             controller.DeleteBackup(idx - 1);
+        }
+        
+        /// <summary>
+        /// Guides the user through the set up of the business software
+        /// </summary>
+        private void ConfigureBusinessSoftware()
+        {
+            Console.Clear();
+            Console.WriteLine(LocalizationManager.CurrentMessages["ConfigureBusinessSoftwareTitle"]);
+            Console.Write(LocalizationManager.CurrentMessages["EnterBusinessSoftwareName"]);
+            string businessSoftwareName = Console.ReadLine().Trim();
+
+            // Stocke le nom dans les paramètres généraux
+            GeneralSettings.BusinessSoftwareName = businessSoftwareName;
+
+            string confirmation = LocalizationManager.CurrentMessages["BusinessSoftwareConfigured"]
+                .Replace("{name}", businessSoftwareName);
+            Console.WriteLine(confirmation);
         }
 
         /// <summary>
