@@ -39,7 +39,6 @@ namespace EasySave.Utils
             { "TargetNotExist", "Le répertoire cible n'existe pas." },
             { "CreateTargetPrompt", "Voulez-vous le créer ? (O/N) : " },
             { "TargetCreated", "Répertoire créé." },
-            { "CannotCreateMoreBackups", "Impossible de créer plus de 5 sauvegarde." },
             { "InvalidBackupType", "Type invalide : veuillez choisir (full/diff) : " },
             { "DifferentTargetPath", "Veuillez entrer un chemin cible différent" },
 
@@ -117,7 +116,6 @@ namespace EasySave.Utils
             { "TargetNotExist", "Target directory does not exist." },
             { "CreateTargetPrompt", "Do you want to create it? (Y/N): " },
             { "TargetCreated", "Directory created." },
-            { "CannotCreateMoreBackups", "Cannot create more than 5 backups." },
             { "InvalidBackupType", "Invalid type. Please enter 'full' or 'diff'." },
             { "DifferentTargetPath", "Please enter a different target path." },
 

@@ -12,7 +12,6 @@ namespace EasySave.Models
     /// </summary>
     public class BackupManager
     {
-        private const int MAX_BACKUPS = 5;
         private List<Backup> backups = new List<Backup>();
         private IBackupLogger logger;
         private readonly string backupFilePath;
