@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Input;
 using EasySave.Controllers;
 using EasySave.Models;
+using EasySave.Utils;
 using MessageBox = System.Windows.MessageBox;
 
 namespace EasySave.GUI.ViewModels
@@ -20,7 +21,6 @@ namespace EasySave.GUI.ViewModels
         private int currentPage;
         private readonly int itemsPerPage = 6;
 
-        // Commandes RelayCommand pour la pagination
         private RelayCommand nextPageCommand;
         private RelayCommand previousPageCommand;
 
@@ -38,7 +38,6 @@ namespace EasySave.GUI.ViewModels
                 currentPage = value;
                 OnPropertyChanged();
                 UpdatePagedBackups();
-                // Vérifier si les commandes sont instanciées avant de les utiliser
                 nextPageCommand?.RaiseCanExecuteChanged();
                 previousPageCommand?.RaiseCanExecuteChanged();
             }
@@ -50,6 +49,7 @@ namespace EasySave.GUI.ViewModels
         public ICommand EditCommand { get; }
         public ICommand DeleteCommand { get; }
         public ICommand CreateBackupCommand { get; }
+        public ICommand OpenSettingsCommand { get; }  // Nouvelle commande pour ouvrir la fenêtre de réglages
 
         public MainViewModel()
         {
@@ -57,17 +57,15 @@ namespace EasySave.GUI.ViewModels
             allBackups = new ObservableCollection<Backup>(backupController.GetBackups());
             pagedBackups = new ObservableCollection<Backup>();
 
-            // Initialiser d'abord les commandes de pagination
             nextPageCommand = new RelayCommand(NextPage, CanGoNext);
             previousPageCommand = new RelayCommand(PreviousPage, CanGoPrevious);
-
-            // Affecter CurrentPage après que les commandes soient initialisées
             CurrentPage = 1;
 
             LaunchCommand = new RelayCommand<Backup>(LaunchBackup);
             EditCommand = new RelayCommand<Backup>(EditBackup);
             DeleteCommand = new RelayCommand<Backup>(DeleteBackup);
             CreateBackupCommand = new RelayCommand(OpenCreateBackup);
+            OpenSettingsCommand = new RelayCommand(OpenSettings);
 
             backupController.BackupsChanged += RefreshBackups;
         }
@@ -106,6 +104,17 @@ namespace EasySave.GUI.ViewModels
 
         private async void LaunchBackup(Backup backup)
         {
+            // Vérifiez d'abord si un logiciel métier est en cours d'exécution
+            if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
+            {
+                MessageBox.Show(
+                    "La sauvegarde ne peut pas être lancée car un logiciel métier est en cours d'exécution.",
+                    "Sauvegarde annulée",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return;
+            }
+
             try
             {
                 int index = allBackups.IndexOf(backup);
@@ -119,6 +128,7 @@ namespace EasySave.GUI.ViewModels
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
 
         private void EditBackup(Backup backup)
         {
@@ -139,6 +149,13 @@ namespace EasySave.GUI.ViewModels
             var createWindow = new Views.CreateBackupWindow();
             createWindow.ShowDialog();
             RefreshBackups();
+        }
+
+        private void OpenSettings()
+        {
+            // Ouvre la fenêtre de réglages (SettingsWindow)
+            var settingsWindow = new Views.SettingsWindow();
+            settingsWindow.ShowDialog();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

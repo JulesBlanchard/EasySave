@@ -4,10 +4,14 @@
         Title="EasySave - Sauvegardes" Height="600" Width="800"
         WindowStartupLocation="CenterScreen">
   <DockPanel Background="White">
-    <!-- Barre d'outils en haut avec bouton '+' -->
+    <!-- Barre d'outils en haut avec boutons '+' et 'Réglages' -->
     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" HorizontalAlignment="Right" Margin="10">
+      <!-- Bouton pour créer une sauvegarde -->
       <Button Content="+" Width="30" Height="30" Command="{Binding CreateBackupCommand}" ToolTip="Créer une sauvegarde"/>
+      <!-- Bouton Réglages (vous pouvez remplacer le texte par une icône si souhaité) -->
+      <Button Content="Réglages" Width="80" Height="30" Command="{Binding OpenSettingsCommand}" ToolTip="Modifier les réglages"/>
     </StackPanel>
+
     <Grid>
       <Grid.RowDefinitions>
         <RowDefinition Height="*"/>

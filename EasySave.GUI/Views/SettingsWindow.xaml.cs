@@ -10,7 +10,7 @@ namespace EasySave.GUI.Views
         {
             InitializeComponent();
             var vm = new SettingsViewModel();
-            // On assigne l'action qui ferme la fenêtre
+            // Fermer la fenêtre après sauvegarde
             vm.CloseAction = new Action(() => this.Close());
             DataContext = vm;
         }
