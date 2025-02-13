@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using EasySave.Logging;
 
@@ -8,17 +10,15 @@ namespace EasySave.Models
     /// <summary>
     /// Represents a backup job with a name, source/target paths, and a backup type.
     /// </summary>
-    public class Backup
+    public class Backup : INotifyPropertyChanged 
     {
         public string Name { get; set; }
         public string SourcePath { get; set; }
         public string TargetPath { get; set; }
         public string BackupType { get; set; }
-
-        // Not serialized, as the strategy is reinitialized when loading.
-        [JsonIgnore]
-        public IBackupStrategy Strategy { get; set; }
-
+        
+        private bool isSelected;
+        
         /// <summary>
         /// Default constructor for deserialization.
         /// </summary>
@@ -33,6 +33,35 @@ namespace EasySave.Models
             SourcePath = source;
             TargetPath = target;
             BackupType = backupType;
+        }
+        
+        /// <summary>
+        /// Propriété utilisée pour la sélection dans l'interface. 
+        /// Elle ne sera pas sérialisée.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsSelected
+        {
+            get => isSelected;
+            set
+            {
+                if (isSelected != value)
+                {
+                    isSelected = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
+        // Not serialized, as the strategy is reinitialized when loading.
+        [JsonIgnore]
+        public IBackupStrategy Strategy { get; set; }
+        
+        // Implémentation de INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
