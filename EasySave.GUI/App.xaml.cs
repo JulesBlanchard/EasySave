@@ -19,10 +19,11 @@ namespace EasySave.GUI
 
         private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            MessageBox.Show("Une exception non gérée s'est produite : " + e.Exception.Message, 
+            MessageBox.Show("Une exception non gérée s'est produite : " + e.Exception.ToString(), 
                 "Erreur non gérée", MessageBoxButton.OK, MessageBoxImage.Error);
-            e.Handled = true; // Vous pouvez mettre false pour fermer l’application
+            e.Handled = true;
         }
+
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {

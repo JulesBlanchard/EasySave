@@ -1,134 +1,148 @@
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using EasySave.Controllers;
 using EasySave.Models;
-using EasySave.Utils;
-using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
-using System.Threading.Tasks;
-
 
 namespace EasySave.GUI.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
         private BackupController backupController;
-        public ObservableCollection<Backup> Backups { get; set; }
+        private ObservableCollection<Backup> allBackups;
+        private ObservableCollection<Backup> pagedBackups;
+        private int currentPage;
+        private readonly int itemsPerPage = 6;
 
-        private Backup selectedBackup;
-        public Backup SelectedBackup
+        // Commandes RelayCommand pour la pagination
+        private RelayCommand nextPageCommand;
+        private RelayCommand previousPageCommand;
+
+        public ObservableCollection<Backup> PagedBackups
         {
-            get => selectedBackup;
-            set { selectedBackup = value; OnPropertyChanged(); }
+            get => pagedBackups;
+            set { pagedBackups = value; OnPropertyChanged(); }
         }
 
-        private string currentStatus;
-        public string CurrentStatus
+        public int CurrentPage
         {
-            get => currentStatus;
-            set { currentStatus = value; OnPropertyChanged(); }
+            get => currentPage;
+            set
+            {
+                currentPage = value;
+                OnPropertyChanged();
+                UpdatePagedBackups();
+                // Vérifier si les commandes sont instanciées avant de les utiliser
+                nextPageCommand?.RaiseCanExecuteChanged();
+                previousPageCommand?.RaiseCanExecuteChanged();
+            }
         }
 
-        public ICommand OpenCreateBackupCommand { get; }
-        public ICommand ExecuteBackupCommand { get; }
-        public ICommand DeleteBackupCommand { get; }
-        public ICommand ExecuteAllBackupsCommand { get; }
-        public ICommand OpenSettingsCommand { get; }
-        public ICommand ExitCommand { get; }
+        public ICommand NextPageCommand => nextPageCommand;
+        public ICommand PreviousPageCommand => previousPageCommand;
+        public ICommand LaunchCommand { get; }
+        public ICommand EditCommand { get; }
+        public ICommand DeleteCommand { get; }
+        public ICommand CreateBackupCommand { get; }
 
         public MainViewModel()
         {
             backupController = BackupController.Instance;
-            Backups = new ObservableCollection<Backup>(backupController.GetBackups());
-            // Abonnez-vous à l'événement pour rafraîchir la liste dès qu'elle change
-            backupController.BackupsChanged += RefreshBackups;
+            allBackups = new ObservableCollection<Backup>(backupController.GetBackups());
+            pagedBackups = new ObservableCollection<Backup>();
 
-            OpenCreateBackupCommand = new RelayCommand(OpenCreateBackup);
-            ExecuteBackupCommand = new RelayCommand(ExecuteBackup);
-            DeleteBackupCommand = new RelayCommand(DeleteBackup);
-            ExecuteAllBackupsCommand = new RelayCommand(ExecuteAllBackups);
-            OpenSettingsCommand = new RelayCommand(OpenSettings);
-            ExitCommand = new RelayCommand(() => Application.Current.Shutdown());
-            CurrentStatus = "Ready";
+            // Initialiser d'abord les commandes de pagination
+            nextPageCommand = new RelayCommand(NextPage, CanGoNext);
+            previousPageCommand = new RelayCommand(PreviousPage, CanGoPrevious);
+
+            // Affecter CurrentPage après que les commandes soient initialisées
+            CurrentPage = 1;
+
+            LaunchCommand = new RelayCommand<Backup>(LaunchBackup);
+            EditCommand = new RelayCommand<Backup>(EditBackup);
+            DeleteCommand = new RelayCommand<Backup>(DeleteBackup);
+            CreateBackupCommand = new RelayCommand(OpenCreateBackup);
+
+            backupController.BackupsChanged += RefreshBackups;
+        }
+
+        private bool CanGoNext() => CurrentPage * itemsPerPage < allBackups.Count;
+        private bool CanGoPrevious() => CurrentPage > 1;
+
+        private void NextPage()
+        {
+            if (CanGoNext())
+                CurrentPage++;
+        }
+
+        private void PreviousPage()
+        {
+            if (CanGoPrevious())
+                CurrentPage--;
         }
 
         private void RefreshBackups()
         {
-            // Comme cette méthode est appelée depuis un thread quelconque, on passe par le Dispatcher
-            Application.Current.Dispatcher.Invoke(() =>
+            allBackups = new ObservableCollection<Backup>(backupController.GetBackups());
+            if ((CurrentPage - 1) * itemsPerPage >= allBackups.Count)
+                CurrentPage = 1;
+            else
+                UpdatePagedBackups();
+        }
+
+        private void UpdatePagedBackups()
+        {
+            pagedBackups.Clear();
+            var items = allBackups.Skip((CurrentPage - 1) * itemsPerPage).Take(itemsPerPage);
+            foreach (var item in items)
+                pagedBackups.Add(item);
+        }
+
+        private async void LaunchBackup(Backup backup)
+        {
+            try
             {
-                Backups.Clear();
-                foreach (var b in backupController.GetBackups())
-                {
-                    Backups.Add(b);
-                }
-            });
+                int index = allBackups.IndexOf(backup);
+                await Task.Run(() => backupController.ExecuteBackup(index));
+                MessageBox.Show($"La sauvegarde '{backup.Name}' a été exécutée.", "Succès",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erreur lors de l'exécution : " + ex.Message, "Erreur",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void EditBackup(Backup backup)
+        {
+            MessageBox.Show($"Fonction d'édition pour la sauvegarde '{backup.Name}' (à implémenter).");
+        }
+
+        private void DeleteBackup(Backup backup)
+        {
+            int index = allBackups.IndexOf(backup);
+            backupController.DeleteBackup(index);
+            RefreshBackups();
+            MessageBox.Show($"La sauvegarde '{backup.Name}' a été supprimée.", "Succès",
+                MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void OpenCreateBackup()
         {
             var createWindow = new Views.CreateBackupWindow();
             createWindow.ShowDialog();
-            // La liste sera automatiquement rafraîchie via l'événement BackupsChanged.
-            CurrentStatus = "Backup created.";
-        }
-
-        private async void ExecuteBackup()
-        {
-            if (SelectedBackup == null)
-            {
-                CurrentStatus = "Aucune sauvegarde sélectionnée.";
-                return;
-            }
-            int index = Backups.IndexOf(SelectedBackup);
-            try
-            {
-                await Task.Run(() => backupController.ExecuteBackup(index));
-                CurrentStatus = $"La sauvegarde '{SelectedBackup.Name}' a été exécutée.";
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erreur lors de l'exécution de la sauvegarde : " + ex.Message, 
-                    "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void DeleteBackup()
-        {
-            if (SelectedBackup == null)
-            {
-                CurrentStatus = "Aucune sauvegarde sélectionnée.";
-                return;
-            }
-            // Stocker le nom avant suppression pour le message
-            var backupName = SelectedBackup.Name;
-            int index = Backups.IndexOf(SelectedBackup);
-            backupController.DeleteBackup(index);
-            // La liste sera automatiquement rafraîchie via l'événement
-            SelectedBackup = null;
-            CurrentStatus = $"La sauvegarde '{backupName}' a été supprimée.";
-        }
-
-        private void ExecuteAllBackups()
-        {
-            backupController.ExecuteAllBackups();
-            CurrentStatus = "Toutes les sauvegardes ont été exécutées.";
-        }
-
-        private void OpenSettings()
-        {
-            var settingsWindow = new Views.SettingsWindow();
-            settingsWindow.ShowDialog();
-            CurrentStatus = "Paramètres mis à jour.";
+            RefreshBackups();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

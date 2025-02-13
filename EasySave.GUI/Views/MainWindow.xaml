@@ -1,43 +1,65 @@
 ﻿<Window x:Class="EasySave.GUI.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="EasySave" Height="500" Width="900">
-    <DockPanel Margin="10">
-        <!-- Menu -->
-        <Menu DockPanel.Dock="Top" Background="LightGray" Height="30">
-            <MenuItem Header="File">
-                <MenuItem Header="Settings" Command="{Binding OpenSettingsCommand}" />
-                <Separator/>
-                <MenuItem Header="Exit" Command="{Binding ExitCommand}" />
-            </MenuItem>
-        </Menu>
-        <!-- Toolbar -->
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
-            <Button Content="Create Backup" Command="{Binding OpenCreateBackupCommand}" />
-            <!-- (Optionnel) Un bouton pour rafraîchir la liste -->
-            <Button Content="List Backups" Command="{Binding ListBackupsCommand}" />
-            <Button Content="Execute Backup" Command="{Binding ExecuteBackupCommand}" 
-                    IsEnabled="{Binding SelectedBackup, Converter={StaticResource NullToBoolConverter}}"/>
-            <Button Content="Delete Backup" Command="{Binding DeleteBackupCommand}" 
-                    IsEnabled="{Binding SelectedBackup, Converter={StaticResource NullToBoolConverter}}"/>
-            <Button Content="Execute All Backups" Command="{Binding ExecuteAllBackupsCommand}" />
-            <Button Content="Configure Business Software" Command="{Binding OpenSettingsCommand}" />
-            <Button Content="Quit" Command="{Binding ExitCommand}" />
-        </StackPanel>
-        <!-- DataGrid pour afficher la liste des backups -->
-        <DataGrid ItemsSource="{Binding Backups}" AutoGenerateColumns="False" Margin="10" IsReadOnly="True"
-                  SelectionMode="Single" SelectedItem="{Binding SelectedBackup}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="150"/>
-                <DataGridTextColumn Header="Type" Binding="{Binding BackupType}" Width="100"/>
-                <DataGridTextColumn Header="Source" Binding="{Binding SourcePath}" Width="*"/>
-                <DataGridTextColumn Header="Target" Binding="{Binding TargetPath}" Width="*"/>
-                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
-            </DataGrid.Columns>
-        </DataGrid>
-        <!-- StatusBar -->
-        <StatusBar DockPanel.Dock="Bottom">
-            <StatusBarItem Content="{Binding CurrentStatus}" />
-        </StatusBar>
-    </DockPanel>
+        Title="EasySave - Sauvegardes" Height="600" Width="800"
+        WindowStartupLocation="CenterScreen">
+  <DockPanel Background="White">
+    <!-- Barre d'outils en haut avec bouton '+' -->
+    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" HorizontalAlignment="Right" Margin="10">
+      <Button Content="+" Width="30" Height="30" Command="{Binding CreateBackupCommand}" ToolTip="Créer une sauvegarde"/>
+    </StackPanel>
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+      </Grid.RowDefinitions>
+      
+      <!-- Liste des sauvegardes avec chaque élément qui s'étend sur toute la largeur -->
+      <ListView ItemsSource="{Binding PagedBackups}" Grid.Row="0" Margin="10" HorizontalContentAlignment="Stretch">
+        <ListView.ItemTemplate>
+          <DataTemplate>
+            <Border BorderBrush="Gray" BorderThickness="1" Margin="5" Padding="10">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <!-- Informations sur la sauvegarde -->
+                <StackPanel Grid.Column="0">
+                  <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
+                  <TextBlock Text="{Binding SourcePath}" FontStyle="Italic" FontSize="12"/>
+                  <TextBlock Text="{Binding TargetPath}" FontSize="12"/>
+                </StackPanel>
+                <!-- Boutons d'actions alignés à droite -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                  <Button Width="30" Height="30" Margin="5" ToolTip="Lancer"
+                          Command="{Binding DataContext.LaunchCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                          CommandParameter="{Binding}">
+                    <Image Source="pack://application:,,,/EasySave.GUI;component/Images/launch.png" Stretch="Uniform"/>
+                  </Button>
+                  <Button Width="30" Height="30" Margin="5" ToolTip="Éditer"
+                          Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                          CommandParameter="{Binding}">
+                    <Image Source="pack://application:,,,/EasySave.GUI;component/Images/edit.png" Stretch="Uniform"/>
+                  </Button>
+                  <Button Width="30" Height="30" Margin="5" ToolTip="Supprimer"
+                          Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                          CommandParameter="{Binding}">
+                    <Image Source="pack://application:,,,/EasySave.GUI;component/Images/delete.png" Stretch="Uniform"/>
+                  </Button>
+                </StackPanel>
+              </Grid>
+            </Border>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+      </ListView>
+      
+      <!-- Pagination -->
+      <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+        <Button Content="&lt;&lt;" Command="{Binding PreviousPageCommand}" Margin="5"/>
+        <TextBlock Text="{Binding CurrentPage}" VerticalAlignment="Center" FontSize="16" Margin="5"/>
+        <Button Content="&gt;&gt;" Command="{Binding NextPageCommand}" Margin="5"/>
+      </StackPanel>
+    </Grid>
+  </DockPanel>
 </Window>

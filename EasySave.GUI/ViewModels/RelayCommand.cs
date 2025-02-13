@@ -8,17 +8,15 @@ namespace EasySave.GUI
         private readonly Action execute;
         private readonly Func<bool> canExecute;
         public event EventHandler CanExecuteChanged;
-        
+
         public RelayCommand(Action execute, Func<bool> canExecute = null)
         {
-            this.execute = execute;
+            this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
             this.canExecute = canExecute;
         }
-        
+
         public bool CanExecute(object parameter) => canExecute == null || canExecute();
-        
         public void Execute(object parameter) => execute();
-        
         public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 
@@ -27,24 +25,25 @@ namespace EasySave.GUI
         private readonly Action<T> execute;
         private readonly Predicate<T> canExecute;
         public event EventHandler CanExecuteChanged;
-        
+
         public RelayCommand(Action<T> execute, Predicate<T> canExecute = null)
         {
-            this.execute = execute;
+            this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
             this.canExecute = canExecute;
         }
-        
+
         public bool CanExecute(object parameter)
         {
-            if (canExecute == null)
-                return true;
-            if (parameter == null && typeof(T).IsValueType)
-                return canExecute(default);
-            return canExecute((T)parameter);
+            if (canExecute == null) return true;
+            return parameter is T t && canExecute(t);
         }
-        
-        public void Execute(object parameter) => execute((T)parameter);
-        
+
+        public void Execute(object parameter)
+        {
+            if (parameter is T t)
+                execute(t);
+        }
+
         public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 }

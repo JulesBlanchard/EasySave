@@ -14,4 +14,16 @@
       <ProjectReference Include="..\EasySave\EasySave.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Images\delete.png" />
+      <None Remove="Images\edit.png" />
+      <None Remove="Images\launch.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Resource Include="Images\delete.png" />
+      <Resource Include="Images\edit.png" />
+      <Resource Include="Images\launch.png" />
+    </ItemGroup>
+
 </Project>

@@ -8,7 +8,6 @@ namespace EasySave.GUI.Views
         public MainWindow()
         {
             InitializeComponent();
-            // Set DataContext to MainViewModel instance.
             DataContext = new MainViewModel();
         }
     }
