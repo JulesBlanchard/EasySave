@@ -13,7 +13,11 @@
 </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="EasySave.Logging\EasySave.Logging.csproj" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,94 @@
+﻿<Window x:Class="EasySave.GUI.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="EasySave - Sauvegardes" Height="600" Width="800"
+        WindowStartupLocation="CenterScreen">
+  <DockPanel Background="White">
+    <!-- Barre d'outils en haut avec barre de recherche à gauche (max 50% de la largeur) et boutons à droite -->
+    <!-- Barre d'outils en haut avec barre de recherche et boutons -->
+    <Grid DockPanel.Dock="Top" Margin="10">
+      <Grid.ColumnDefinitions>
+        <!-- La première colonne occupe la moitié de l'espace disponible -->
+        <ColumnDefinition Width="0.5*"/>
+        <!-- La deuxième colonne s'adapte à la largeur des boutons -->
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+  
+      <!-- Barre de recherche collée à gauche avec binding sur SearchQuery -->
+      <TextBox Grid.Column="0" Height="30" VerticalAlignment="Center"
+               ToolTip="Rechercher" Margin="0,0,10,0"
+               Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" />
+  
+      <!-- Boutons à droite -->
+      <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+        <!-- Bouton Ajouter -->
+        <Button Content="+" Width="40" Height="30" Command="{Binding CreateBackupCommand}" ToolTip="Créer une sauvegarde"/>
+        <!-- Bouton Exécuter sélectionnés avec image -->
+        <Button Command="{Binding ExecuteSelectedCommand}" ToolTip="Exécuter les sauvegardes sélectionnées" Width="40" Height="30">
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Image Source="pack://application:,,,/EasySave.GUI;component/Images/launch.png" Width="20" Height="20"/>
+          </StackPanel>
+        </Button>
+        <!-- Bouton Supprimer sélectionnés avec image -->
+        <Button Command="{Binding DeleteSelectedCommand}" ToolTip="Supprimer les sauvegardes sélectionnées" Width="40" Height="30">
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Image Source="pack://application:,,,/EasySave.GUI;component/Images/delete.png" Width="20" Height="20"/>
+          </StackPanel>
+        </Button>
+        <!-- Bouton Réglages -->
+        <Button Content="Réglages" Width="80" Height="30" Command="{Binding OpenSettingsCommand}" ToolTip="Modifier les réglages"/>
+      </StackPanel>
+    </Grid>
+    
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+      </Grid.RowDefinitions>
+      
+      <!-- Liste des sauvegardes avec chaque élément qui s'étend sur toute la largeur -->
+      <ListView ItemsSource="{Binding PagedBackups}" Grid.Row="0" Margin="10" HorizontalContentAlignment="Stretch">
+        <ListView.ItemTemplate>
+          <DataTemplate>
+            <!-- Utilisation de MouseLeftButtonDown pour détecter le double-clic -->
+            <Border BorderBrush="Gray" BorderThickness="1" Margin="5" Padding="10" MouseLeftButtonDown="BackupItem_MouseLeftButtonDown">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <!-- Colonne pour la case à cocher -->
+                  <ColumnDefinition Width="Auto"/>
+                  <!-- Colonne pour les informations -->
+                  <ColumnDefinition Width="*"/>
+                  <!-- Colonne pour le bouton Modifier -->
+                  <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <!-- Case à cocher pour la sélection -->
+                <CheckBox Grid.Column="0" 
+                          IsChecked="{Binding IsSelected, Mode=TwoWay}" 
+                          VerticalAlignment="Center" Margin="5"/>
+                <!-- Informations sur la sauvegarde -->
+                <StackPanel Grid.Column="1">
+                  <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
+                  <TextBlock Text="{Binding SourcePath}" FontStyle="Italic" FontSize="12"/>
+                  <TextBlock Text="{Binding TargetPath}" FontSize="12"/>
+                </StackPanel>
+                <!-- Bouton Modifier -->
+                <Button Grid.Column="2" Width="30" Height="30" Margin="5" ToolTip="Éditer"
+                        Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                        CommandParameter="{Binding}">
+                  <Image Source="pack://application:,,,/EasySave.GUI;component/Images/edit.png" Stretch="Uniform"/>
+                </Button>
+              </Grid>
+            </Border>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+      </ListView>
+
+      <!-- Pagination -->
+      <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+        <Button Content="&lt;&lt;" Command="{Binding PreviousPageCommand}" Margin="5"/>
+        <TextBlock Text="{Binding CurrentPage}" VerticalAlignment="Center" FontSize="16" Margin="5"/>
+        <Button Content="&gt;&gt;" Command="{Binding NextPageCommand}" Margin="5"/>
+      </StackPanel>
+    </Grid>
+  </DockPanel>
+</Window>

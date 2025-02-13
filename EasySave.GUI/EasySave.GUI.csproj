@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net9.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UseWPF>true</UseWPF>
+        <UseWindowsForms>true</UseWindowsForms>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\EasySave\EasySave.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Images\delete.png" />
+      <None Remove="Images\edit.png" />
+      <None Remove="Images\launch.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Resource Include="Images\delete.png" />
+      <Resource Include="Images\edit.png" />
+      <Resource Include="Images\launch.png" />
+    </ItemGroup>
+
+</Project>
