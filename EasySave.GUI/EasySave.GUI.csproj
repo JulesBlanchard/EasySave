@@ -10,7 +10,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\EasySave.Logging\EasySave.Logging.csproj" />
       <ProjectReference Include="..\EasySave\EasySave.csproj" />
     </ItemGroup>
 
