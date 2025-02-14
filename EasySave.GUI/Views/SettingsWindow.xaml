@@ -21,6 +21,10 @@
             <Label Content="{DynamicResource Settings_BusinessSoftwareLabel}" Width="120"/>
             <TextBox Width="150" Text="{Binding BusinessSoftwareName, Mode=TwoWay}"/>
         </StackPanel>
-        <Button Grid.Row="2" Content="{DynamicResource Settings_SaveButton}" Width="80" HorizontalAlignment="Left" Command="{Binding SaveSettingsCommand}"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0,0,0,10">
+            <Label Content="Types de fichiers autorisés:" Width="200"/>
+            <TextBox Width="150" Text="{Binding AllowedEncryptionFileTypes, Mode=TwoWay}"/>
+        </StackPanel>
+        <Button Grid.Row="3" Content="{DynamicResource Settings_SaveButton}" Width="80" HorizontalAlignment="Right" Command="{Binding SaveSettingsCommand}"/>
     </Grid>
 </Window>

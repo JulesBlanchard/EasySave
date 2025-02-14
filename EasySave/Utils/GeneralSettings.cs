@@ -12,5 +12,7 @@ namespace EasySave.Utils
         // Par défaut, vide (aucun logiciel métier défini)
         // L'utilisateur pourra le modifier via l'interface de paramètres.
         public static string BusinessSoftwareName { get; set; } = "";
+        
+        public static string AllowedEncryptionFileTypes { get; set; } = ".txt,.docx,.pdf";
     }
 }
