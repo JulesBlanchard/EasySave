@@ -19,6 +19,7 @@ namespace EasySave.GUI.ViewModels
         private ObservableCollection<Backup> allBackups;
         private ObservableCollection<Backup> pagedBackups;
         private int currentPage;
+        private int totalPages;
         private readonly int itemsPerPage = 6;
         
         public ICommand ExecuteSelectedCommand { get; }
@@ -26,6 +27,7 @@ namespace EasySave.GUI.ViewModels
 
         private RelayCommand nextPageCommand;
         private RelayCommand previousPageCommand;
+        private RelayCommand lastPageCommand;
 
         public ObservableCollection<Backup> PagedBackups
         {
@@ -38,11 +40,28 @@ namespace EasySave.GUI.ViewModels
             get => currentPage;
             set
             {
-                currentPage = value;
-                OnPropertyChanged();
-                UpdatePagedBackups();
-                nextPageCommand?.RaiseCanExecuteChanged();
-                previousPageCommand?.RaiseCanExecuteChanged();
+                if (currentPage != value)
+                {
+                    currentPage = value;
+                    OnPropertyChanged();
+                    UpdatePagedBackups();
+                    nextPageCommand?.RaiseCanExecuteChanged();
+                    previousPageCommand?.RaiseCanExecuteChanged();
+                    lastPageCommand?.RaiseCanExecuteChanged();
+                }
+            }
+        }
+        
+        public int TotalPages
+        {
+            get => totalPages;
+            private set
+            {
+                if (totalPages != value)
+                {
+                    totalPages = value;
+                    OnPropertyChanged();
+                }
             }
         }
         
@@ -69,7 +88,7 @@ namespace EasySave.GUI.ViewModels
         public ICommand EditCommand { get; }
         public ICommand DeleteCommand { get; }
         public ICommand CreateBackupCommand { get; }
-        public ICommand OpenSettingsCommand { get; }  // Nouvelle commande pour ouvrir la fenêtre de réglages
+        public ICommand OpenSettingsCommand { get; } 
 
         public MainViewModel()
         {
@@ -79,6 +98,8 @@ namespace EasySave.GUI.ViewModels
 
             nextPageCommand = new RelayCommand(NextPage, CanGoNext);
             previousPageCommand = new RelayCommand(PreviousPage, CanGoPrevious);
+            lastPageCommand = new RelayCommand(LastPage, CanGoLast);
+            
             CurrentPage = 1;
 
             LaunchCommand = new RelayCommand<Backup>(LaunchBackup);
@@ -99,17 +120,22 @@ namespace EasySave.GUI.ViewModels
 
         private bool CanGoNext() => CurrentPage * itemsPerPage < allBackups.Count;
         private bool CanGoPrevious() => CurrentPage > 1;
+        private bool CanGoLast() => CurrentPage < TotalPages;
 
         private void NextPage()
         {
             if (CanGoNext())
                 CurrentPage++;
         }
-
         private void PreviousPage()
         {
             if (CanGoPrevious())
                 CurrentPage--;
+        }
+        private void LastPage()
+        {
+            if (CanGoLast())
+                CurrentPage = TotalPages;
         }
         
         /// <summary>
@@ -135,8 +161,13 @@ namespace EasySave.GUI.ViewModels
         /// </summary>
         private void UpdatePagedBackups()
         {
+            var filtered = GetFilteredBackups().ToList();
+            // S'assurer qu'on affiche au moins 1 page
+            TotalPages = Math.Max(1, (int)Math.Ceiling(filtered.Count / (double)itemsPerPage));
+            if (CurrentPage > TotalPages)
+                CurrentPage = TotalPages;
+
             pagedBackups.Clear();
-            var filtered = GetFilteredBackups();
             var items = filtered.Skip((CurrentPage - 1) * itemsPerPage).Take(itemsPerPage);
             foreach (var item in items)
                 pagedBackups.Add(item);
@@ -144,6 +175,13 @@ namespace EasySave.GUI.ViewModels
         
         private async void ExecuteSelectedBackups()
         {
+            if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
+            {
+                MessageBox.Show("La sauvegarde ne peut pas être lancée car un logiciel métier est en cours d'exécution.",
+                    "Sauvegarde annulée", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            
             var selectedBackups = allBackups.Where(b => b.IsSelected).ToList();
             if (!selectedBackups.Any())
             {
@@ -220,7 +258,9 @@ namespace EasySave.GUI.ViewModels
 
         private void EditBackup(Backup backup)
         {
-            MessageBox.Show($"Fonction d'édition pour la sauvegarde '{backup.Name}' (à implémenter).");
+            var editWindow = new Views.EditBackupWindow(backup);
+            editWindow.ShowDialog();
+            RefreshBackups();
         }
 
         private void DeleteBackup(Backup backup)
