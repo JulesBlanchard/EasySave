@@ -49,4 +49,14 @@
   <sys:String x:Key="Settings_BusinessSoftwareLabel">Logiciel métier :</sys:String>
   <sys:String x:Key="Settings_AuthorizedFiles">Types de fichiers autorisés :</sys:String>
   <sys:String x:Key="Settings_SaveButton">Enregistrer</sys:String>
+  
+  <!-- EncryptFileWindow -->
+  <sys:String x:Key="EncryptFileWindow_Title">Crypter un fichier</sys:String>
+  <sys:String x:Key="FileSelector">Fichier :</sys:String>
+  <sys:String x:Key="Explorer">Parcourir</sys:String>
+  <sys:String x:Key="KeyEditor">Clé :</sys:String>
+  <sys:String x:Key="EncryptButton">Crypter</sys:String>
+  <sys:String x:Key="CancelButton">Annuler</sys:String>
+  
+  
 </ResourceDictionary>

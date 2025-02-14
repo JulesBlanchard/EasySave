@@ -42,11 +42,19 @@
   <sys:String x:Key="MainWindow_SettingsButton">Settings</sys:String>
   <sys:String x:Key="MainWindow_Crypt">Crypt a file</sys:String>
   
-
   <!-- SettingsWindow -->
   <sys:String x:Key="SettingsWindow_Title">Settings</sys:String>
   <sys:String x:Key="Settings_LogFormatLabel">Log Format:</sys:String>
   <sys:String x:Key="Settings_BusinessSoftwareLabel">Business Software:</sys:String>
   <sys:String x:Key="Settings_AuthorizedFiles">Authorized File Types:</sys:String>
   <sys:String x:Key="Settings_SaveButton">Save</sys:String>
+  
+  <!-- EncryptFileWindow -->
+  <sys:String x:Key="EncryptFileWindow_Title">Encrypt a file</sys:String>
+  <sys:String x:Key="FileSelector">File :</sys:String>
+  <sys:String x:Key="Explorer">Explore</sys:String>
+  <sys:String x:Key="KeyEditor">Key :</sys:String>
+  <sys:String x:Key="EncryptButton">Encrypt</sys:String>
+  <sys:String x:Key="CancelButton">Cancel</sys:String>
+  
 </ResourceDictionary>
