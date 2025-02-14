@@ -83,6 +83,9 @@
         <Button Command="{Binding OpenEncryptWindowCommand}" 
                 ToolTip="{DynamicResource MainWindow_Crypt}" 
                 Width="40" Height="30">
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Image Source="pack://application:,,,/EasySave.GUI;component/Images/cle.png" Width="20" Height="20"/>
+          </StackPanel>
         </Button>
         <Button Content="{DynamicResource MainWindow_SettingsButton}" Width="80" Height="30" 
                 Command="{Binding OpenSettingsCommand}" 
