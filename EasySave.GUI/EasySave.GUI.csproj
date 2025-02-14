@@ -23,6 +23,8 @@
       <Resource Include="Images\delete.png" />
       <Resource Include="Images\edit.png" />
       <Resource Include="Images\launch.png" />
+      <None Remove="Images\cle.png" />
+      <Resource Include="Images\cle.png" />
     </ItemGroup>
 
 </Project>
