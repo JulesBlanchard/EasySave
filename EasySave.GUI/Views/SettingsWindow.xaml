@@ -22,7 +22,7 @@
             <TextBox Width="150" Text="{Binding BusinessSoftwareName, Mode=TwoWay}"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0,0,0,10">
-            <Label Content="Types de fichiers autorisés:" Width="200"/>
+            <Label Content="{DynamicResource Settings_AuthorizedFiles}" Width="200"/>
             <TextBox Width="150" Text="{Binding AllowedEncryptionFileTypes, Mode=TwoWay}"/>
         </StackPanel>
         <Button Grid.Row="3" Content="{DynamicResource Settings_SaveButton}" Width="80" HorizontalAlignment="Right" Command="{Binding SaveSettingsCommand}"/>

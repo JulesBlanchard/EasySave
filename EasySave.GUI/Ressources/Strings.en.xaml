@@ -47,5 +47,6 @@
   <sys:String x:Key="SettingsWindow_Title">Settings</sys:String>
   <sys:String x:Key="Settings_LogFormatLabel">Log Format:</sys:String>
   <sys:String x:Key="Settings_BusinessSoftwareLabel">Business Software:</sys:String>
+  <sys:String x:Key="Settings_AuthorizedFiles">Authorized File Types:</sys:String>
   <sys:String x:Key="Settings_SaveButton">Save</sys:String>
 </ResourceDictionary>
