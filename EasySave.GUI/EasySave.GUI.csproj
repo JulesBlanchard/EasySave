@@ -16,12 +16,16 @@
     <ItemGroup>
       <None Remove="Images\delete.png" />
       <None Remove="Images\edit.png" />
+      <None Remove="Images\Flag_of_France.png" />
+      <None Remove="Images\Flag_of_UK.png" />
       <None Remove="Images\launch.png" />
     </ItemGroup>
 
     <ItemGroup>
       <Resource Include="Images\delete.png" />
       <Resource Include="Images\edit.png" />
+      <Resource Include="Images\Flag_of_France.png" />
+      <Resource Include="Images\Flag_of_UK.png" />
       <Resource Include="Images\launch.png" />
       <None Remove="Images\cle.png" />
       <Resource Include="Images\cle.png" />
