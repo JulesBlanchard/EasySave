@@ -9,10 +9,20 @@
                        FontSize="22" Margin="0,0,0,20" 
                        HorizontalAlignment="Center"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="{DynamicResource LanguageSelection_French}" Width="120" Height="40" Margin="10" 
-                        Command="{Binding SelectFrenchCommand}" />
-                <Button Content="{DynamicResource LanguageSelection_English}" Width="120" Height="40" Margin="10" 
-                        Command="{Binding SelectEnglishCommand}" />
+                <Button Command="{Binding SelectFrenchCommand}" 
+                ToolTip="{DynamicResource MainWindow_Crypt}" 
+                Width="80" Height="50" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Image Source="pack://application:,,,/EasySave.GUI;component/Images/Flag_of_France.png" Width="auto" Height="auto"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding SelectEnglishCommand}" 
+                ToolTip="{DynamicResource MainWindow_Crypt}" 
+                Width="80" Height="50" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Image Source="pack://application:,,,/EasySave.GUI;component/Images/Flag_of_UK.png" Width="auto" Height="auto"/>
+                    </StackPanel>
+                </Button>
             </StackPanel>
         </StackPanel>
     </Grid>
