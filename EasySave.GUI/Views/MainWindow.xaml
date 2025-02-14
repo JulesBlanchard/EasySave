@@ -80,6 +80,13 @@
             <Image Source="pack://application:,,,/EasySave.GUI;component/Images/delete.png" Width="20" Height="20"/>
           </StackPanel>
         </Button>
+        <Button Command="{Binding OpenEncryptWindowCommand}" 
+                ToolTip="Crypter un fichier" 
+                Width="40" Height="30">
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Image Source="pack://application:,,,/EasySave.GUI;component/Images/cryptage.png" Width="20" Height="20"/>
+          </StackPanel>
+        </Button>
         <Button Content="{DynamicResource MainWindow_SettingsButton}" Width="80" Height="30" 
                 Command="{Binding OpenSettingsCommand}" 
                 ToolTip="{DynamicResource MainWindow_SettingsToolTip}"/>

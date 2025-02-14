@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using EasySave.Logging;
+using MessageBox = System.Windows.MessageBox;
 
 namespace EasySave.GUI.ViewModels
 {
