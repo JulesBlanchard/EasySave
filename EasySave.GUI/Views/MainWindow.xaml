@@ -15,9 +15,11 @@
         <Setter.Value>
           <ControlTemplate TargetType="TextBox">
             <Grid>
+              <!-- Bordure autour de la zone de texte -->
               <Border BorderBrush="{TemplateBinding BorderBrush}"
                       BorderThickness="{TemplateBinding BorderThickness}"
                       Background="{TemplateBinding Background}">
+                <!-- PART_ContentHost : le contenu réel où l'utilisateur écrit -->
                 <ScrollViewer x:Name="PART_ContentHost"
                               VerticalScrollBarVisibility="Disabled"
                               HorizontalScrollBarVisibility="Disabled" />
