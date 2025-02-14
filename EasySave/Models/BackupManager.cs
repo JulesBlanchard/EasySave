@@ -22,6 +22,11 @@ namespace EasySave.Models
             backupFilePath = Path.Combine(AppContext.BaseDirectory, "backups.json");
             LoadBackups();
         }
+        
+        public void UpdateBackupsFile()
+        {
+            SaveBackups();
+        }
 
         /// <summary>
         /// Adds a backup and saves the list to disk.

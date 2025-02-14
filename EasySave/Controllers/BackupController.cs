@@ -46,6 +46,26 @@ namespace EasySave.Controllers
             message = message.Replace("{name}", name).Replace("{strategy}", strategyType);
             // Vous pouvez logger ou afficher ce message selon vos besoins.
         }
+        
+        /// <summary>
+        /// Permet de modifier une backup
+        /// </summary>
+        public void UpdateBackup(Backup backup)
+        {
+            // Recalculez la stratégie en fonction du type de sauvegarde
+            if (!string.IsNullOrEmpty(backup.BackupType))
+            {
+                if (backup.BackupType.ToLower().StartsWith("f"))
+                    backup.Strategy = new FullBackupStrategy();
+                else
+                    backup.Strategy = new DifferentialBackupStrategy();
+            }
+
+            // Enregistrer la liste des sauvegardes mise à jour
+            manager.UpdateBackupsFile();
+            OnBackupsChanged();
+        }
+
 
         /// <summary>
         /// Supprime une sauvegarde par index.

@@ -6,7 +6,7 @@
     <Grid Background="White">
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Text="Choisissez la langue / Select Language" 
-                       FontSize="24" Margin="0,0,0,20" 
+                       FontSize="22" Margin="0,0,0,20" 
                        HorizontalAlignment="Center"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="Français" Width="120" Height="40" Margin="10" 

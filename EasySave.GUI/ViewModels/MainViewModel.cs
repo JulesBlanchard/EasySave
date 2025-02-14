@@ -220,7 +220,9 @@ namespace EasySave.GUI.ViewModels
 
         private void EditBackup(Backup backup)
         {
-            MessageBox.Show($"Fonction d'édition pour la sauvegarde '{backup.Name}' (à implémenter).");
+            var editWindow = new Views.EditBackupWindow(backup);
+            editWindow.ShowDialog();
+            RefreshBackups();
         }
 
         private void DeleteBackup(Backup backup)
