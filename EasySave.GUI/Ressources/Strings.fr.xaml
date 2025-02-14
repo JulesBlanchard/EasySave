@@ -40,6 +40,8 @@
   <sys:String x:Key="MainWindow_SettingsToolTip">Modifier les réglages</sys:String>
   <sys:String x:Key="MainWindow_EditToolTip">Éditer</sys:String>
   <sys:String x:Key="MainWindow_SettingsButton">Réglages</sys:String>
+  <sys:String x:Key="MainWindow_Crypt">Crypter un fichier</sys:String>
+
 
   <!-- SettingsWindow -->
   <sys:String x:Key="SettingsWindow_Title">Réglages</sys:String>

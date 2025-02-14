@@ -81,7 +81,7 @@
           </StackPanel>
         </Button>
         <Button Command="{Binding OpenEncryptWindowCommand}" 
-                ToolTip="Crypter un fichier" 
+                ToolTip="{DynamicResource MainWindow_Crypt}" 
                 Width="40" Height="30">
            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
              <Image Source="pack://application:,,,/EasySave.GUI;component/Images/cle.png" Width="20" Height="20"/>
