@@ -11,6 +11,7 @@ namespace EasySave.GUI.ViewModels
     {
         private string logFormat;
         private string businessSoftwareName;
+        private string allowedEncryptionFileTypes;
 
         public string LogFormat
         {
@@ -23,6 +24,12 @@ namespace EasySave.GUI.ViewModels
             get => businessSoftwareName;
             set { businessSoftwareName = value; OnPropertyChanged(); }
         }
+        
+        public string AllowedEncryptionFileTypes
+        {
+            get => allowedEncryptionFileTypes;
+            set { allowedEncryptionFileTypes = value; OnPropertyChanged(); }
+        }
 
         // Cette Action permettra de fermer la fenêtre depuis le ViewModel
         public Action? CloseAction { get; set; }
@@ -34,6 +41,7 @@ namespace EasySave.GUI.ViewModels
             // On initialise à partir des valeurs existantes
             LogFormat = LoggingManager.LogFormat;
             BusinessSoftwareName = GeneralSettings.BusinessSoftwareName;
+            AllowedEncryptionFileTypes = GeneralSettings.AllowedEncryptionFileTypes;
             SaveSettingsCommand = new RelayCommand(SaveSettings);
         }
 
@@ -42,11 +50,8 @@ namespace EasySave.GUI.ViewModels
             // Mise à jour des paramètres globaux
             LoggingManager.LogFormat = LogFormat;
             GeneralSettings.BusinessSoftwareName = BusinessSoftwareName;
+            GeneralSettings.AllowedEncryptionFileTypes = AllowedEncryptionFileTypes;
 
-            // Optionnel : vous pouvez afficher un message de confirmation ici
-            // MessageBox.Show("Les paramètres ont été sauvegardés.", "Confirmation", MessageBoxButton.OK, MessageBoxImage.Information);
-
-            // Ferme la fenêtre si une action de fermeture a été assignée
             CloseAction?.Invoke();
         }
 

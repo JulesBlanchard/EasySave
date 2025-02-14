@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using EasySave.Logging;
+using EasySave.Utils;
 using MessageBox = System.Windows.MessageBox;
 
 namespace EasySave.GUI.ViewModels
@@ -49,45 +50,60 @@ namespace EasySave.GUI.ViewModels
         }
         
         private void EncryptFile()
-        {
-            if (string.IsNullOrWhiteSpace(FilePath) || !File.Exists(FilePath))
-            {
-                MessageBox.Show("Veuillez sélectionner un fichier valide.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            if (string.IsNullOrWhiteSpace(Key))
-            {
-                MessageBox.Show("La clé de cryptage ne peut pas être vide.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            
-            try
-            {
-                // Utilisation de la classe FileManager de CryptoSoft pour crypter le fichier
-                var fileManager = new CryptoSoft.FileManager(FilePath, Key);
-                int encryptionTime = fileManager.TransformFile();
-                
-                // Récupération du logger configuré
-                IBackupLogger logger = LoggingManager.GetLogger("Logs");
-                logger.LogEncryption(FilePath, encryptionTime);
-                
-                // Afficher un message en fonction du résultat
-                if(encryptionTime < 0)
-                    MessageBox.Show($"Le cryptage a échoué (code erreur {encryptionTime}).", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                else if(encryptionTime == 0)
-                    MessageBox.Show("Aucun cryptage n'a été effectué.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-                else
-                    MessageBox.Show($"Cryptage effectué en {encryptionTime} ms.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show("Erreur lors du cryptage : " + ex.Message, "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                CloseAction?.Invoke();
-            }
-        }
+{
+    if (string.IsNullOrWhiteSpace(FilePath) || !File.Exists(FilePath))
+    {
+        MessageBox.Show("Veuillez sélectionner un fichier valide.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+        return;
+    }
+    if (string.IsNullOrWhiteSpace(Key))
+    {
+        MessageBox.Show("La clé de cryptage ne peut pas être vide.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+        return;
+    }
+
+    // Récupération des extensions autorisées depuis les réglages
+    string allowedTypes = GeneralSettings.AllowedEncryptionFileTypes;
+    var allowedExtensions = allowedTypes.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                        .Select(ext => ext.Trim().ToLowerInvariant())
+                                        .ToList();
+    // Vérifier l'extension du fichier choisi
+    string fileExtension = System.IO.Path.GetExtension(FilePath).ToLowerInvariant();
+    if (!allowedExtensions.Contains(fileExtension))
+    {
+        MessageBox.Show($"Les fichiers de type {fileExtension} ne sont pas autorisés pour le cryptage.", 
+                        "Type de fichier non autorisé", MessageBoxButton.OK, MessageBoxImage.Error);
+        return;
+    }
+
+    try
+    {
+        // Utilisation de la classe FileManager de CryptoSoft pour crypter le fichier
+        var fileManager = new CryptoSoft.FileManager(FilePath, Key);
+        int encryptionTime = fileManager.TransformFile();
+
+        // Récupération du logger configuré
+        IBackupLogger logger = LoggingManager.GetLogger("Logs");
+        logger.LogEncryption(FilePath, encryptionTime);
+
+        // Afficher un message en fonction du résultat
+        if (encryptionTime < 0)
+            MessageBox.Show($"Le cryptage a échoué (code erreur {encryptionTime}).", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+        else if (encryptionTime == 0)
+            MessageBox.Show("Aucun cryptage n'a été effectué.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+        else
+            MessageBox.Show($"Cryptage effectué en {encryptionTime} ms.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
+    }
+    catch(Exception ex)
+    {
+        MessageBox.Show("Erreur lors du cryptage : " + ex.Message, "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+    }
+    finally
+    {
+        CloseAction?.Invoke();
+    }
+}
+
         
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
