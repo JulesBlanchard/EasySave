@@ -175,6 +175,13 @@ namespace EasySave.GUI.ViewModels
         
         private async void ExecuteSelectedBackups()
         {
+            if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
+            {
+                MessageBox.Show("La sauvegarde ne peut pas être lancée car un logiciel métier est en cours d'exécution.",
+                    "Sauvegarde annulée", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            
             var selectedBackups = allBackups.Where(b => b.IsSelected).ToList();
             if (!selectedBackups.Any())
             {
