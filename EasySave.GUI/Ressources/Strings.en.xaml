@@ -1,0 +1,49 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <!-- CreateBackupWindow -->
+  <sys:String x:Key="CreateBackupWindow_Title">Create Backup</sys:String>
+  <sys:String x:Key="CreateBackup_BackupNameLabel">Backup Name:</sys:String>
+  <sys:String x:Key="CreateBackup_SourcePathLabel">Source Path:</sys:String>
+  <sys:String x:Key="CreateBackup_BrowseButton">Browse...</sys:String>
+  <sys:String x:Key="CreateBackup_TargetPathLabel">Target Path:</sys:String>
+  <sys:String x:Key="CreateBackup_BackupTypeLabel">Backup Type:</sys:String>
+  <sys:String x:Key="CreateBackup_CreateButton">Create</sys:String>
+  <sys:String x:Key="CreateBackup_CancelButton">Cancel</sys:String>
+
+  <!-- EditBackupWindow -->
+  <sys:String x:Key="EditBackupWindow_Title">Edit Backup</sys:String>
+  <sys:String x:Key="EditBackup_BackupNameLabel">Backup Name:</sys:String>
+  <sys:String x:Key="EditBackup_SourcePathLabel">Source Path:</sys:String>
+  <sys:String x:Key="EditBackup_BrowseButton">Browse...</sys:String>
+  <sys:String x:Key="EditBackup_TargetPathLabel">Target Path:</sys:String>
+  <sys:String x:Key="EditBackup_BackupTypeLabel">Backup Type:</sys:String>
+  <sys:String x:Key="EditBackup_SaveButton">Save</sys:String>
+  <sys:String x:Key="EditBackup_CancelButton">Cancel</sys:String>
+
+  <!-- LanguageSelectionWindow -->
+  <sys:String x:Key="LanguageSelectionWindow_Title">Select Language</sys:String>
+  <sys:String x:Key="LanguageSelection_Text">Choose Language</sys:String>
+  <sys:String x:Key="LanguageSelection_French">Français</sys:String>
+  <sys:String x:Key="LanguageSelection_English">English</sys:String>
+
+  <!-- LogTypeSelectionWindow -->
+  <sys:String x:Key="LogTypeSelectionWindow_Title">Log Type Selection</sys:String>
+  <sys:String x:Key="LogTypeSelection_Text">Choose log format</sys:String>
+
+  <!-- MainWindow -->
+  <sys:String x:Key="MainWindow_Title">EasySave - Backups</sys:String>
+  <sys:String x:Key="MainWindow_SearchPlaceholder">Search backup</sys:String>
+  <sys:String x:Key="MainWindow_CreateToolTip">Create a backup</sys:String>
+  <sys:String x:Key="MainWindow_ExecuteToolTip">Execute selected backups</sys:String>
+  <sys:String x:Key="MainWindow_DeleteToolTip">Delete selected backups</sys:String>
+  <sys:String x:Key="MainWindow_SettingsToolTip">Change settings</sys:String>
+  <sys:String x:Key="MainWindow_EditToolTip">Edit</sys:String>
+  <sys:String x:Key="MainWindow_SettingsButton">Settings</sys:String>
+
+  <!-- SettingsWindow -->
+  <sys:String x:Key="SettingsWindow_Title">Settings</sys:String>
+  <sys:String x:Key="Settings_LogFormatLabel">Log Format:</sys:String>
+  <sys:String x:Key="Settings_BusinessSoftwareLabel">Business Software:</sys:String>
+  <sys:String x:Key="Settings_SaveButton">Save</sys:String>
+</ResourceDictionary>

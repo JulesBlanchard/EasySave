@@ -1,5 +1,6 @@
+using System;
+using System.Windows;
 using System.Windows.Input;
-using EasySave.Utils;
 using EasySave.GUI.Views;
 
 namespace EasySave.GUI.ViewModels
@@ -17,9 +18,20 @@ namespace EasySave.GUI.ViewModels
             SelectEnglishCommand = new RelayCommand(SelectEnglish);
         }
 
+        private void SetLanguage(string lang)
+        {
+            // Choix du dictionnaire à charger en fonction du paramètre lang
+            string uri = lang == "fr" ? "Ressources/Strings.fr.xaml" : "Ressources/Strings.en.xaml";
+            ResourceDictionary dict = new ResourceDictionary { Source = new Uri(uri, UriKind.Relative) };
+
+            // Utilisation explicite de System.Windows.Application pour lever l'ambiguïté
+            System.Windows.Application.Current.Resources.MergedDictionaries.Clear();
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(dict);
+        }
+
         private void SelectFrench()
         {
-            LocalizationManager.CurrentMessages = Messages.French;
+            SetLanguage("fr");
             var logTypeWindow = new LogTypeSelectionWindow();
             logTypeWindow.Show();
             window.Close();
@@ -27,7 +39,7 @@ namespace EasySave.GUI.ViewModels
 
         private void SelectEnglish()
         {
-            LocalizationManager.CurrentMessages = Messages.English;
+            SetLanguage("en");
             var logTypeWindow = new LogTypeSelectionWindow();
             logTypeWindow.Show();
             window.Close();
