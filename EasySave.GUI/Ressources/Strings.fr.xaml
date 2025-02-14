@@ -1,0 +1,49 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <!-- CreateBackupWindow -->
+  <sys:String x:Key="CreateBackupWindow_Title">Créer une sauvegarde</sys:String>
+  <sys:String x:Key="CreateBackup_BackupNameLabel">Nom de la sauvegarde :</sys:String>
+  <sys:String x:Key="CreateBackup_SourcePathLabel">Dossier source :</sys:String>
+  <sys:String x:Key="CreateBackup_BrowseButton">Parcourir…</sys:String>
+  <sys:String x:Key="CreateBackup_TargetPathLabel">Dossier cible :</sys:String>
+  <sys:String x:Key="CreateBackup_BackupTypeLabel">Type de sauvegarde :</sys:String>
+  <sys:String x:Key="CreateBackup_CreateButton">Créer</sys:String>
+  <sys:String x:Key="CreateBackup_CancelButton">Annuler</sys:String>
+
+  <!-- EditBackupWindow -->
+  <sys:String x:Key="EditBackupWindow_Title">Modifier la sauvegarde</sys:String>
+  <sys:String x:Key="EditBackup_BackupNameLabel">Nom de la sauvegarde :</sys:String>
+  <sys:String x:Key="EditBackup_SourcePathLabel">Dossier source :</sys:String>
+  <sys:String x:Key="EditBackup_BrowseButton">Parcourir…</sys:String>
+  <sys:String x:Key="EditBackup_TargetPathLabel">Dossier cible :</sys:String>
+  <sys:String x:Key="EditBackup_BackupTypeLabel">Type de sauvegarde :</sys:String>
+  <sys:String x:Key="EditBackup_SaveButton">Enregistrer</sys:String>
+  <sys:String x:Key="EditBackup_CancelButton">Annuler</sys:String>
+
+  <!-- LanguageSelectionWindow -->
+  <sys:String x:Key="LanguageSelectionWindow_Title">Choix de la langue</sys:String>
+  <sys:String x:Key="LanguageSelection_Text">Choisissez la langue</sys:String>
+  <sys:String x:Key="LanguageSelection_French">Français</sys:String>
+  <sys:String x:Key="LanguageSelection_English">Anglais</sys:String>
+
+  <!-- LogTypeSelectionWindow -->
+  <sys:String x:Key="LogTypeSelectionWindow_Title">Choix du type de log</sys:String>
+  <sys:String x:Key="LogTypeSelection_Text">Choisissez le format du log</sys:String>
+
+  <!-- MainWindow -->
+  <sys:String x:Key="MainWindow_Title">EasySave - Sauvegardes</sys:String>
+  <sys:String x:Key="MainWindow_SearchPlaceholder">Rechercher une sauvegarde</sys:String>
+  <sys:String x:Key="MainWindow_CreateToolTip">Créer une sauvegarde</sys:String>
+  <sys:String x:Key="MainWindow_ExecuteToolTip">Exécuter les sauvegardes sélectionnées</sys:String>
+  <sys:String x:Key="MainWindow_DeleteToolTip">Supprimer les sauvegardes sélectionnées</sys:String>
+  <sys:String x:Key="MainWindow_SettingsToolTip">Modifier les réglages</sys:String>
+  <sys:String x:Key="MainWindow_EditToolTip">Éditer</sys:String>
+  <sys:String x:Key="MainWindow_SettingsButton">Réglages</sys:String>
+
+  <!-- SettingsWindow -->
+  <sys:String x:Key="SettingsWindow_Title">Réglages</sys:String>
+  <sys:String x:Key="Settings_LogFormatLabel">Format du log :</sys:String>
+  <sys:String x:Key="Settings_BusinessSoftwareLabel">Logiciel métier :</sys:String>
+  <sys:String x:Key="Settings_SaveButton">Enregistrer</sys:String>
+</ResourceDictionary>
