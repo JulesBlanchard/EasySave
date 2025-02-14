@@ -89,6 +89,7 @@ namespace EasySave.GUI.ViewModels
         public ICommand DeleteCommand { get; }
         public ICommand CreateBackupCommand { get; }
         public ICommand OpenSettingsCommand { get; } 
+        public ICommand OpenEncryptWindowCommand { get; }
 
         public MainViewModel()
         {
@@ -107,6 +108,7 @@ namespace EasySave.GUI.ViewModels
             DeleteCommand = new RelayCommand<Backup>(DeleteBackup);
             CreateBackupCommand = new RelayCommand(OpenCreateBackup);
             OpenSettingsCommand = new RelayCommand(OpenSettings);
+            OpenEncryptWindowCommand = new RelayCommand(OpenEncryptWindow);
             
             // Nouvelle commande pour exécuter les sauvegardes sélectionnées
             ExecuteSelectedCommand = new RelayCommand(ExecuteSelectedBackups);
@@ -277,6 +279,12 @@ namespace EasySave.GUI.ViewModels
             var createWindow = new Views.CreateBackupWindow();
             createWindow.ShowDialog();
             RefreshBackups();
+        }
+        
+        private void OpenEncryptWindow()
+        {
+            var encryptWindow = new Views.EncryptFileWindow();
+            encryptWindow.ShowDialog();
         }
 
         private void OpenSettings()

@@ -78,5 +78,17 @@ namespace EasySave.Logging
             doc.Root.Add(logEntry);
             doc.Save(filePath);
         }
+        
+        public void LogEncryption(string filePath, int encryptionTime)
+        {
+            XElement entry = new XElement("LogEntry",
+                new XElement("Operation", "Encryption"),
+                new XElement("FilePath", filePath),
+                new XElement("EncryptionTime", encryptionTime),
+                new XElement("TimeStamp", DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"))
+            );
+
+            WriteLogEntry(entry);
+        }
     }
 }

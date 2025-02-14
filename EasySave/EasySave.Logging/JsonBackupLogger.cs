@@ -96,5 +96,18 @@ namespace EasySave.Logging
             // 4. Overwrite the file with the updated JSON array
             File.WriteAllText(filePath, newJson);
         }
+        
+        public void LogEncryption(string filePath, int encryptionTime)
+        {
+            var entry = new
+            {
+                Operation = "Encryption",
+                FilePath = filePath,
+                EncryptionTime = encryptionTime, // 0: pas de cryptage, >0: temps en ms, <0: code erreur
+                TimeStamp = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")
+            };
+
+            WriteLogEntry(entry);
+        }
     }
 }

@@ -36,5 +36,7 @@ namespace EasySave.Logging
             string destFile,
             Exception ex
         );
+        
+        void LogEncryption(string filePath, int encryptionTime);
     }
 }
