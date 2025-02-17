@@ -9,18 +9,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6da76307-f07c-48c5-b10b-d13288254a82" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../EasySave.GUI/Ressources/Strings.en.xaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../EasySave.GUI/Ressources/Strings.fr.xaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/App.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/App.xaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/ViewModels/LanguageSelectionViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/ViewModels/LanguageSelectionViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/ViewModels/CreateBackupViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/ViewModels/CreateBackupViewModel.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../EasySave.GUI/Views/CreateBackupWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/Views/CreateBackupWindow.xaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/Views/EditBackupWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/Views/EditBackupWindow.xaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/Views/LanguageSelectionWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/Views/LanguageSelectionWindow.xaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Controllers/BackupController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Controllers/BackupController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Backup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Backup.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/DifferentialBackupStrategy.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/DifferentialBackupStrategy.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/FullBackupStrategy.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/FullBackupStrategy.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DpaMonitoringSettings">
+    <option name="firstShow" value="false" />
+  </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="feature/v2.0-autorized-type-files" />
+    <option name="OPTIONS">
+      <set>
+        <option value="NO_FF" />
+      </set>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -30,11 +41,32 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;SimonLAUNAY&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/JulesBlanchard/EasySave.git&quot;,
+    &quot;accountId&quot;: &quot;0da37a1d-a37d-4b73-8639-399493042d5c&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="mock://C:/Users/Launay/RiderProjects/EasySave/EasySave.GUI/ViewModels/EncryptFileViewModel .cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Launay/RiderProjects/EasySave/EasySave.GUI/ViewModels/EncryptFileViewModel .cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Launay/RiderProjects/EasySave/EasySave.GUI/ViewModels/EncryptFileViewModel .cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Models/Backup.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://diff.xaml" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://diff.xaml" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="false" />
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
   <component name="ProjectId" id="2sZhzeyw6OQiNjMtxF0PVzT6AGF" />
-  <component name="ProjectLevelVcsManager">
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
@@ -47,7 +79,7 @@
     ".NET Project.EasySave.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "develop",
+    "git-widget-placeholder": "v2.0-add-crypted-backup",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -93,6 +125,10 @@
         <option name="Build" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue=".NET Project.EasySave" />
+      <item itemvalue=".NET Project.EasySave.GUI" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -106,12 +142,33 @@
       <workItem from="1738843437653" duration="5825000" />
       <workItem from="1739355394215" duration="464000" />
       <workItem from="1739535363544" duration="1575000" />
+      <workItem from="1739539747226" duration="691000" />
+      <workItem from="1739812918635" duration="452000" />
+      <workItem from="1739832066915" duration="1594000" />
     </task>
+    <task id="LOCAL-00001" summary="Autorisation de certains type de fichiers pour encryptage">
+      <option name="closed" value="true" />
+      <created>1739539301358</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1739539301358</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Fix billingue application">
+      <option name="closed" value="true" />
+      <created>1739539584261</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1739539584261</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="false" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -126,5 +183,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="Autorisation de certains type de fichiers pour encryptage" />
+    <MESSAGE value="Fix billingue application" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix billingue application" />
   </component>
 </project>

@@ -43,6 +43,20 @@ namespace EasySave.GUI.ViewModels
             get => backupType;
             set { backupType = value; OnPropertyChanged(); }
         }
+        
+        private bool shouldEncrypt;
+        public bool ShouldEncrypt
+        {
+            get => shouldEncrypt;
+            set { shouldEncrypt = value; OnPropertyChanged(); }
+        }
+
+        private string encryptionKey;
+        public string EncryptionKey
+        {
+            get => encryptionKey;
+            set { encryptionKey = value; OnPropertyChanged(); }
+        }
 
         public ICommand CreateBackupCommand { get; }
         public ICommand CancelCommand { get; }
@@ -63,6 +77,7 @@ namespace EasySave.GUI.ViewModels
 
         private void CreateBackup()
         {
+            // Vérification des champs obligatoires
             if (string.IsNullOrWhiteSpace(BackupName))
             {
                 MessageBox.Show("Le nom de la sauvegarde ne peut pas être vide.", "Erreur de validation", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -78,6 +93,13 @@ namespace EasySave.GUI.ViewModels
                 MessageBox.Show("Le dossier cible ne peut pas être vide.", "Erreur de validation", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            if (ShouldEncrypt && string.IsNullOrWhiteSpace(EncryptionKey))
+            {
+                MessageBox.Show("La clé de chiffrement ne peut pas être vide si le cryptage est activé.", "Erreur de validation", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            // Si le dossier cible n'existe pas, proposer de le créer
             if (!Directory.Exists(TargetPath))
             {
                 var result = MessageBox.Show($"Le dossier cible '{TargetPath}' n'existe pas. Voulez-vous le créer ?", 
@@ -100,7 +122,7 @@ namespace EasySave.GUI.ViewModels
                 }
             }
 
-            backupController.CreateBackup(BackupName, SourcePath, TargetPath, BackupType);
+            backupController.CreateBackup(BackupName, SourcePath, TargetPath, BackupType, ShouldEncrypt, EncryptionKey);
             MessageBox.Show($"La sauvegarde '{BackupName}' a été créée avec succès.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
             window.Close();
         }

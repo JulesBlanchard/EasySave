@@ -19,6 +19,9 @@ namespace EasySave.Models
         
         private bool isSelected;
         
+        public bool ShouldEncrypt { get; set; }
+        public string EncryptionKey { get; set; }
+        
         /// <summary>
         /// Default constructor for deserialization.
         /// </summary>
