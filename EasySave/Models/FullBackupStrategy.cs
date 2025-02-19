@@ -71,6 +71,27 @@ namespace EasySave.Models
                     long transferTimeMs = (long)((DateTime.Now - startTime).TotalMilliseconds);
                     logger.LogTransfer(backup.Name, fileInfo.FullName, destFilePath, fileInfo.Length, transferTimeMs);
                     Console.WriteLine(LocalizationManager.CurrentMessages["FullBackup_Copied"].Replace("{name}", fileInfo.Name));
+                    
+                    // --- CRYPTAGE si activé ---
+                    if (backup.ShouldEncrypt)
+                    {
+                        // Récupérer l'extension du fichier et la comparer aux extensions autorisées
+                        string fileExtension = Path.GetExtension(fileInfo.FullName).ToLowerInvariant();
+                        var allowedExtensions = GeneralSettings.AllowedEncryptionFileTypes
+                            .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                            .Select(ext => ext.Trim().ToLowerInvariant());
+                        if (allowedExtensions.Contains(fileExtension))
+                        {
+                            var fileManager = new CryptoSoft.FileManager(destFilePath, backup.EncryptionKey);
+                            int encryptionTime = fileManager.TransformFile();
+                            logger.LogEncryption(destFilePath, encryptionTime);
+                            Console.WriteLine($"Fichier crypté en {encryptionTime} ms : {fileInfo.Name}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Le fichier {fileInfo.Name} (extension {fileExtension}) n'est pas autorisé pour le cryptage.");
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {

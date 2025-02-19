@@ -31,9 +31,14 @@ namespace EasySave.Controllers
         /// <summary>
         /// Crée une sauvegarde et la stocke dans le manager.
         /// </summary>
-        public void CreateBackup(string name, string source, string target, string strategyType)
+        public void CreateBackup(string name, string source, string target, string strategyType, bool shouldEncrypt, string encryptionKey)
         {
-            var backup = new Backup(name, source, target, strategyType);
+            var backup = new Backup(name, source, target, strategyType)
+            {
+                ShouldEncrypt = shouldEncrypt,
+                EncryptionKey = encryptionKey
+            };
+    
             if (strategyType.ToLower().StartsWith("f"))
                 backup.Strategy = new FullBackupStrategy();
             else
@@ -46,6 +51,7 @@ namespace EasySave.Controllers
             message = message.Replace("{name}", name).Replace("{strategy}", strategyType);
             // Vous pouvez logger ou afficher ce message selon vos besoins.
         }
+
         
         /// <summary>
         /// Permet de modifier une backup
