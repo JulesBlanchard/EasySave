@@ -47,7 +47,7 @@
   <sys:String x:Key="SettingsWindow_Title">Réglages</sys:String>
   <sys:String x:Key="Settings_LogFormatLabel">Format du log :</sys:String>
   <sys:String x:Key="Settings_BusinessSoftwareLabel">Logiciel métier :</sys:String>
-  <sys:String x:Key="Settings_AuthorizedFiles">Types de fichiers autorisés :</sys:String>
+  <sys:String x:Key="Settings_AuthorizedFiles">Types de fichiers autorisés pour cryptage :</sys:String>
   <sys:String x:Key="Settings_SaveButton">Enregistrer</sys:String>
   
   <!-- EncryptFileWindow -->
