@@ -59,8 +59,11 @@ namespace EasySave.Models
                 // Mettre en pause si un logiciel métier est lancé
                 while (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
                 {
-                    Thread.Sleep(500);
+                    PauseNotifierEvent.RequestPause();
+                    Thread.Sleep(500); // Attendre 500 ms avant de retester
                 }
+                // Une fois que le logiciel métier n'est plus détecté, on réinitialise le flag.
+                PauseNotifierEvent.Reset();
 
                 var relativePath = fileInfo.FullName.Substring(backup.SourcePath.Length).TrimStart('\\', '/');
                 var destFilePath = Path.Combine(backup.TargetPath, relativePath);

@@ -9,6 +9,7 @@ using System.Windows.Input;
 using EasySave.Controllers;
 using EasySave.Models;
 using EasySave.Utils;
+using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 
 namespace EasySave.GUI.ViewModels
@@ -21,7 +22,7 @@ namespace EasySave.GUI.ViewModels
         private int currentPage;
         private int totalPages;
         private readonly int itemsPerPage = 6;
-        
+
         public ICommand ExecuteSelectedCommand { get; }
         public ICommand DeleteSelectedCommand { get; }
 
@@ -32,7 +33,11 @@ namespace EasySave.GUI.ViewModels
         public ObservableCollection<Backup> PagedBackups
         {
             get => pagedBackups;
-            set { pagedBackups = value; OnPropertyChanged(); }
+            set
+            {
+                pagedBackups = value;
+                OnPropertyChanged();
+            }
         }
 
         public int CurrentPage
@@ -51,7 +56,7 @@ namespace EasySave.GUI.ViewModels
                 }
             }
         }
-        
+
         public int TotalPages
         {
             get => totalPages;
@@ -64,9 +69,10 @@ namespace EasySave.GUI.ViewModels
                 }
             }
         }
-        
+
         // Propriété de recherche
         private string searchQuery;
+
         public string SearchQuery
         {
             get => searchQuery;
@@ -88,7 +94,7 @@ namespace EasySave.GUI.ViewModels
         public ICommand EditCommand { get; }
         public ICommand DeleteCommand { get; }
         public ICommand CreateBackupCommand { get; }
-        public ICommand OpenSettingsCommand { get; } 
+        public ICommand OpenSettingsCommand { get; }
         public ICommand OpenEncryptWindowCommand { get; }
 
         public MainViewModel()
@@ -100,7 +106,7 @@ namespace EasySave.GUI.ViewModels
             nextPageCommand = new RelayCommand(NextPage, CanGoNext);
             previousPageCommand = new RelayCommand(PreviousPage, CanGoPrevious);
             lastPageCommand = new RelayCommand(LastPage, CanGoLast);
-            
+
             CurrentPage = 1;
 
             LaunchCommand = new RelayCommand<Backup>(LaunchBackup);
@@ -109,15 +115,18 @@ namespace EasySave.GUI.ViewModels
             CreateBackupCommand = new RelayCommand(OpenCreateBackup);
             OpenSettingsCommand = new RelayCommand(OpenSettings);
             OpenEncryptWindowCommand = new RelayCommand(OpenEncryptWindow);
-            
+
             // Nouvelle commande pour exécuter les sauvegardes sélectionnées
             ExecuteSelectedCommand = new RelayCommand(ExecuteSelectedBackups);
             // Nouvelle commande pour supprimer les sauvegardes sélectionnées
             DeleteSelectedCommand = new RelayCommand(DeleteSelectedBackups);
 
             backupController.BackupsChanged += RefreshBackups;
-            
+
             SearchQuery = string.Empty;
+            
+            PauseNotifierEvent.PauseRequested += OnPauseRequested;
+
         }
 
         private bool CanGoNext() => CurrentPage * itemsPerPage < allBackups.Count;
@@ -129,17 +138,19 @@ namespace EasySave.GUI.ViewModels
             if (CanGoNext())
                 CurrentPage++;
         }
+
         private void PreviousPage()
         {
             if (CanGoPrevious())
                 CurrentPage--;
         }
+
         private void LastPage()
         {
             if (CanGoLast())
                 CurrentPage = TotalPages;
         }
-        
+
         /// <summary>
         /// Retourne la liste complète filtrée selon le SearchQuery.
         /// </summary>
@@ -174,7 +185,7 @@ namespace EasySave.GUI.ViewModels
             foreach (var item in items)
                 pagedBackups.Add(item);
         }
-        
+
         /// <summary>
         /// Exécute en parallèle toutes les sauvegardes sélectionnées.
         /// </summary>
@@ -183,11 +194,12 @@ namespace EasySave.GUI.ViewModels
             // Vérifier si un logiciel métier est lancé pour interrompre l'exécution
             if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
             {
-                MessageBox.Show("La sauvegarde ne peut pas être lancée car un logiciel métier est en cours d'exécution.",
+                MessageBox.Show(
+                    "La sauvegarde ne peut pas être lancée car un logiciel métier est en cours d'exécution.",
                     "Sauvegarde annulée", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            
+
             var selectedBackups = allBackups.Where(b => b.IsSelected).ToList();
             if (!selectedBackups.Any())
             {
@@ -209,7 +221,7 @@ namespace EasySave.GUI.ViewModels
             MessageBox.Show("Les sauvegardes sélectionnées ont été exécutées.", "Succès",
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
-        
+
         private void DeleteSelectedBackups()
         {
             var selectedBackups = allBackups.Where(b => b.IsSelected).ToList();
@@ -220,7 +232,7 @@ namespace EasySave.GUI.ViewModels
                 return;
             }
 
-            if (MessageBox.Show("Voulez-vous supprimer les sauvegardes sélectionnées ?", "Confirmer la suppression", 
+            if (MessageBox.Show("Voulez-vous supprimer les sauvegardes sélectionnées ?", "Confirmer la suppression",
                     MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 // Supprimer en commençant par les indices les plus élevés pour éviter les décalages
@@ -231,6 +243,7 @@ namespace EasySave.GUI.ViewModels
                 {
                     backupController.DeleteBackup(index);
                 }
+
                 RefreshBackups();
                 MessageBox.Show("Les sauvegardes sélectionnées ont été supprimées.", "Succès",
                     MessageBoxButton.OK, MessageBoxImage.Information);
@@ -287,7 +300,7 @@ namespace EasySave.GUI.ViewModels
             createWindow.ShowDialog();
             RefreshBackups();
         }
-        
+
         private void OpenEncryptWindow()
         {
             var encryptWindow = new Views.EncryptFileWindow();
@@ -302,7 +315,20 @@ namespace EasySave.GUI.ViewModels
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+
+        private void OnPauseRequested()
+        {
+            // S'assurer d'être sur le thread UI
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MessageBox.Show(
+                    "Les sauvegardes sont en pause car le logiciel métier est en cours d'exécution.\nElles reprendront dès que le logiciel sera fermé.",
+                    "Sauvegardes en pause", MessageBoxButton.OK, MessageBoxImage.Information);
+            });
+        }
     }
 }
