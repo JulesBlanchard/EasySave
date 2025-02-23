@@ -5,15 +5,17 @@ using System.Xml.Linq;
 namespace EasySave.Logging
 {
     /// <summary>
-    /// Implements IBackupLogger to log backup operations in XML format.
+    /// Implémente IBackupLogger pour logger les opérations de sauvegarde au format XML.
     /// </summary>
     public class XmlBackupLogger : IBackupLogger
     {
         private string logDirectory;
+        // Verrou statique pour synchroniser l'accès aux fichiers de logs
+        private static readonly object _fileLock = new object();
 
         public XmlBackupLogger(string logDirectory)
         {
-            // The log directory is constructed from the execution directory.
+            // Le répertoire des logs est construit à partir du répertoire d'exécution.
             this.logDirectory = Path.Combine(AppContext.BaseDirectory, logDirectory);
             Directory.CreateDirectory(this.logDirectory);
         }
@@ -50,34 +52,6 @@ namespace EasySave.Logging
 
             WriteLogEntry(entry);
         }
-
-        private void WriteLogEntry(XElement logEntry)
-        {
-            // Daily log file named "yyyy-MM-dd-Log.xml"
-            string fileName = DateTime.Now.ToString("yyyy-MM-dd") + "-Log.xml";
-            string filePath = Path.Combine(logDirectory, fileName);
-
-            XDocument doc;
-            if (File.Exists(filePath))
-            {
-                try
-                {
-                    doc = XDocument.Load(filePath);
-                }
-                catch
-                {
-                    doc = new XDocument(new XElement("LogEntries"));
-                }
-            }
-            else
-            {
-                doc = new XDocument(new XElement("LogEntries"));
-            }
-
-            // Add the new entry to the document.
-            doc.Root.Add(logEntry);
-            doc.Save(filePath);
-        }
         
         public void LogEncryption(string filePath, int encryptionTime)
         {
@@ -89,6 +63,40 @@ namespace EasySave.Logging
             );
 
             WriteLogEntry(entry);
+        }
+
+        /// <summary>
+        /// Ecrit une entrée de log dans le fichier XML en s'assurant qu'un seul thread y accède à la fois.
+        /// </summary>
+        private void WriteLogEntry(XElement logEntry)
+        {
+            lock (_fileLock)
+            {
+                // Nom du fichier journal quotidien
+                string fileName = DateTime.Now.ToString("yyyy-MM-dd") + "-Log.xml";
+                string filePath = Path.Combine(logDirectory, fileName);
+
+                XDocument doc;
+                if (File.Exists(filePath))
+                {
+                    try
+                    {
+                        doc = XDocument.Load(filePath);
+                    }
+                    catch
+                    {
+                        doc = new XDocument(new XElement("LogEntries"));
+                    }
+                }
+                else
+                {
+                    doc = new XDocument(new XElement("LogEntries"));
+                }
+
+                // Ajout de la nouvelle entrée
+                doc.Root.Add(logEntry);
+                doc.Save(filePath);
+            }
         }
     }
 }

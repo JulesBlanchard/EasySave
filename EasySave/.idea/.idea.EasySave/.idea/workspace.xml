@@ -8,14 +8,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6da76307-f07c-48c5-b10b-d13288254a82" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/ViewModels/CreateBackupViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/ViewModels/CreateBackupViewModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/Views/CreateBackupWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/Views/CreateBackupWindow.xaml" afterDir="false" />
+    <list default="true" id="6da76307-f07c-48c5-b10b-d13288254a82" name="Changes" comment="fix : remove dead code">
+      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/ViewModels/MainViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/ViewModels/MainViewModel.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Controllers/BackupController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Controllers/BackupController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/Backup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Backup.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave.Logging/JsonBackupLogger.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave.Logging/JsonBackupLogger.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave.Logging/XmlBackupLogger.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave.Logging/XmlBackupLogger.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Models/DifferentialBackupStrategy.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/DifferentialBackupStrategy.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Models/FullBackupStrategy.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/FullBackupStrategy.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/StateManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/StateManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/GeneralSettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/GeneralSettings.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,19 +48,18 @@
     &quot;assignee&quot;: &quot;SimonLAUNAY&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/JulesBlanchard/EasySave.git&quot;,
-    &quot;accountId&quot;: &quot;0da37a1d-a37d-4b73-8639-399493042d5c&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/JulesBlanchard/EasySave.git",
+    "accountId": "0bee78f5-08f4-4873-b4db-fdb9a8acd83a"
   }
-}</component>
+}]]></component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock://C:/Users/Launay/RiderProjects/EasySave/EasySave.GUI/ViewModels/EncryptFileViewModel .cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Launay/RiderProjects/EasySave/EasySave.GUI/ViewModels/EncryptFileViewModel .cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Launay/RiderProjects/EasySave/EasySave.GUI/ViewModels/EncryptFileViewModel .cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/jules/Desktop/EasySave/EasySave.GUI/Views/LanguageSelectionWindow.xaml.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/jules/Desktop/EasySave/EasySave.GUI/Views/LanguageSelectionWindow.xaml.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Models/Backup.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://diff.xaml" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://diff.xaml" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/jules/Desktop/EasySave/EasySave/Models/DifferentialBackupStrategy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/jules/Desktop/EasySave/EasySave/Models/FullBackupStrategy.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="false" />
   <component name="ProjectColorInfo">{
@@ -79,7 +79,7 @@
     ".NET Project.EasySave.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "v2.0-add-crypted-backup",
+    "git-widget-placeholder": "feature/parallel__save",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -145,6 +145,7 @@
       <workItem from="1739539747226" duration="691000" />
       <workItem from="1739812918635" duration="452000" />
       <workItem from="1739832066915" duration="1594000" />
+      <workItem from="1740336468806" duration="4537000" />
     </task>
     <task id="LOCAL-00001" summary="Autorisation de certains type de fichiers pour encryptage">
       <option name="closed" value="true" />
@@ -162,7 +163,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739539584261</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="fix : remove dead code">
+      <option name="closed" value="true" />
+      <created>1740337367000</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1740337367000</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -185,6 +194,7 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="Autorisation de certains type de fichiers pour encryptage" />
     <MESSAGE value="Fix billingue application" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix billingue application" />
+    <MESSAGE value="fix : remove dead code" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix : remove dead code" />
   </component>
 </project>
