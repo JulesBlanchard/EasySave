@@ -10,10 +10,5 @@ namespace EasySave.GUI.Views
             InitializeComponent();
             DataContext = new LanguageSelectionViewModel(this);
         }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }
