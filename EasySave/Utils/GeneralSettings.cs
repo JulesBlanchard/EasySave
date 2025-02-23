@@ -14,5 +14,8 @@ namespace EasySave.Utils
         public static string BusinessSoftwareName { get; set; } = "";
         
         public static string AllowedEncryptionFileTypes { get; set; } = ".txt,.docx,.pdf";
+        
+        public static int MaxLargeFileSize { get; set; } = 500 * 1024;
+
     }
 }

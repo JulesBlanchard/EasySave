@@ -175,8 +175,12 @@ namespace EasySave.GUI.ViewModels
                 pagedBackups.Add(item);
         }
         
+        /// <summary>
+        /// Exécute en parallèle toutes les sauvegardes sélectionnées.
+        /// </summary>
         private async void ExecuteSelectedBackups()
         {
+            // Vérifier si un logiciel métier est lancé pour interrompre l'exécution
             if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
             {
                 MessageBox.Show("La sauvegarde ne peut pas être lancée car un logiciel métier est en cours d'exécution.",
@@ -192,12 +196,15 @@ namespace EasySave.GUI.ViewModels
                 return;
             }
 
-            // Exécuter chacune des sauvegardes sélectionnées
-            foreach (var backup in selectedBackups)
+            // Lancer toutes les sauvegardes simultanément dans des tâches séparées
+            var tasks = selectedBackups.Select(backup =>
             {
                 int index = allBackups.IndexOf(backup);
-                await Task.Run(() => backupController.ExecuteBackup(index));
-            }
+                return Task.Run(() => backupController.ExecuteBackup(index));
+            }).ToList();
+
+            // Attendre que toutes les sauvegardes se terminent
+            await Task.WhenAll(tasks);
 
             MessageBox.Show("Les sauvegardes sélectionnées ont été exécutées.", "Succès",
                 MessageBoxButton.OK, MessageBoxImage.Information);

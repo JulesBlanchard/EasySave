@@ -1,19 +1,21 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using EasySave.Logging;
 using EasySave.Utils;
 
 namespace EasySave.Models
 {
     /// <summary>
-    /// Implémente une stratégie de sauvegarde FULL.
+    /// Implémente une stratégie de sauvegarde FULL avec parallélisation.
     /// </summary>
     public class FullBackupStrategy : IBackupStrategy
     {
         public void Execute(Backup backup, IBackupLogger logger)
         {
-            // Si le logiciel métier est déjà lancé, on ne démarre pas la sauvegarde.
+            // Vérifier si le logiciel métier est lancé avant de démarrer
             if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
             {
                 var ex = new Exception("Sauvegarde annulée : logiciel métier détecté avant démarrage.");
@@ -43,39 +45,53 @@ namespace EasySave.Models
 
             DateTime startTimeGlobal = DateTime.Now;
             int processedFiles = 0;
+            object stateLock = new object();
 
-            foreach (var fileInfo in files)
+            // Seuil pour les fichiers volumineux défini dans GeneralSettings
+            int thresholdBytes = GeneralSettings.MaxLargeFileSize;
+            // Semaphore pour s'assurer qu'un seul gros fichier est transféré à la fois
+            SemaphoreSlim largeFileSemaphore = new SemaphoreSlim(1, 1);
+
+            // Parcours des fichiers en parallèle
+            Parallel.ForEach(files, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, fileInfo =>
             {
-                // Avant de lancer la copie d'un nouveau fichier, on vérifie si le logiciel métier est apparu.
-                if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
+                // Mettre en pause si un logiciel métier est détecté
+                while (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
                 {
-                    var ex = new Exception("Sauvegarde interrompue : logiciel métier détecté durant l'exécution.");
-                    logger.LogError(backup.Name, fileInfo.FullName, "", ex);
-                    Console.WriteLine("Sauvegarde interrompue : logiciel métier détecté. Fin de la sauvegarde en cours.");
-                    break; // On arrête le traitement des fichiers suivants.
+                    Thread.Sleep(500);
                 }
 
                 var relativePath = fileInfo.FullName.Substring(backup.SourcePath.Length).TrimStart('\\', '/');
                 var destFilePath = Path.Combine(backup.TargetPath, relativePath);
 
+                // Dans FULL, tous les fichiers sont copiés, on crée donc toujours le dossier cible
                 Directory.CreateDirectory(Path.GetDirectoryName(destFilePath));
 
-                state.SourceFilePath = fileInfo.FullName;
-                state.TargetFilePath = destFilePath;
-                StateManager.UpdateState(state);
+                // Mise à jour de l'état pour indiquer le fichier en cours
+                lock (stateLock)
+                {
+                    state.SourceFilePath = fileInfo.FullName;
+                    state.TargetFilePath = destFilePath;
+                    StateManager.UpdateState(state);
+                }
 
-                var startTime = DateTime.Now;
+                // Si le fichier est volumineux, attendre le sémaphore
+                if (fileInfo.Length > thresholdBytes)
+                {
+                    largeFileSemaphore.Wait();
+                }
+
                 try
                 {
+                    var startTime = DateTime.Now;
                     File.Copy(fileInfo.FullName, destFilePath, true);
                     long transferTimeMs = (long)((DateTime.Now - startTime).TotalMilliseconds);
                     logger.LogTransfer(backup.Name, fileInfo.FullName, destFilePath, fileInfo.Length, transferTimeMs);
                     Console.WriteLine(LocalizationManager.CurrentMessages["FullBackup_Copied"].Replace("{name}", fileInfo.Name));
-                    
-                    // --- CRYPTAGE si activé ---
+
+                    // Traitement du cryptage si activé
                     if (backup.ShouldEncrypt)
                     {
-                        // Récupérer l'extension du fichier et la comparer aux extensions autorisées
                         string fileExtension = Path.GetExtension(fileInfo.FullName).ToLowerInvariant();
                         var allowedExtensions = GeneralSettings.AllowedEncryptionFileTypes
                             .Split(',', StringSplitOptions.RemoveEmptyEntries)
@@ -100,21 +116,24 @@ namespace EasySave.Models
                         .Replace("{name}", fileInfo.Name)
                         .Replace("{error}", ex.Message));
                 }
+                finally
+                {
+                    if (fileInfo.Length > thresholdBytes)
+                    {
+                        largeFileSemaphore.Release();
+                    }
+                }
 
-                processedFiles++;
-                state.NbFilesLeftToDo = totalFiles - processedFiles;
-                state.Progression = (int)((processedFiles / (double)totalFiles) * 100);
-                StateManager.UpdateState(state);
+                // Mise à jour de la progression
+                lock (stateLock)
+                {
+                    processedFiles++;
+                    state.NbFilesLeftToDo = totalFiles - processedFiles;
+                    state.Progression = (int)((processedFiles / (double)totalFiles) * 100);
+                    StateManager.UpdateState(state);
+                }
+            });
 
-                TimeSpan elapsed = DateTime.Now - startTimeGlobal;
-                double averageTimePerFile = elapsed.TotalMilliseconds / processedFiles;
-                int filesRemaining = totalFiles - processedFiles;
-                double estimatedMsRemaining = filesRemaining * averageTimePerFile;
-                string progressMsg = LocalizationManager.CurrentMessages["FullBackup_Progress"]
-                                        .Replace("{progress}", state.Progression.ToString())
-                                        .Replace("{time}", TimeSpan.FromMilliseconds(estimatedMsRemaining).ToString(@"hh\:mm\:ss"));
-                Console.Write($"\r{progressMsg}");
-            }
             Console.WriteLine();
             Console.WriteLine(LocalizationManager.CurrentMessages["FullBackup_Finished"].Replace("{name}", backup.Name));
 
