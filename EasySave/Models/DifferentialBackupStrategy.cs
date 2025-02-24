@@ -126,7 +126,7 @@ namespace EasySave.Models
                         try
                         {
                             var startTime = DateTime.Now;
-                            File.Copy(fileInfo.FullName, destFilePath, true);
+                            FileHelper.CopyFileWithCancellation(fileInfo.FullName, destFilePath, backup);
                             long transferTimeMs = (long)((DateTime.Now - startTime).TotalMilliseconds);
 
                             // Log
