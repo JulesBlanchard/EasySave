@@ -7,7 +7,9 @@ namespace EasySave.Models
     {
         NotStarted,
         Active,
+        Paused,
         End,
         Error
     }
+
 }

@@ -16,11 +16,41 @@ namespace EasySave.Models
         public string SourcePath { get; set; }
         public string TargetPath { get; set; }
         public string BackupType { get; set; }
-        
+        public BackupStatus status { get; set; } = BackupStatus.NotStarted;
+
+        private int progression;
+
         private bool isSelected;
         
         public bool ShouldEncrypt { get; set; }
         public string EncryptionKey { get; set; }
+        public BackupJobControl JobControl { get; set; } = new BackupJobControl();
+
+        public BackupStatus Status
+        {
+            get => status;
+            set
+            {
+                if (status != value)
+                {
+                    status = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
+        public int Progression
+        {
+            get => progression;
+            set
+            {
+                if (progression != value)
+                {
+                    progression = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         
         /// <summary>
         /// Default constructor for deserialization.
@@ -37,6 +67,7 @@ namespace EasySave.Models
             TargetPath = target;
             BackupType = backupType;
         }
+        
         
         /// <summary>
         /// Propriété utilisée pour la sélection dans l'interface. 
@@ -98,5 +129,18 @@ namespace EasySave.Models
                 Console.WriteLine($"[Backup] No strategy defined for '{Name}'. Nothing to do.");
             }
         }
+        
+// Dans Backup.cs
+        public void Reset()
+        {
+            // Recrée un nouveau JobControl (donc un nouveau CancellationToken)
+            this.JobControl = new BackupJobControl();
+    
+            // Remet la progression et le statut à zéro.
+            this.Progression = 0;
+            this.Status = BackupStatus.NotStarted;
+        }
+
+
     }
 }
