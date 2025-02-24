@@ -103,6 +103,10 @@ namespace EasySave.Models
 
                     bool isPriority = priorityExtensions.Contains(Path.GetExtension(fileInfo.FullName).ToLowerInvariant());
 
+                    // TODO : Pendant la détection du logiciel métier, 
+                    //        on voudrait griser le bouton Pause dans l'IHM de suivi.
+                    //        Actuellement, on met en pause la sauvegarde automatiquement 
+                    //        via PauseNotifierEvent.RequestPause().
                     // Vérifier si un logiciel métier apparaît en cours d'exécution
                     while (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
                     {
