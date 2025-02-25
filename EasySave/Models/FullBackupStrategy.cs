@@ -108,7 +108,12 @@ namespace EasySave.Models
                     }
                     // Vérifier si Pause a été enclenchée
                     backup.JobControl.WaitIfPaused();
-
+                    // Dès que la pause est levée, remettre l'état à Active
+                    lock (stateLock)
+                    {
+                        state.Status = BackupStatus.Active;
+                        StateManager.UpdateState(state);
+                    }
                     bool isPriority = priorityExtensions.Contains(Path.GetExtension(fileInfo.FullName).ToLowerInvariant());
 
                     // TODO : Pendant la détection du logiciel métier, 

@@ -96,6 +96,11 @@ namespace EasySave.Models
                     }
                     backup.JobControl.WaitIfPaused();
 
+                    lock (stateLock)
+                    {
+                        state.Status = BackupStatus.Active;
+                        StateManager.UpdateState(state);
+                    }
                     // Vérifier si un logiciel métier apparaît pendant la sauvegarde
                     while (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
                     {
