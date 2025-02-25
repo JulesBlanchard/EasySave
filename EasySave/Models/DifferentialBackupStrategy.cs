@@ -86,7 +86,14 @@ namespace EasySave.Models
                 {
                     // Vérifier annulation
                     token.ThrowIfCancellationRequested();
-                    // Vérifier pause
+                    if (backup.JobControl.IsPaused)
+                    {
+                        lock (stateLock)
+                        {
+                            state.Status = BackupStatus.Paused;
+                            StateManager.UpdateState(state);
+                        }
+                    }
                     backup.JobControl.WaitIfPaused();
 
                     // Vérifier si un logiciel métier apparaît pendant la sauvegarde
