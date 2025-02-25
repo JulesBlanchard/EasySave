@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
@@ -40,7 +41,7 @@ namespace EasySave.RemoteConsole
             try
             {
                 client = new TcpClient();
-                await client.ConnectAsync("10.131.130.100", 5000); // adresse et port du serveur
+                await client.ConnectAsync("192.168.187.152", 5000); // Adresse et port du serveur (à adapter)
                 stream = client.GetStream();
                 isConnected = true;
                 Console.WriteLine("Client connected successfully to server.");
@@ -69,6 +70,8 @@ namespace EasySave.RemoteConsole
                             BackupStates.Clear();
                             foreach (var state in states)
                             {
+                                // Initialiser IsSelected à false pour chaque sauvegarde
+                                state.IsSelected = false;
                                 BackupStates.Add(state);
                             }
                         });
@@ -84,25 +87,28 @@ namespace EasySave.RemoteConsole
 
         private void PauseSelected()
         {
-            if (BackupStates.Count > 0)
+            var selectedStates = BackupStates.Where(b => b.IsSelected).ToList();
+            foreach (var state in selectedStates)
             {
-                string command = $"COMMAND {BackupStates[0].Name} PAUSE";
+                string command = $"COMMAND {state.Name} PAUSE";
                 SendCommand(command);
             }
         }
         private void ResumeSelected()
         {
-            if (BackupStates.Count > 0)
+            var selectedStates = BackupStates.Where(b => b.IsSelected).ToList();
+            foreach (var state in selectedStates)
             {
-                string command = $"COMMAND {BackupStates[0].Name} RESUME";
+                string command = $"COMMAND {state.Name} RESUME";
                 SendCommand(command);
             }
         }
         private void StopSelected()
         {
-            if (BackupStates.Count > 0)
+            var selectedStates = BackupStates.Where(b => b.IsSelected).ToList();
+            foreach (var state in selectedStates)
             {
-                string command = $"COMMAND {BackupStates[0].Name} STOP";
+                string command = $"COMMAND {state.Name} STOP";
                 SendCommand(command);
             }
         }

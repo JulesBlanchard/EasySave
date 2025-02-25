@@ -1,29 +1,28 @@
-namespace EasySave.Models
+using EasySave.Models;
+
+public class BackupState
 {
-    /// <summary>
-    /// Represents the state of a backup, including progress and file statistics.
-    /// </summary>
-    public class BackupState
-    {
-        // Backup name.
-        public string Name { get; set; }
-        // Current source file path being processed (empty if none).
-        public string SourceFilePath { get; set; }
-        // Current target file path being processed (empty if none).
-        public string TargetFilePath { get; set; }
-        // Backup status (enum: NotStarted, Active, End, Error).
-        public BackupStatus Status { get; set; } = BackupStatus.NotStarted;
-        // Total number of files to copy.
-        public int TotalFilesToCopy { get; set; }
-        // Total size of all files to copy (in bytes).
-        public long TotalFilesSize { get; set; }
-        // Unit for the total file size.
-        public string TotalFilesSizeUnit { get; set; } = "octets";
-        // Number of files left to copy.
-        public int NbFilesLeftToDo { get; set; }
-        // Progress percentage (0 to 100).
-        public int Progression { get; set; }
-        // Timestamp of the last action.
-        public string LastActionTimestamp { get; set; }
-    }
+    // Nom de la sauvegarde.
+    public string Name { get; set; }
+    // Chemin source en cours.
+    public string SourceFilePath { get; set; }
+    // Chemin cible en cours.
+    public string TargetFilePath { get; set; }
+    // Statut de la sauvegarde.
+    public BackupStatus Status { get; set; } = BackupStatus.NotStarted;
+    // Nombre total de fichiers à copier.
+    public int TotalFilesToCopy { get; set; }
+    // Taille totale des fichiers (en octets).
+    public long TotalFilesSize { get; set; }
+    // Unité de la taille.
+    public string TotalFilesSizeUnit { get; set; } = "octets";
+    // Nombre de fichiers restant.
+    public int NbFilesLeftToDo { get; set; }
+    // Progression en pourcentage.
+    public int Progression { get; set; }
+    // Timestamp de la dernière action.
+    public string LastActionTimestamp { get; set; }
+    
+    // Propriété pour la sélection dans la console distante.
+    public bool IsSelected { get; set; }
 }

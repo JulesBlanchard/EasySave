@@ -11,11 +11,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6da76307-f07c-48c5-b10b-d13288254a82" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/Remote/RemoteConsoleServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/Remote/RemoteConsoleServer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EasySave.RemoteConsole/App.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.RemoteConsole/App.xaml.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../EasySave.RemoteConsole/RemoteConsoleViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.RemoteConsole/RemoteConsoleViewModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EasySave.RemoteConsole/RemoteConsoleWindow.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.RemoteConsole/RemoteConsoleWindow.xaml.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../EasySave.RemoteConsole/RemoteConsoleWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.RemoteConsole/RemoteConsoleWindow.xaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/BackupState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/BackupState.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,7 +65,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected=".NET Project.EasySave.GUI">
+  <component name="RunManager" selected=".NET Project.EasySave.RemoteConsole">
     <configuration name="EasySave" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />

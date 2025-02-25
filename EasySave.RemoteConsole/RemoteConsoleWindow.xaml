@@ -7,9 +7,18 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <ListView ItemsSource="{Binding BackupStates}" Grid.Row="0">
+        <ListView ItemsSource="{Binding BackupStates}" Grid.Row="0" SelectionMode="Extended">
             <ListView.View>
                 <GridView>
+                    <!-- Colonne de sélection -->
+                    <GridViewColumn Width="30">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <!-- Colonnes d'information -->
                     <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="120"/>
                     <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="80"/>
                     <GridViewColumn Header="Progress" DisplayMemberBinding="{Binding Progression}" Width="80"/>
