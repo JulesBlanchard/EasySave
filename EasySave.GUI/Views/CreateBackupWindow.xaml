@@ -16,7 +16,6 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-
         <!-- Définition des lignes -->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/> <!-- Ligne 0 : Nom de la sauvegarde -->
@@ -27,7 +26,6 @@
             <RowDefinition Height="Auto"/> <!-- Ligne 5 : Boutons d'action -->
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
         <!-- Ligne 0 : Nom de la sauvegarde -->
         <Label Grid.Row="0" Grid.Column="0"
                Content="{DynamicResource CreateBackup_BackupNameLabel}"
@@ -35,7 +33,6 @@
         <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
                  Text="{Binding BackupName, Mode=TwoWay}"
                  Margin="5"/>
-
         <!-- Ligne 1 : Dossier source avec bouton -->
         <Label Grid.Row="1" Grid.Column="0"
                Content="{DynamicResource CreateBackup_SourcePathLabel}"
@@ -47,7 +44,6 @@
                 Content="{DynamicResource CreateBackup_BrowseButton}"
                 Command="{Binding BrowseSourceCommand}"
                 Margin="5"/>
-
         <!-- Ligne 2 : Dossier cible avec bouton -->
         <Label Grid.Row="2" Grid.Column="0"
                Content="{DynamicResource CreateBackup_TargetPathLabel}"
@@ -59,7 +55,6 @@
                 Content="{DynamicResource CreateBackup_BrowseButton}"
                 Command="{Binding BrowseTargetCommand}"
                 Margin="5"/>
-
         <!-- Ligne 3 : Type de sauvegarde -->
         <Label Grid.Row="3" Grid.Column="0"
                Content="{DynamicResource CreateBackup_BackupTypeLabel}"
@@ -68,11 +63,10 @@
                   SelectedValue="{Binding BackupType, Mode=TwoWay}"
                   SelectedValuePath="Content"
                   Margin="5">
-            <ComboBoxItem Content="full" />
-            <ComboBoxItem Content="diff" />
+            <ComboBoxItem Content="{DynamicResource CreateBackup_BackupTypeFull}" />
+            <ComboBoxItem Content="{DynamicResource CreateBackup_BackupTypeDiff}" />
         </ComboBox>
-
-        <!-- Ligne 4 : Option de cryptage (affiche la zone de saisie de la clé uniquement si coché) -->
+        <!-- Ligne 4 : Option de cryptage -->
         <Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -80,21 +74,20 @@
             </Grid.ColumnDefinitions>
             <!-- Case à cocher pour activer le cryptage -->
             <CheckBox Grid.Column="0"
-                      Content="Crypter"
+                      Content="{DynamicResource CreateBackup_Crypt}"
                       IsChecked="{Binding ShouldEncrypt}"
                       VerticalAlignment="Center"
                       Margin="0,0,10,0"/>
-            <!-- Zone de saisie de la clé de chiffrement (visible uniquement si ShouldEncrypt est vrai) -->
+            <!-- Zone de saisie de la clé de chiffrement -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center"
                         Visibility="{Binding ShouldEncrypt, Converter={StaticResource BoolToVis}}">
-                <Label Content="Clé de chiffrement:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <Label Content="{DynamicResource CreateBackup_EncryptionKeyLabel}" VerticalAlignment="Center" Margin="0,0,5,0"/>
                 <TextBox Width="200"
                          Text="{Binding EncryptionKey, Mode=TwoWay}"
-                         ToolTip="Entrez la clé de chiffrement"/>
+                         ToolTip="{DynamicResource CreateBackup_EncryptionKeyToolTip}"/>
             </StackPanel>
         </Grid>
-
-        <!-- Ligne 5 : Boutons d'action sur une ligne séparée -->
+        <!-- Ligne 5 : Boutons d'action -->
         <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"

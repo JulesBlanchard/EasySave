@@ -1,6 +1,20 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <!-- Common -->
+  <sys:String x:Key="Common_Error">Erreur</sys:String>
+  <sys:String x:Key="Common_Success">Succès</sys:String>
+  <sys:String x:Key="Common_Warning">Avertissement</sys:String>
+  <sys:String x:Key="Common_ValidationError">Erreur de validation</sys:String>
+  <sys:String x:Key="Common_TargetFolderNotFound">Dossier cible non trouvé</sys:String>
+  <sys:String x:Key="Common_Information">Information</sys:String>
+
+  <!-- BackupProgressWindow -->
+  <sys:String x:Key="BackupProgressWindow_Title">Suivi des sauvegardes</sys:String>
+  <sys:String x:Key="BackupProgressWindow_Pause">Pause</sys:String>
+  <sys:String x:Key="BackupProgressWindow_Resume">Reprendre</sys:String>
+  <sys:String x:Key="BackupProgressWindow_Stop">Arrêter</sys:String>
+
   <!-- CreateBackupWindow -->
   <sys:String x:Key="CreateBackupWindow_Title">Créer une sauvegarde</sys:String>
   <sys:String x:Key="CreateBackup_BackupNameLabel">Nom de la sauvegarde :</sys:String>
@@ -8,8 +22,21 @@
   <sys:String x:Key="CreateBackup_BrowseButton">Parcourir…</sys:String>
   <sys:String x:Key="CreateBackup_TargetPathLabel">Dossier cible :</sys:String>
   <sys:String x:Key="CreateBackup_BackupTypeLabel">Type de sauvegarde :</sys:String>
+  <sys:String x:Key="CreateBackup_BackupTypeFull">Complète</sys:String>
+  <sys:String x:Key="CreateBackup_BackupTypeDiff">Différentielle</sys:String>
+  <sys:String x:Key="CreateBackup_Crypt">Crypter</sys:String>
+  <sys:String x:Key="CreateBackup_EncryptionKeyLabel">Clé de chiffrement :</sys:String>
+  <sys:String x:Key="CreateBackup_EncryptionKeyToolTip">Entrez la clé de chiffrement</sys:String>
   <sys:String x:Key="CreateBackup_CreateButton">Créer</sys:String>
   <sys:String x:Key="CreateBackup_CancelButton">Annuler</sys:String>
+  <!-- CreateBackup Error Messages -->
+  <sys:String x:Key="CreateBackup_NameEmpty">Le nom de la sauvegarde ne peut pas être vide.</sys:String>
+  <sys:String x:Key="CreateBackup_SourceNotExist">Le dossier source n'existe pas.</sys:String>
+  <sys:String x:Key="CreateBackup_TargetEmpty">Le dossier cible ne peut pas être vide.</sys:String>
+  <sys:String x:Key="CreateBackup_EmptyEncryptionKey">La clé de chiffrement ne peut pas être vide si le cryptage est activé.</sys:String>
+  <sys:String x:Key="CreateBackup_TargetNotExist">Le dossier cible '{0}' n'existe pas. Voulez-vous le créer ?</sys:String>
+  <sys:String x:Key="CreateBackup_TargetCreationError">Erreur lors de la création du dossier cible : {0}</sys:String>
+  <sys:String x:Key="CreateBackup_Success">La sauvegarde '{0}' a été créée avec succès.</sys:String>
 
   <!-- EditBackupWindow -->
   <sys:String x:Key="EditBackupWindow_Title">Modifier la sauvegarde</sys:String>
@@ -18,8 +45,17 @@
   <sys:String x:Key="EditBackup_BrowseButton">Parcourir…</sys:String>
   <sys:String x:Key="EditBackup_TargetPathLabel">Dossier cible :</sys:String>
   <sys:String x:Key="EditBackup_BackupTypeLabel">Type de sauvegarde :</sys:String>
+  <sys:String x:Key="EditBackup_BackupTypeFull">Complète</sys:String>
+  <sys:String x:Key="EditBackup_BackupTypeDiff">Différentielle</sys:String>
   <sys:String x:Key="EditBackup_SaveButton">Enregistrer</sys:String>
   <sys:String x:Key="EditBackup_CancelButton">Annuler</sys:String>
+  <!-- EditBackup Error Messages -->
+  <sys:String x:Key="EditBackup_NameEmpty">Le nom de la sauvegarde ne peut pas être vide.</sys:String>
+  <sys:String x:Key="EditBackup_SourceNotExist">Le dossier source n'existe pas.</sys:String>
+  <sys:String x:Key="EditBackup_TargetEmpty">Le dossier cible ne peut pas être vide.</sys:String>
+  <sys:String x:Key="EditBackup_TargetNotExist">Le dossier cible '{0}' n'existe pas. Voulez-vous le créer ?</sys:String>
+  <sys:String x:Key="EditBackup_TargetCreationError">Erreur lors de la création du dossier cible : {0}</sys:String>
+  <sys:String x:Key="EditBackup_Success">La sauvegarde '{0}' a été modifiée avec succès.</sys:String>
 
   <!-- LanguageSelectionWindow -->
   <sys:String x:Key="LanguageSelectionWindow_Title">Choix de la langue</sys:String>
@@ -30,6 +66,8 @@
   <!-- LogTypeSelectionWindow -->
   <sys:String x:Key="LogTypeSelectionWindow_Title">Choix du type de log</sys:String>
   <sys:String x:Key="LogTypeSelection_Text">Choisissez le format du log</sys:String>
+  <sys:String x:Key="LogTypeSelection_XML">XML</sys:String>
+  <sys:String x:Key="LogTypeSelection_JSON">JSON</sys:String>
 
   <!-- MainWindow -->
   <sys:String x:Key="MainWindow_Title">EasySave - Sauvegardes</sys:String>
@@ -41,15 +79,29 @@
   <sys:String x:Key="MainWindow_EditToolTip">Éditer</sys:String>
   <sys:String x:Key="MainWindow_SettingsButton">Réglages</sys:String>
   <sys:String x:Key="MainWindow_Crypt">Crypter un fichier</sys:String>
-
+  <sys:String x:Key="MainWindow_TrackingButton">Suivi</sys:String>
+  <sys:String x:Key="MainWindow_TrackingToolTip">Afficher le suivi des sauvegardes en cours</sys:String>
+  <sys:String x:Key="MainWindow_CreateButtonContent">+</sys:String>
+  <sys:String x:Key="MainWindow_PreviousPage">&lt;</sys:String>
+  <sys:String x:Key="MainWindow_NextPage">&gt;</sys:String>
+  <sys:String x:Key="MainWindow_PageSeparator">/</sys:String>
+  <!-- MainViewModel Error/Information Messages -->
+  <sys:String x:Key="Main_JobRunning">La sauvegarde ne peut pas être lancée car un logiciel métier est en cours d'exécution.</sys:String>
+  <sys:String x:Key="Main_NoSelection">Veuillez sélectionner au moins une sauvegarde.</sys:String>
+  <sys:String x:Key="Main_SuccessAll">Les sauvegardes sélectionnées ont été exécutées avec succès.</sys:String>
+  <sys:String x:Key="Main_PartialSuccess">Certaines sauvegardes n'ont pas atteint 100% (arrêtées ou incomplètes).</sys:String>
+  <sys:String x:Key="Main_Stopped">Les sauvegardes sélectionnées ont été stoppées par l'utilisateur.</sys:String>
+  <sys:String x:Key="Main_ExecutionError">Erreur lors de l'exécution : {0}</sys:String>
 
   <!-- SettingsWindow -->
   <sys:String x:Key="SettingsWindow_Title">Réglages</sys:String>
   <sys:String x:Key="Settings_LogFormatLabel">Format du log :</sys:String>
   <sys:String x:Key="Settings_BusinessSoftwareLabel">Logiciel métier :</sys:String>
   <sys:String x:Key="Settings_AuthorizedFiles">Types de fichiers autorisés pour cryptage :</sys:String>
+  <sys:String x:Key="Settings_PriorityTypesLabel">Types prioritaires :</sys:String>
+  <sys:String x:Key="Settings_PriorityExtensionsToolTip">Entrez les extensions prioritaires séparées par des virgules (ex : .exe, .pdf)</sys:String>
   <sys:String x:Key="Settings_SaveButton">Enregistrer</sys:String>
-  
+
   <!-- EncryptFileWindow -->
   <sys:String x:Key="EncryptFileWindow_Title">Crypter un fichier</sys:String>
   <sys:String x:Key="FileSelector">Fichier :</sys:String>
@@ -57,6 +109,12 @@
   <sys:String x:Key="KeyEditor">Clé :</sys:String>
   <sys:String x:Key="EncryptButton">Crypter</sys:String>
   <sys:String x:Key="CancelButton">Annuler</sys:String>
-  
-  
+  <!-- EncryptFile Error Messages -->
+  <sys:String x:Key="EncryptFile_InvalidFile">Veuillez sélectionner un fichier valide.</sys:String>
+  <sys:String x:Key="EncryptFile_EmptyKey">La clé de cryptage ne peut pas être vide.</sys:String>
+  <sys:String x:Key="EncryptFile_NotAllowedType">Les fichiers de type {0} ne sont pas autorisés pour le cryptage.</sys:String>
+  <sys:String x:Key="EncryptFile_Failure">Le cryptage a échoué (code erreur {0}).</sys:String>
+  <sys:String x:Key="EncryptFile_NoEncryption">Aucun cryptage n'a été effectué.</sys:String>
+  <sys:String x:Key="EncryptFile_Success">Cryptage effectué en {0} ms.</sys:String>
+  <sys:String x:Key="EncryptFile_Error">Erreur lors du cryptage : {0}</sys:String>
 </ResourceDictionary>

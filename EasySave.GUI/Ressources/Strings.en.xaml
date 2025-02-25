@@ -1,6 +1,20 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <!-- Common -->
+  <sys:String x:Key="Common_Error">Error</sys:String>
+  <sys:String x:Key="Common_Success">Success</sys:String>
+  <sys:String x:Key="Common_Warning">Warning</sys:String>
+  <sys:String x:Key="Common_ValidationError">Validation Error</sys:String>
+  <sys:String x:Key="Common_TargetFolderNotFound">Target Folder Not Found</sys:String>
+  <sys:String x:Key="Common_Information">Information</sys:String>
+
+  <!-- BackupProgressWindow -->
+  <sys:String x:Key="BackupProgressWindow_Title">Backup Progress</sys:String>
+  <sys:String x:Key="BackupProgressWindow_Pause">Pause</sys:String>
+  <sys:String x:Key="BackupProgressWindow_Resume">Resume</sys:String>
+  <sys:String x:Key="BackupProgressWindow_Stop">Stop</sys:String>
+
   <!-- CreateBackupWindow -->
   <sys:String x:Key="CreateBackupWindow_Title">Create Backup</sys:String>
   <sys:String x:Key="CreateBackup_BackupNameLabel">Backup Name:</sys:String>
@@ -8,8 +22,21 @@
   <sys:String x:Key="CreateBackup_BrowseButton">Browse...</sys:String>
   <sys:String x:Key="CreateBackup_TargetPathLabel">Target Path:</sys:String>
   <sys:String x:Key="CreateBackup_BackupTypeLabel">Backup Type:</sys:String>
+  <sys:String x:Key="CreateBackup_BackupTypeFull">Full</sys:String>
+  <sys:String x:Key="CreateBackup_BackupTypeDiff">Differential</sys:String>
+  <sys:String x:Key="CreateBackup_Crypt">Encrypt</sys:String>
+  <sys:String x:Key="CreateBackup_EncryptionKeyLabel">Encryption Key:</sys:String>
+  <sys:String x:Key="CreateBackup_EncryptionKeyToolTip">Enter the encryption key</sys:String>
   <sys:String x:Key="CreateBackup_CreateButton">Create</sys:String>
   <sys:String x:Key="CreateBackup_CancelButton">Cancel</sys:String>
+  <!-- CreateBackup Error Messages -->
+  <sys:String x:Key="CreateBackup_NameEmpty">The backup name cannot be empty.</sys:String>
+  <sys:String x:Key="CreateBackup_SourceNotExist">The source folder does not exist.</sys:String>
+  <sys:String x:Key="CreateBackup_TargetEmpty">The target folder cannot be empty.</sys:String>
+  <sys:String x:Key="CreateBackup_EmptyEncryptionKey">The encryption key cannot be empty when encryption is enabled.</sys:String>
+  <sys:String x:Key="CreateBackup_TargetNotExist">The target folder '{0}' does not exist. Do you want to create it?</sys:String>
+  <sys:String x:Key="CreateBackup_TargetCreationError">Error creating target folder: {0}</sys:String>
+  <sys:String x:Key="CreateBackup_Success">Backup '{0}' was created successfully.</sys:String>
 
   <!-- EditBackupWindow -->
   <sys:String x:Key="EditBackupWindow_Title">Edit Backup</sys:String>
@@ -18,18 +45,29 @@
   <sys:String x:Key="EditBackup_BrowseButton">Browse...</sys:String>
   <sys:String x:Key="EditBackup_TargetPathLabel">Target Path:</sys:String>
   <sys:String x:Key="EditBackup_BackupTypeLabel">Backup Type:</sys:String>
+  <sys:String x:Key="EditBackup_BackupTypeFull">Full</sys:String>
+  <sys:String x:Key="EditBackup_BackupTypeDiff">Differential</sys:String>
   <sys:String x:Key="EditBackup_SaveButton">Save</sys:String>
   <sys:String x:Key="EditBackup_CancelButton">Cancel</sys:String>
+  <!-- EditBackup Error Messages -->
+  <sys:String x:Key="EditBackup_NameEmpty">The backup name cannot be empty.</sys:String>
+  <sys:String x:Key="EditBackup_SourceNotExist">The source folder does not exist.</sys:String>
+  <sys:String x:Key="EditBackup_TargetEmpty">The target folder cannot be empty.</sys:String>
+  <sys:String x:Key="EditBackup_TargetNotExist">The target folder '{0}' does not exist. Do you want to create it?</sys:String>
+  <sys:String x:Key="EditBackup_TargetCreationError">Error creating target folder: {0}</sys:String>
+  <sys:String x:Key="EditBackup_Success">Backup '{0}' was updated successfully.</sys:String>
 
   <!-- LanguageSelectionWindow -->
   <sys:String x:Key="LanguageSelectionWindow_Title">Select Language</sys:String>
   <sys:String x:Key="LanguageSelection_Text">Choose Language</sys:String>
-  <sys:String x:Key="LanguageSelection_French">Français</sys:String>
+  <sys:String x:Key="LanguageSelection_French">French</sys:String>
   <sys:String x:Key="LanguageSelection_English">English</sys:String>
 
   <!-- LogTypeSelectionWindow -->
   <sys:String x:Key="LogTypeSelectionWindow_Title">Log Type Selection</sys:String>
   <sys:String x:Key="LogTypeSelection_Text">Choose log format</sys:String>
+  <sys:String x:Key="LogTypeSelection_XML">XML</sys:String>
+  <sys:String x:Key="LogTypeSelection_JSON">JSON</sys:String>
 
   <!-- MainWindow -->
   <sys:String x:Key="MainWindow_Title">EasySave - Backups</sys:String>
@@ -40,21 +78,43 @@
   <sys:String x:Key="MainWindow_SettingsToolTip">Change settings</sys:String>
   <sys:String x:Key="MainWindow_EditToolTip">Edit</sys:String>
   <sys:String x:Key="MainWindow_SettingsButton">Settings</sys:String>
-  <sys:String x:Key="MainWindow_Crypt">Crypt a file</sys:String>
-  
+  <sys:String x:Key="MainWindow_Crypt">Encrypt a file</sys:String>
+  <sys:String x:Key="MainWindow_TrackingButton">Progress</sys:String>
+  <sys:String x:Key="MainWindow_TrackingToolTip">Show ongoing backup progress</sys:String>
+  <sys:String x:Key="MainWindow_CreateButtonContent">+</sys:String>
+  <sys:String x:Key="MainWindow_PreviousPage">&lt;</sys:String>
+  <sys:String x:Key="MainWindow_NextPage">&gt;</sys:String>
+  <sys:String x:Key="MainWindow_PageSeparator">/</sys:String>
+  <!-- MainViewModel Error/Information Messages -->
+  <sys:String x:Key="Main_JobRunning">Backup cannot be started because business software is running.</sys:String>
+  <sys:String x:Key="Main_NoSelection">Please select at least one backup.</sys:String>
+  <sys:String x:Key="Main_SuccessAll">Selected backups executed successfully.</sys:String>
+  <sys:String x:Key="Main_PartialSuccess">Some backups did not reach 100% (stopped or incomplete).</sys:String>
+  <sys:String x:Key="Main_Stopped">Selected backups were stopped by the user.</sys:String>
+  <sys:String x:Key="Main_ExecutionError">Error during execution: {0}</sys:String>
+
   <!-- SettingsWindow -->
   <sys:String x:Key="SettingsWindow_Title">Settings</sys:String>
   <sys:String x:Key="Settings_LogFormatLabel">Log Format:</sys:String>
   <sys:String x:Key="Settings_BusinessSoftwareLabel">Business Software:</sys:String>
   <sys:String x:Key="Settings_AuthorizedFiles">Authorized File Types for encryption:</sys:String>
+  <sys:String x:Key="Settings_PriorityTypesLabel">Priority Types:</sys:String>
+  <sys:String x:Key="Settings_PriorityExtensionsToolTip">Enter priority extensions separated by commas (e.g., .exe, .pdf)</sys:String>
   <sys:String x:Key="Settings_SaveButton">Save</sys:String>
-  
+
   <!-- EncryptFileWindow -->
   <sys:String x:Key="EncryptFileWindow_Title">Encrypt a file</sys:String>
-  <sys:String x:Key="FileSelector">File :</sys:String>
+  <sys:String x:Key="FileSelector">File:</sys:String>
   <sys:String x:Key="Explorer">Explore</sys:String>
-  <sys:String x:Key="KeyEditor">Key :</sys:String>
+  <sys:String x:Key="KeyEditor">Key:</sys:String>
   <sys:String x:Key="EncryptButton">Encrypt</sys:String>
   <sys:String x:Key="CancelButton">Cancel</sys:String>
-  
+  <!-- EncryptFile Error Messages -->
+  <sys:String x:Key="EncryptFile_InvalidFile">Please select a valid file.</sys:String>
+  <sys:String x:Key="EncryptFile_EmptyKey">The encryption key cannot be empty.</sys:String>
+  <sys:String x:Key="EncryptFile_NotAllowedType">Files of type {0} are not allowed for encryption.</sys:String>
+  <sys:String x:Key="EncryptFile_Failure">Encryption failed (error code {0}).</sys:String>
+  <sys:String x:Key="EncryptFile_NoEncryption">No encryption was performed.</sys:String>
+  <sys:String x:Key="EncryptFile_Success">File encrypted in {0} ms.</sys:String>
+  <sys:String x:Key="EncryptFile_Error">Error during encryption: {0}</sys:String>
 </ResourceDictionary>

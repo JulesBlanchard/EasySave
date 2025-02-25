@@ -9,9 +9,9 @@
                        FontSize="24" Margin="0,0,0,20" 
                        HorizontalAlignment="Center"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="XML" Width="120" Height="40" Margin="10" 
+                <Button Content="{DynamicResource LogTypeSelection_XML}" Width="120" Height="40" Margin="10" 
                         Command="{Binding SelectXmlCommand}" />
-                <Button Content="JSON" Width="120" Height="40" Margin="10" 
+                <Button Content="{DynamicResource LogTypeSelection_JSON}" Width="120" Height="40" Margin="10" 
                         Command="{Binding SelectJsonCommand}" />
             </StackPanel>
         </StackPanel>

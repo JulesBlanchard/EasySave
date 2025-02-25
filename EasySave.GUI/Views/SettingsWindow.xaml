@@ -28,12 +28,10 @@
         </StackPanel>
         <!-- Ligne pour modifier les types de fichiers prioritaires -->
         <StackPanel Orientation="Horizontal" Grid.Row="3" Margin="0,0,0,10">
-            <Label Content="Types prioritaires :" Width="auto"/>
+            <Label Content="{DynamicResource Settings_PriorityTypesLabel}" Width="auto"/>
             <TextBox Width="150" Text="{Binding PriorityExtensions, Mode=TwoWay}" 
-                     ToolTip="Entrez les extensions prioritaires séparées par des virgules (ex: .exe,.pdf)"/>
+                     ToolTip="{DynamicResource Settings_PriorityExtensionsToolTip}"/>
         </StackPanel>
-
         <Button Grid.Row="4" Content="{DynamicResource Settings_SaveButton}" Width="80" Height="50" HorizontalAlignment="Right" Command="{Binding SaveSettingsCommand}"/>
-
     </Grid>
 </Window>

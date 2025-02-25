@@ -10,15 +10,15 @@
                        HorizontalAlignment="Center"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Command="{Binding SelectFrenchCommand}" 
-                ToolTip="{DynamicResource LanguageSelection_French}" 
-                Width="80" Height="50" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        ToolTip="{DynamicResource LanguageSelection_French}" 
+                        Width="80" Height="50" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Image Source="pack://application:,,,/EasySave.GUI;component/Images/Flag_of_France.png" Width="auto" Height="auto"/>
                     </StackPanel>
                 </Button>
                 <Button Command="{Binding SelectEnglishCommand}" 
-                ToolTip="{DynamicResource LanguageSelection_English}" 
-                Width="80" Height="50" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        ToolTip="{DynamicResource LanguageSelection_English}" 
+                        Width="80" Height="50" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Image Source="pack://application:,,,/EasySave.GUI;component/Images/Flag_of_UK.png" Width="auto" Height="auto"/>
                     </StackPanel>

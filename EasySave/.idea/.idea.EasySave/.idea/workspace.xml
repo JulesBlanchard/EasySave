@@ -8,31 +8,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6da76307-f07c-48c5-b10b-d13288254a82" name="Changes" comment="fix : remove dead code">
+    <list default="true" id="6da76307-f07c-48c5-b10b-d13288254a82" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/Ressources/Strings.en.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/Ressources/Strings.en.xaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/Ressources/Strings.fr.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/Ressources/Strings.fr.xaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/ViewModels/CreateBackupViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/ViewModels/CreateBackupViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/ViewModels/EditBackupViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/ViewModels/EditBackupViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/ViewModels/EncryptFileViewModel .cs" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/ViewModels/EncryptFileViewModel .cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../EasySave.GUI/ViewModels/MainViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/ViewModels/MainViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/Views/BackupProgressWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/Views/BackupProgressWindow.xaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/Views/CreateBackupWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/Views/CreateBackupWindow.xaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/Views/EditBackupWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/Views/EditBackupWindow.xaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/Views/EncryptFileWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/Views/EncryptFileWindow.xaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/Views/LanguageSelectionWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/Views/LanguageSelectionWindow.xaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/Views/LogTypeSelectionWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/Views/LogTypeSelectionWindow.xaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/Views/MainWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/Views/MainWindow.xaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../EasySave.GUI/Views/SettingsWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/../EasySave.GUI/Views/SettingsWindow.xaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave.Logging/JsonBackupLogger.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave.Logging/JsonBackupLogger.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave.Logging/XmlBackupLogger.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave.Logging/XmlBackupLogger.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/DifferentialBackupStrategy.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/DifferentialBackupStrategy.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/FullBackupStrategy.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/FullBackupStrategy.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/StateManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/StateManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils/GeneralSettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/GeneralSettings.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="DpaMonitoringSettings">
-    <option name="firstShow" value="false" />
-  </component>
-  <component name="Git.Merge.Settings">
-    <option name="BRANCH" value="feature/v2.0-autorized-type-files" />
-    <option name="OPTIONS">
-      <set>
-        <option value="NO_FF" />
-      </set>
-    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -42,52 +38,33 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;SimonLAUNAY&quot;
-  }
-}</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/JulesBlanchard/EasySave.git",
-    "accountId": "0bee78f5-08f4-4873-b4db-fdb9a8acd83a"
-  }
-}]]></component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="mock://C:/Users/jules/Desktop/EasySave/EasySave.GUI/Views/LanguageSelectionWindow.xaml.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/jules/Desktop/EasySave/EasySave.GUI/Views/LanguageSelectionWindow.xaml.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Models/Backup.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/jules/Desktop/EasySave/EasySave/Models/DifferentialBackupStrategy.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/jules/Desktop/EasySave/EasySave/Models/FullBackupStrategy.cs" root0="SKIP_HIGHLIGHTING" />
-  </component>
-  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="false" />
+  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
   <component name="ProjectId" id="2sZhzeyw6OQiNjMtxF0PVzT6AGF" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+  <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Project.EasySave.GUI.executor": "Run",
-    ".NET Project.EasySave.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feature/parallel__save",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Project.EasySave.GUI.executor&quot;: &quot;Run&quot;,
+    &quot;.NET Project.EasySave.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Project.EasySave.GUI">
     <configuration name="EasySave" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
@@ -125,10 +102,6 @@
         <option name="Build" />
       </method>
     </configuration>
-    <list>
-      <item itemvalue=".NET Project.EasySave" />
-      <item itemvalue=".NET Project.EasySave.GUI" />
-    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -142,42 +115,13 @@
       <workItem from="1738843437653" duration="5825000" />
       <workItem from="1739355394215" duration="464000" />
       <workItem from="1739535363544" duration="1575000" />
-      <workItem from="1739539747226" duration="691000" />
-      <workItem from="1739812918635" duration="452000" />
-      <workItem from="1739832066915" duration="1594000" />
-      <workItem from="1740336468806" duration="4537000" />
     </task>
-    <task id="LOCAL-00001" summary="Autorisation de certains type de fichiers pour encryptage">
-      <option name="closed" value="true" />
-      <created>1739539301358</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1739539301358</updated>
-    </task>
-    <task id="LOCAL-00002" summary="Fix billingue application">
-      <option name="closed" value="true" />
-      <created>1739539584261</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1739539584261</updated>
-    </task>
-    <task id="LOCAL-00003" summary="fix : remove dead code">
-      <option name="closed" value="true" />
-      <created>1740337367000</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1740337367000</updated>
-    </task>
-    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="UnityCheckinConfiguration" checkUnsavedScenes="false" />
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -192,9 +136,5 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="Autorisation de certains type de fichiers pour encryptage" />
-    <MESSAGE value="Fix billingue application" />
-    <MESSAGE value="fix : remove dead code" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix : remove dead code" />
   </component>
 </project>

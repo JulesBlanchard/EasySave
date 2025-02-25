@@ -14,8 +14,7 @@ using MessageBox = System.Windows.MessageBox;
 
 namespace EasySave.GUI.ViewModels
 {
-    /// TODO : Gérer la localisation (FR/EN) pour tous les messages 
-    ///        (console, logs, pop-ups). 
+
     public class MainViewModel : INotifyPropertyChanged
     {
         private BackupController backupController;
@@ -204,25 +203,26 @@ namespace EasySave.GUI.ViewModels
         /// <summary>
         /// Exécute en parallèle toutes les sauvegardes sélectionnées.
         /// </summary>
-private async void ExecuteSelectedBackups()
-{
-    // Vérifie si un logiciel métier est lancé (vous conservez cette logique si vous le souhaitez)
-    if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
-    {
-        MessageBox.Show(
-            "La sauvegarde ne peut pas être lancée car un logiciel métier est en cours d'exécution.",
-            "Sauvegarde annulée", MessageBoxButton.OK, MessageBoxImage.Warning);
-        return;
-    }
+        private async void ExecuteSelectedBackups()
+        {
+            if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
+            {
+                MessageBox.Show(
+                    (string)Application.Current.FindResource("Main_JobRunning"),
+                    (string)Application.Current.FindResource("Common_Warning"),
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
-    // Récupère les backups sélectionnées
-    var selectedBackups = allBackups.Where(b => b.IsSelected).ToList();
-    if (!selectedBackups.Any())
-    {
-        MessageBox.Show("Veuillez sélectionner au moins une sauvegarde.", "Aucun élément sélectionné",
-            MessageBoxButton.OK, MessageBoxImage.Warning);
-        return;
-    }
+            var selectedBackups = allBackups.Where(b => b.IsSelected).ToList();
+            if (!selectedBackups.Any())
+            {
+                MessageBox.Show(
+                    (string)Application.Current.FindResource("Main_NoSelection"),
+                    (string)Application.Current.FindResource("Common_Warning"),
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
     // Prépare la liste de tâches
     // Pour chaque backup, on lance ExecuteBackup dans un Task.Run
@@ -240,54 +240,50 @@ private async void ExecuteSelectedBackups()
 
     try
     {
-        // Attend que toutes les sauvegardes se terminent
         await Task.WhenAll(tasks);
-
-        // Si on arrive ici, aucune exception n'a été lancée : toutes les sauvegardes se sont terminées "normalement"
-        // On peut alors vérifier si elles ont atteint 100% (pas de Stop au milieu)
         bool allFullProgress = selectedBackups.All(b => b.Progression == 100);
 
         if (allFullProgress)
         {
-            // 100% pour chacune => succès total
-            MessageBox.Show("Les sauvegardes sélectionnées ont été exécutées avec succès.", 
-                "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-        else
-        {
-            // Certaines ont pu s'arrêter à moins de 100% (statut End, 
-            // mais progression < 100 => l'utilisateur a peut-être stoppé en cours)
-            MessageBox.Show("Certaines sauvegardes se sont terminées sans atteindre 100% (arrêtées ou incomplètes).", 
-                "Partiellement exécutées", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-    }
-    catch (AggregateException agex)
-    {
-        // S'il y a eu un Stop, OperationCanceledException est levée
-        // Task.WhenAll lance une AggregateException pouvant contenir des OperationCanceledException 
-        // ou d'autres exceptions.
-        if (agex.InnerExceptions.Any(e => e is OperationCanceledException))
-        {
-            // => au moins un Stop a eu lieu
-            MessageBox.Show("Les sauvegardes sélectionnées ont été stoppées par l'utilisateur.", 
-                "Annulées", 
+            MessageBox.Show(
+                (string)Application.Current.FindResource("Main_SuccessAll"),
+                (string)Application.Current.FindResource("Common_Success"),
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
         else
         {
-            // Autres exceptions
+            MessageBox.Show(
+                (string)Application.Current.FindResource("Main_PartialSuccess"),
+                (string)Application.Current.FindResource("Common_Information"),
+                MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+    }
+    catch (AggregateException agex)
+    {
+        if (agex.InnerExceptions.Any(e => e is OperationCanceledException))
+        {
+            MessageBox.Show(
+                (string)Application.Current.FindResource("Main_Stopped"),
+                (string)Application.Current.FindResource("Common_Information"),
+                MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        else
+        {
             string msg = agex.Flatten().Message;
-            MessageBox.Show("Erreur lors de l'exécution : " + msg, 
-                "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(
+                string.Format((string)Application.Current.FindResource("Main_ExecutionError"), msg),
+                (string)Application.Current.FindResource("Common_Error"),
+                MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
     catch (Exception ex)
     {
-        // S'il restait une autre exception non gérée
-        MessageBox.Show("Erreur lors de l'exécution : " + ex.Message, 
-            "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+        MessageBox.Show(
+            string.Format((string)Application.Current.FindResource("Main_ExecutionError"), ex.Message),
+            (string)Application.Current.FindResource("Common_Error"),
+            MessageBoxButton.OK, MessageBoxImage.Error);
     }
-}
+        }
 
         private void DeleteSelectedBackups()
         {
