@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasySave.GUI", "..\EasySave
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasySave.Logging", "EasySave.Logging\EasySave.Logging.csproj", "{2A27D03D-F57E-430C-B545-073129645F6B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasySave.RemoteConsole", "..\EasySave.RemoteConsole\EasySave.RemoteConsole.csproj", "{48557D02-6C55-486B-ABEB-19814A226CA0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{2A27D03D-F57E-430C-B545-073129645F6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A27D03D-F57E-430C-B545-073129645F6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A27D03D-F57E-430C-B545-073129645F6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48557D02-6C55-486B-ABEB-19814A226CA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48557D02-6C55-486B-ABEB-19814A226CA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48557D02-6C55-486B-ABEB-19814A226CA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48557D02-6C55-486B-ABEB-19814A226CA0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

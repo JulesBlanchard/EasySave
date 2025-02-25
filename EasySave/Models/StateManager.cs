@@ -106,5 +106,12 @@ namespace EasySave.Models
                 }
             }
         }
+        public static List<BackupState> GetCurrentStates()
+        {
+            lock (_stateFileLock)
+            {
+                return states.Values.ToList();
+            }
+        }
     }
 }
