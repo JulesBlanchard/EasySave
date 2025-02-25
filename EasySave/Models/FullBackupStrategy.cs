@@ -98,6 +98,14 @@ namespace EasySave.Models
                     // Vérifier si Stop a été demandé
                     token.ThrowIfCancellationRequested();
 
+                    if (backup.JobControl.IsPaused)
+                    {
+                        lock (stateLock)
+                        {
+                            state.Status = BackupStatus.Paused;
+                            StateManager.UpdateState(state);
+                        }
+                    }
                     // Vérifier si Pause a été enclenchée
                     backup.JobControl.WaitIfPaused();
 
