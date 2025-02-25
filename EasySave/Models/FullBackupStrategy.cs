@@ -9,28 +9,45 @@ using EasySave.Utils;
 namespace EasySave.Models
 {
     /// <summary>
-    /// Implémente une stratégie de sauvegarde FULL avec parallélisation, gestion des fichiers prioritaires
-    /// et mise en pause si le logiciel métier est lancé.
+    /// Implémente une stratégie de sauvegarde FULL avec parallélisation, gestion des fichiers prioritaires,
+    /// vérification du logiciel métier et contrôle temps réel (pause/play/stop).
+    /// /// TODO : Gérer la localisation (FR/EN) pour tous les messages 
+    ///        (console, logs, pop-ups). 
     /// </summary>
     public class FullBackupStrategy : IBackupStrategy
     {
         public void Execute(Backup backup, IBackupLogger logger)
         {
-            // Vérifier avant le démarrage si le logiciel métier est lancé
+            // 1) Indiquer que la sauvegarde démarre
+            backup.Status = BackupStatus.Active;
+            Console.WriteLine(LocalizationManager.CurrentMessages["FullBackup_Executing"].Replace("{name}", backup.Name));
+
+            // Vérifier si un logiciel métier est déjà lancé
             if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
             {
+                backup.Status = BackupStatus.End;
                 var ex = new Exception("Sauvegarde annulée : logiciel métier détecté avant démarrage.");
                 logger.LogError(backup.Name, "", "", ex);
-                Console.WriteLine("Sauvegarde annulée : logiciel métier détecté.");
+                Console.WriteLine(LocalizationManager.CurrentMessages["FullBackup_ErrorCopy"]
+                    .Replace("{name}", backup.Name)
+                    .Replace("{error}", "Logiciel métier détecté."));
                 return;
             }
 
-            Console.WriteLine(LocalizationManager.CurrentMessages["FullBackup_Executing"].Replace("{name}", backup.Name));
+            // 2) Récupérer la liste de tous les fichiers
             var allFiles = backup.GetFileList();
             int totalFiles = allFiles.Count;
+            if (totalFiles == 0)
+            {
+                // S'il n'y a aucun fichier, on termine immédiatement
+                backup.Status = BackupStatus.End;
+                Console.WriteLine($"[FULL] Aucune ressource à copier pour {backup.Name}. Fin immédiate.");
+                return;
+            }
+
             long totalSize = allFiles.Sum(f => f.Length);
 
-            // Initialiser l'état de la sauvegarde
+            // 3) Créer l'objet BackupState pour le suivi (StateManager)
             var state = new BackupState
             {
                 Name = backup.Name,
@@ -44,12 +61,10 @@ namespace EasySave.Models
             };
             StateManager.UpdateState(state);
 
-            // Récupérer la liste des extensions prioritaires
+            // 4) Gestion des fichiers prioritaires
             var priorityExtensions = GeneralSettings.PriorityExtensions
                 .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(ext => ext.Trim().ToLowerInvariant()).ToList();
-
-            // Séparer les fichiers prioritaires et non prioritaires
             var priorityFiles = allFiles.Where(file =>
                 priorityExtensions.Contains(Path.GetExtension(file.FullName).ToLowerInvariant())).ToList();
             var nonPriorityFiles = allFiles.Except(priorityFiles).ToList();
@@ -57,121 +72,181 @@ namespace EasySave.Models
             // Ajouter le nombre de fichiers prioritaires au compteur global
             PriorityManager.AddPriorityFiles(priorityFiles.Count);
 
-            // Traiter d'abord les fichiers prioritaires en les plaçant en tête
+            // Traiter d'abord les prioritaires
             var sortedFiles = priorityFiles.Concat(nonPriorityFiles).ToList();
 
+            // 5) Variables pour le traitement parallèle
             int processedFiles = 0;
             object stateLock = new object();
             int thresholdBytes = GeneralSettings.MaxLargeFileSize;
             SemaphoreSlim largeFileSemaphore = new SemaphoreSlim(1, 1);
 
-            Parallel.ForEach(sortedFiles, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, fileInfo =>
+            // Récupération du token d'annulation pour le Stop
+            CancellationToken token = backup.JobControl.CancellationToken;
+
+            // 6) Préparer les options Parallel
+            var parallelOptions = new ParallelOptions
             {
-                bool isPriority = priorityExtensions.Contains(Path.GetExtension(fileInfo.FullName).ToLowerInvariant());
+                MaxDegreeOfParallelism = Environment.ProcessorCount,
+                CancellationToken = token
+            };
 
-                // ***** Vérification du logiciel métier avec pause notifier *****
-                while (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
+            try
+            {
+                Parallel.ForEach(sortedFiles, parallelOptions, fileInfo =>
                 {
-                    // Appeler le notifier (avec gestion du flag pour éviter les popups multiples)
-                    PauseNotifierEvent.RequestPause();
-                    Thread.Sleep(500);
-                }
-                // Une fois que le logiciel métier n'est plus détecté, réinitialiser le flag.
-                PauseNotifierEvent.Reset();
-                // **************************************************************
+                    // Vérifier si Stop a été demandé
+                    token.ThrowIfCancellationRequested();
 
-                // Pour les fichiers non prioritaires, attendre tant qu'il y a encore des fichiers prioritaires en attente.
-                if (!isPriority)
-                {
-                    while (PriorityManager.GetPendingCount() > 0)
+                    // Vérifier si Pause a été enclenchée
+                    backup.JobControl.WaitIfPaused();
+
+                    bool isPriority = priorityExtensions.Contains(Path.GetExtension(fileInfo.FullName).ToLowerInvariant());
+
+                    // TODO : Pendant la détection du logiciel métier, 
+                    //        on voudrait griser le bouton Pause dans l'IHM de suivi.
+                    //        Actuellement, on met en pause la sauvegarde automatiquement 
+                    //        via PauseNotifierEvent.RequestPause().
+                    // Vérifier si un logiciel métier apparaît en cours d'exécution
+                    while (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
                     {
+                        PauseNotifierEvent.RequestPause();
                         Thread.Sleep(500);
                     }
-                }
+                    PauseNotifierEvent.Reset();
 
-                var relativePath = fileInfo.FullName.Substring(backup.SourcePath.Length).TrimStart('\\', '/');
-                var destFilePath = Path.Combine(backup.TargetPath, relativePath);
-                Directory.CreateDirectory(Path.GetDirectoryName(destFilePath));
+                    // Re-vérifier annulation et pause
+                    token.ThrowIfCancellationRequested();
+                    backup.JobControl.WaitIfPaused();
 
-                // Mise à jour de l'état (section critique)
-                lock (stateLock)
-                {
-                    state.SourceFilePath = fileInfo.FullName;
-                    state.TargetFilePath = destFilePath;
-                    StateManager.UpdateState(state);
-                }
-
-                // Gestion des fichiers volumineux
-                if (fileInfo.Length > thresholdBytes)
-                {
-                    largeFileSemaphore.Wait();
-                }
-
-                try
-                {
-                    var startTime = DateTime.Now;
-                    File.Copy(fileInfo.FullName, destFilePath, true);
-                    long transferTimeMs = (long)((DateTime.Now - startTime).TotalMilliseconds);
-                    logger.LogTransfer(backup.Name, fileInfo.FullName, destFilePath, fileInfo.Length, transferTimeMs);
-                    Console.WriteLine(LocalizationManager.CurrentMessages["FullBackup_Copied"].Replace("{name}", fileInfo.Name));
-
-                    // Traitement du cryptage si activé
-                    if (backup.ShouldEncrypt)
+                    // Attendre si c'est un fichier non prioritaire mais qu'il reste des priorités
+                    if (!isPriority)
                     {
-                        string fileExtension = Path.GetExtension(fileInfo.FullName).ToLowerInvariant();
-                        var allowedExtensions = GeneralSettings.AllowedEncryptionFileTypes
-                            .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                            .Select(ext => ext.Trim().ToLowerInvariant());
-                        if (allowedExtensions.Contains(fileExtension))
+                        while (PriorityManager.GetPendingCount() > 0)
                         {
-                            var fileManager = new CryptoSoft.FileManager(destFilePath, backup.EncryptionKey);
-                            int encryptionTime = fileManager.TransformFile();
-                            logger.LogEncryption(destFilePath, encryptionTime);
-                            Console.WriteLine($"Fichier crypté en {encryptionTime} ms : {fileInfo.Name}");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Le fichier {fileInfo.Name} (extension {fileExtension}) n'est pas autorisé pour le cryptage.");
+                            token.ThrowIfCancellationRequested();
+                            backup.JobControl.WaitIfPaused();
+                            Thread.Sleep(500);
                         }
                     }
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(backup.Name, fileInfo.FullName, destFilePath, ex);
-                    Console.WriteLine(LocalizationManager.CurrentMessages["FullBackup_ErrorCopy"]
-                        .Replace("{name}", fileInfo.Name)
-                        .Replace("{error}", ex.Message));
-                }
-                finally
-                {
+
+                    // Création du dossier cible
+                    var relativePath = fileInfo.FullName.Substring(backup.SourcePath.Length).TrimStart('\\', '/');
+                    var destFilePath = Path.Combine(backup.TargetPath, relativePath);
+                    Directory.CreateDirectory(Path.GetDirectoryName(destFilePath));
+
+                    // Mise à jour de l'état avant la copie
+                    lock (stateLock)
+                    {
+                        state.SourceFilePath = fileInfo.FullName;
+                        state.TargetFilePath = destFilePath;
+                        StateManager.UpdateState(state);
+                    }
+
+                    // Fichiers volumineux : utiliser un sémaphore pour bloquer le transfert concurrent
                     if (fileInfo.Length > thresholdBytes)
                     {
-                        largeFileSemaphore.Release();
+                        largeFileSemaphore.Wait();
                     }
-                }
 
-                // Si le fichier traité était prioritaire, décrémenter le compteur global
-                if (isPriority)
-                {
-                    PriorityManager.DecrementPriorityFiles();
-                }
+                    try
+                    {
+                        // Copie du fichier
+                        var startTime = DateTime.Now;
+                        FileHelper.CopyFileWithCancellation(fileInfo.FullName, destFilePath, backup);
+                        long transferTimeMs = (long)((DateTime.Now - startTime).TotalMilliseconds);
 
-                // Mise à jour de la progression
-                lock (stateLock)
-                {
-                    processedFiles++;
-                    state.NbFilesLeftToDo = totalFiles - processedFiles;
-                    state.Progression = (int)((processedFiles / (double)totalFiles) * 100);
-                    StateManager.UpdateState(state);
-                }
-            });
+                        // Logger la copie
+                        logger.LogTransfer(backup.Name, fileInfo.FullName, destFilePath, fileInfo.Length, transferTimeMs);
+                        Console.WriteLine(LocalizationManager.CurrentMessages["FullBackup_Copied"].Replace("{name}", fileInfo.Name));
 
-            Console.WriteLine();
-            Console.WriteLine(LocalizationManager.CurrentMessages["FullBackup_Finished"].Replace("{name}", backup.Name));
-            state.Status = BackupStatus.End;
-            state.SourceFilePath = "";
-            state.TargetFilePath = "";
-            StateManager.UpdateState(state);
+                        // Cryptage si nécessaire
+                        if (backup.ShouldEncrypt)
+                        {
+                            string fileExtension = Path.GetExtension(fileInfo.FullName).ToLowerInvariant();
+                            var allowedExtensions = GeneralSettings.AllowedEncryptionFileTypes
+                                .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                .Select(ext => ext.Trim().ToLowerInvariant());
+                            if (allowedExtensions.Contains(fileExtension))
+                            {
+                                var fileManager = new CryptoSoft.FileManager(destFilePath, backup.EncryptionKey);
+                                int encryptionTime = fileManager.TransformFile();
+                                logger.LogEncryption(destFilePath, encryptionTime);
+                                Console.WriteLine($"Fichier crypté en {encryptionTime} ms : {fileInfo.Name}");
+                            }
+                            else
+                            {
+                                Console.WriteLine(LocalizationManager.CurrentMessages["FullBackup_ErrorCopy"]
+                                    .Replace("{name}", fileInfo.Name)
+                                    .Replace("{error}", $"Extension {fileExtension} non autorisée pour le cryptage."));
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(backup.Name, fileInfo.FullName, destFilePath, ex);
+                        Console.WriteLine(LocalizationManager.CurrentMessages["FullBackup_ErrorCopy"]
+                            .Replace("{name}", fileInfo.Name)
+                            .Replace("{error}", ex.Message));
+                    }
+                    finally
+                    {
+                        // Libérer le sémaphore si fichier volumineux
+                        if (fileInfo.Length > thresholdBytes)
+                        {
+                            largeFileSemaphore.Release();
+                        }
+                    }
+
+                    // Si le fichier était prioritaire, décrémenter le compteur
+                    if (isPriority)
+                    {
+                        PriorityManager.DecrementPriorityFiles();
+                    }
+
+                    // Mise à jour de la progression et de l'état
+                    lock (stateLock)
+                    {
+                        processedFiles++;
+                        // Empêcher le pourcentage de dépasser 100
+                        int progress = (int)((processedFiles / (double)totalFiles) * 100);
+                        progress = Math.Min(progress, 100);
+                        state.NbFilesLeftToDo = totalFiles - processedFiles;
+                        state.Progression = progress;
+                        backup.Progression = progress; // mise à jour de backup.Progression
+
+                        StateManager.UpdateState(state);
+                    }
+                });
+
+                // Si on arrive ici sans exception => terminé normalement
+                Console.WriteLine(LocalizationManager.CurrentMessages["FullBackup_Finished"].Replace("{name}", backup.Name));
+                state.Status = BackupStatus.End;
+                backup.Status = BackupStatus.End;
+                state.SourceFilePath = "";
+                state.TargetFilePath = "";
+                StateManager.UpdateState(state);
+            }
+            catch (OperationCanceledException)
+            {
+                // Stop demandé => on sort proprement
+                Console.WriteLine($"[FULL] Sauvegarde {backup.Name} arrêtée par l'utilisateur (Stop).");
+                backup.Status = BackupStatus.End;
+                state.Status = BackupStatus.End;
+                StateManager.UpdateState(state);
+                return;
+
+            }
+            catch (Exception ex)
+            {
+                // Autre exception => mettre en Error
+                backup.Status = BackupStatus.Error;
+                state.Status = BackupStatus.Error;
+                StateManager.UpdateState(state);
+
+                Console.WriteLine($"[FULL] Erreur inattendue : {ex.Message}");
+                logger.LogError(backup.Name, "", "", ex);
+            }
         }
     }
 }

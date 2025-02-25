@@ -1,6 +1,7 @@
 ﻿<Window x:Class="EasySave.GUI.Views.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"  
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:models="clr-namespace:EasySave.Models;assembly=EasySave"
         Title="{DynamicResource MainWindow_Title}" Height="600" Width="800"
         WindowStartupLocation="CenterScreen">
   <Window.Resources>
@@ -15,16 +16,13 @@
         <Setter.Value>
           <ControlTemplate TargetType="TextBox">
             <Grid>
-              <!-- Bordure autour de la zone de texte -->
               <Border BorderBrush="{TemplateBinding BorderBrush}"
                       BorderThickness="{TemplateBinding BorderThickness}"
                       Background="{TemplateBinding Background}">
-                <!-- PART_ContentHost : le contenu réel où l'utilisateur écrit -->
                 <ScrollViewer x:Name="PART_ContentHost"
                               VerticalScrollBarVisibility="Disabled"
                               HorizontalScrollBarVisibility="Disabled" />
               </Border>
-              <!-- Utilisation de la ressource pour le placeholder -->
               <TextBlock x:Name="PlaceholderText"
                          Text="{DynamicResource MainWindow_SearchPlaceholder}"
                          Foreground="Gray"
@@ -55,14 +53,15 @@
         <ColumnDefinition Width="Auto"/>
         <ColumnDefinition Width="*"/>
       </Grid.ColumnDefinitions>
-
       <TextBox Grid.Column="0"
                Style="{StaticResource WatermarkTextBoxStyle}"
                Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
                Width="300" Height="30"
                HorizontalAlignment="Left" />
-
       <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+        <Button Content="Suivi" Width="60" Height="30"
+                Command="{Binding ShowProgressPopupCommand}"
+                ToolTip="Afficher le suivi des sauvegardes en cours"/>
         <Button Content="+" Width="40" Height="30" 
                 Command="{Binding CreateBackupCommand}" 
                 ToolTip="{DynamicResource MainWindow_CreateToolTip}"/>
@@ -100,36 +99,43 @@
         <RowDefinition Height="Auto"/>
       </Grid.RowDefinitions>
       
-      <ListView ItemsSource="{Binding PagedBackups}" Grid.Row="0" Margin="10" HorizontalContentAlignment="Stretch">
-        <ListView.ItemTemplate>
-          <DataTemplate>
-            <Border BorderBrush="Gray" BorderThickness="1" Margin="5" Padding="10" 
-                    MouseLeftButtonDown="BackupItem_MouseLeftButtonDown">
-              <Grid>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="Auto"/>
-                  <ColumnDefinition Width="*"/>
-                  <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <CheckBox Grid.Column="0" 
-                          IsChecked="{Binding IsSelected, Mode=TwoWay}" 
-                          VerticalAlignment="Center" Margin="5"/>
-                <StackPanel Grid.Column="1">
-                  <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
-                  <TextBlock Text="{Binding SourcePath}" FontStyle="Italic" FontSize="12"/>
-                  <TextBlock Text="{Binding TargetPath}" FontSize="12"/>
-                </StackPanel>
-                <Button Grid.Column="2" Width="30" Height="30" Margin="5" 
-                        ToolTip="{DynamicResource MainWindow_EditToolTip}"
-                        Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                        CommandParameter="{Binding}">
-                  <Image Source="pack://application:,,,/EasySave.GUI;component/Images/edit.png" Stretch="Uniform"/>
-                </Button>
-              </Grid>
-            </Border>
-          </DataTemplate>
-        </ListView.ItemTemplate>
-      </ListView>
+<ListView ItemsSource="{Binding PagedBackups}" Grid.Row="0" Margin="10" HorizontalContentAlignment="Stretch">
+  <ListView.ItemTemplate>
+    <DataTemplate>
+      <Border BorderBrush="Gray" BorderThickness="1" Margin="5" Padding="10"
+              MouseLeftButtonDown="BackupItem_MouseLeftButtonDown">
+              
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>   <!-- Checkbox -->
+            <ColumnDefinition Width="*"/>      <!-- Infos backup -->
+            <ColumnDefinition Width="Auto"/>   <!-- Bouton Edit -->
+          </Grid.ColumnDefinitions>
+
+          <!-- Checkbox de sélection -->
+          <CheckBox Grid.Column="0" 
+                    IsChecked="{Binding IsSelected, Mode=TwoWay}" 
+                    VerticalAlignment="Center" Margin="5"/>
+          
+          <!-- Informations sur la sauvegarde -->
+          <StackPanel Grid.Column="1" Orientation="Vertical">
+            <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
+            <TextBlock Text="{Binding SourcePath}" FontStyle="Italic" FontSize="12"/>
+            <TextBlock Text="{Binding TargetPath}" FontSize="12"/>
+          </StackPanel>
+          
+          <!-- Bouton Edit -->
+          <Button Grid.Column="2" Width="30" Height="30" Margin="5" 
+                  ToolTip="{DynamicResource MainWindow_EditToolTip}"
+                  Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                  CommandParameter="{Binding}">
+            <Image Source="pack://application:,,,/EasySave.GUI;component/Images/edit.png" Stretch="Uniform"/>
+          </Button>
+        </Grid>
+      </Border>
+    </DataTemplate>
+  </ListView.ItemTemplate>
+</ListView>
 
       <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
         <Button Content="&lt;" Command="{Binding PreviousPageCommand}" Margin="5"/>
