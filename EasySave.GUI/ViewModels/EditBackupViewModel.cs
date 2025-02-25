@@ -112,7 +112,17 @@ namespace EasySave.GUI.ViewModels
             return;
         }
     }
-
+    // Normaliser le type de sauvegarde : si l'utilisateur sélectionne "complète", on le remplace par "full"
+    string normalizedType = BackupType.ToLowerInvariant();
+    if (normalizedType.Contains("complète"))
+    {
+        normalizedType = "full";
+    }
+    else if (normalizedType.Contains("différentielle"))
+    {
+        normalizedType = "diff";
+    }
+    backup.BackupType = normalizedType;
     // Mise à jour de la stratégie en fonction du type choisi
     if (!string.IsNullOrEmpty(BackupType))
     {

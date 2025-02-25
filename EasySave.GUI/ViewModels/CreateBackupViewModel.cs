@@ -139,8 +139,17 @@ namespace EasySave.GUI.ViewModels
             return;
         }
     }
-
-    backupController.CreateBackup(BackupName, SourcePath, TargetPath, BackupType, ShouldEncrypt, EncryptionKey);
+    // Normalisation du type de sauvegarde
+        string normalizedType = BackupType.ToLowerInvariant();
+        if (normalizedType.Contains("complète"))
+        {
+            normalizedType = "full";
+        }
+        else if (normalizedType.Contains("différentielle"))
+        {
+            normalizedType = "diff";
+        }
+    backupController.CreateBackup(BackupName, SourcePath, TargetPath, normalizedType, ShouldEncrypt, EncryptionKey);
     MessageBox.Show(
         string.Format((string)WpfApp.Current.FindResource("CreateBackup_Success"), BackupName),
         (string)WpfApp.Current.FindResource("Common_Success"),
