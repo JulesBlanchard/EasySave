@@ -1,7 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
@@ -23,15 +22,17 @@ namespace EasySave.RemoteConsole
 
         public ObservableCollection<BackupState> BackupStates { get; set; } = new ObservableCollection<BackupState>();
 
-        public ICommand PauseCommand { get; }
-        public ICommand ResumeCommand { get; }
-        public ICommand StopCommand { get; }
+        // Commandes pour agir sur une sauvegarde donnée (commande paramétrée)
+        public ICommand PauseBackupCommand { get; }
+        public ICommand ResumeBackupCommand { get; }
+        public ICommand StopBackupCommand { get; }
 
         public RemoteConsoleViewModel()
         {
-            PauseCommand = new RelayCommand(PauseSelected);
-            ResumeCommand = new RelayCommand(ResumeSelected);
-            StopCommand = new RelayCommand(StopSelected);
+            // Instanciation des commandes avec un paramètre de type BackupState
+            PauseBackupCommand = new RelayCommand<BackupState>(PauseBackup);
+            ResumeBackupCommand = new RelayCommand<BackupState>(ResumeBackup);
+            StopBackupCommand = new RelayCommand<BackupState>(StopBackup);
 
             ConnectToServer();
         }
@@ -41,7 +42,8 @@ namespace EasySave.RemoteConsole
             try
             {
                 client = new TcpClient();
-                await client.ConnectAsync("192.168.187.152", 5000); // Adresse et port du serveur (à adapter)
+                // Assurez-vous que l'adresse IP correspond bien à celle du serveur distant
+                await client.ConnectAsync("10.131.130.100", 5000);
                 stream = client.GetStream();
                 isConnected = true;
                 Console.WriteLine("Client connected successfully to server.");
@@ -64,14 +66,13 @@ namespace EasySave.RemoteConsole
                     if (bytesRead > 0)
                     {
                         string json = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                        // Désérialisation des états (attendu sous forme de BackupState[])
                         var states = JsonSerializer.Deserialize<BackupState[]>(json);
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             BackupStates.Clear();
                             foreach (var state in states)
                             {
-                                // Initialiser IsSelected à false pour chaque sauvegarde
-                                state.IsSelected = false;
                                 BackupStates.Add(state);
                             }
                         });
@@ -85,30 +86,30 @@ namespace EasySave.RemoteConsole
             }
         }
 
-        private void PauseSelected()
+        // Méthode exécutée quand l'utilisateur clique sur "Pause" dans la ligne de sauvegarde
+        private void PauseBackup(BackupState backupState)
         {
-            var selectedStates = BackupStates.Where(b => b.IsSelected).ToList();
-            foreach (var state in selectedStates)
+            if (backupState != null)
             {
-                string command = $"COMMAND {state.Name} PAUSE";
+                string command = $"COMMAND {backupState.Name} PAUSE";
                 SendCommand(command);
             }
         }
-        private void ResumeSelected()
+
+        private void ResumeBackup(BackupState backupState)
         {
-            var selectedStates = BackupStates.Where(b => b.IsSelected).ToList();
-            foreach (var state in selectedStates)
+            if (backupState != null)
             {
-                string command = $"COMMAND {state.Name} RESUME";
+                string command = $"COMMAND {backupState.Name} RESUME";
                 SendCommand(command);
             }
         }
-        private void StopSelected()
+
+        private void StopBackup(BackupState backupState)
         {
-            var selectedStates = BackupStates.Where(b => b.IsSelected).ToList();
-            foreach (var state in selectedStates)
+            if (backupState != null)
             {
-                string command = $"COMMAND {state.Name} STOP";
+                string command = $"COMMAND {backupState.Name} STOP";
                 SendCommand(command);
             }
         }

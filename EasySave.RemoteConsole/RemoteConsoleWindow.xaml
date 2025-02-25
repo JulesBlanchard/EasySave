@@ -1,35 +1,40 @@
 ﻿<Window x:Class="EasySave.RemoteConsole.RemoteConsoleWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Remote Console" Height="400" Width="600">
+        Title="Remote Console" Height="400" Width="800">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <ListView ItemsSource="{Binding BackupStates}" Grid.Row="0" SelectionMode="Extended">
+        <ListView ItemsSource="{Binding BackupStates}" Margin="5">
             <ListView.View>
                 <GridView>
-                    <!-- Colonne de sélection -->
-                    <GridViewColumn Width="30">
+                    <!-- Colonne Nom -->
+                    <GridViewColumn Header="Name" Width="150" DisplayMemberBinding="{Binding Name}" />
+                    <!-- Colonne Statut -->
+                    <GridViewColumn Header="Status" Width="100" DisplayMemberBinding="{Binding Status}" />
+                    <!-- Colonne Progression -->
+                    <GridViewColumn Header="Progress" Width="100" DisplayMemberBinding="{Binding Progression}" />
+                    <!-- Colonne Actions -->
+                    <GridViewColumn Header="Actions" Width="250">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" HorizontalAlignment="Center"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <!-- Bouton Pause -->
+                                    <Button Content="Pause" Margin="2"
+                                            Command="{Binding DataContext.PauseBackupCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}" />
+                                    <!-- Bouton Resume -->
+                                    <Button Content="Resume" Margin="2"
+                                            Command="{Binding DataContext.ResumeBackupCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}" />
+                                    <!-- Bouton Stop -->
+                                    <Button Content="Stop" Margin="2"
+                                            Command="{Binding DataContext.StopBackupCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}" />
+                                </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <!-- Colonnes d'information -->
-                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="120"/>
-                    <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="80"/>
-                    <GridViewColumn Header="Progress" DisplayMemberBinding="{Binding Progression}" Width="80"/>
-                    <GridViewColumn Header="Last Action" DisplayMemberBinding="{Binding LastActionTimestamp}" Width="120"/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-            <Button Content="Pause" Command="{Binding PauseCommand}" Margin="5"/>
-            <Button Content="Resume" Command="{Binding ResumeCommand}" Margin="5"/>
-            <Button Content="Stop" Command="{Binding StopCommand}" Margin="5"/>
-        </StackPanel>
     </Grid>
 </Window>
