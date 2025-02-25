@@ -7,11 +7,12 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using EasySave.GUI;
 using EasySave.Models;
 using MessageBox = System.Windows.MessageBox;
 using Application = System.Windows.Application;
 
-namespace EasySave.GUI.Remote
+namespace EasySave.RemoteConsole
 {
     public class RemoteConsoleViewModel : INotifyPropertyChanged
     {
@@ -39,9 +40,10 @@ namespace EasySave.GUI.Remote
             try
             {
                 client = new TcpClient();
-                await client.ConnectAsync("127.0.0.1", 5000); // adresse et port du serveur
+                await client.ConnectAsync("10.131.130.100", 5000); // adresse et port du serveur
                 stream = client.GetStream();
                 isConnected = true;
+                Console.WriteLine("Client connected successfully to server.");
                 StartListening();
             }
             catch (Exception ex)

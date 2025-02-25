@@ -19,5 +19,6 @@ public partial class RemoteConsoleWindow : Window
     public RemoteConsoleWindow()
     {
         InitializeComponent();
+        DataContext = new RemoteConsoleViewModel();
     }
 }

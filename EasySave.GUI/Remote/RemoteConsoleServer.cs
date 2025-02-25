@@ -17,6 +17,8 @@ namespace EasySave.GUI.Remote
         private bool isRunning;
         private List<TcpClient> clients = new List<TcpClient>();
         private CancellationTokenSource cts;
+        
+        public event Action<TcpClient> ClientConnected;
 
         public int Port { get; private set; } = 5000; // port configurable
 
@@ -58,6 +60,11 @@ namespace EasySave.GUI.Remote
                 try
                 {
                     TcpClient client = await listener.AcceptTcpClientAsync();
+                    // Affichage de la notification dans la console avec l'adresse du client connecté.
+                    Console.WriteLine($"[RemoteConsoleServer] Client connected from {((IPEndPoint)client.Client.RemoteEndPoint).Address}");
+                    // Notifier les abonnés que ce client s'est connecté.
+                    ClientConnected?.Invoke(client);
+            
                     lock (clients)
                     {
                         clients.Add(client);
@@ -71,6 +78,7 @@ namespace EasySave.GUI.Remote
                 }
             }
         }
+
 
         private async Task HandleClientAsync(TcpClient client, CancellationToken token)
         {
