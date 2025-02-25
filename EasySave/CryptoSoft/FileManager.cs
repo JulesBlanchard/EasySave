@@ -1,68 +1,99 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
+using System.Threading;
 
-namespace CryptoSoft;
-
-/// <summary>
-/// File manager class
-/// This class is used to encrypt and decrypt files
-/// </summary>
-public class FileManager(string path, string key)
+namespace CryptoSoft
 {
-    private string FilePath { get; } = path;
-    private string Key { get; } = key;
-
     /// <summary>
-    /// check if the file exists
+    /// File manager class (Mono-instance version)
+    /// Cette version utilise un mutex nommé pour s'assurer qu'une seule instance de CryptoSoft
+    /// est active sur la machine.
     /// </summary>
-    private bool CheckFile()
+    public class FileManager
     {
-        if (File.Exists(FilePath))
-            return true;
+        // Mutex global pour garantir une seule instance à travers tous les processus.
+        private static readonly Mutex cryptoMutex = new Mutex(false, "Global\\CryptoSoft_Mutex");
 
-        Console.WriteLine("File not found.");
-        Thread.Sleep(1000);
-        return false;
-    }
+        private string FilePath { get; }
+        private string Key { get; }
 
-    /// <summary>
-    /// Encrypts the file with xor encryption
-    /// </summary>
-    public int TransformFile()
-    {
-        if (!CheckFile()) return -1;
-        Stopwatch stopwatch = Stopwatch.StartNew();
-        var fileBytes = File.ReadAllBytes(FilePath);
-        var keyBytes = ConvertToByte(Key);
-        fileBytes = XorMethod(fileBytes, keyBytes);
-        File.WriteAllBytes(FilePath, fileBytes);
-        stopwatch.Stop();
-        return (int)stopwatch.ElapsedMilliseconds;
-    }
-
-    /// <summary>
-    /// Convert a string in byte array
-    /// </summary>
-    /// <param name="text"></param>
-    /// <returns></returns>
-    private static byte[] ConvertToByte(string text)
-    {
-        return Encoding.UTF8.GetBytes(text);
-    }
-
-    /// <summary>
-    /// </summary>
-    /// <param name="fileBytes">Bytes of the file to convert</param>
-    /// <param name="keyBytes">Key to use</param>
-    /// <returns>Bytes of the encrypted file</returns>
-    private static byte[] XorMethod(IReadOnlyList<byte> fileBytes, IReadOnlyList<byte> keyBytes)
-    {
-        var result = new byte[fileBytes.Count];
-        for (var i = 0; i < fileBytes.Count; i++)
+        public FileManager(string path, string key)
         {
-            result[i] = (byte)(fileBytes[i] ^ keyBytes[i % keyBytes.Count]);
+            FilePath = path;
+            Key = key;
         }
 
-        return result;
+        /// <summary>
+        /// Vérifie que le fichier existe.
+        /// </summary>
+        private bool CheckFile()
+        {
+            if (File.Exists(FilePath))
+                return true;
+
+            Console.WriteLine("File not found.");
+            Thread.Sleep(1000);
+            return false;
+        }
+
+        /// <summary>
+        /// Chiffre le fichier en utilisant un algorithme XOR tout en s'assurant que seule une instance
+        /// de CryptoSoft s'exécute à la fois.
+        /// </summary>
+        public int TransformFile()
+        {
+            if (!CheckFile())
+                return -1;
+
+            bool hasHandle = false;
+            try
+            {
+                // Tente d'acquérir le mutex avec un délai d'attente (par exemple 1000 ms).
+                hasHandle = cryptoMutex.WaitOne(1000, false);
+                if (!hasHandle)
+                {
+                    Console.WriteLine("CryptoSoft est déjà en cours d'exécution. Veuillez patienter.");
+                    return -1; // On peut aussi lever une exception si nécessaire.
+                }
+
+                Stopwatch stopwatch = Stopwatch.StartNew();
+                var fileBytes = File.ReadAllBytes(FilePath);
+                var keyBytes = ConvertToByte(Key);
+                fileBytes = XorMethod(fileBytes, keyBytes);
+                File.WriteAllBytes(FilePath, fileBytes);
+                stopwatch.Stop();
+                return (int)stopwatch.ElapsedMilliseconds;
+            }
+            finally
+            {
+                // Libère le mutex si nous l'avons acquis.
+                if (hasHandle)
+                    cryptoMutex.ReleaseMutex();
+            }
+        }
+
+        /// <summary>
+        /// Convertit une chaîne de caractères en tableau d'octets.
+        /// </summary>
+        private static byte[] ConvertToByte(string text)
+        {
+            return Encoding.UTF8.GetBytes(text);
+        }
+
+        /// <summary>
+        /// Applique une opération XOR sur les octets du fichier avec les octets de la clé.
+        /// </summary>
+        private static byte[] XorMethod(IReadOnlyList<byte> fileBytes, IReadOnlyList<byte> keyBytes)
+        {
+            var result = new byte[fileBytes.Count];
+            for (var i = 0; i < fileBytes.Count; i++)
+            {
+                result[i] = (byte)(fileBytes[i] ^ keyBytes[i % keyBytes.Count]);
+            }
+            return result;
+        }
     }
 }
