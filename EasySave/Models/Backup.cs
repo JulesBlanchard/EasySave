@@ -24,8 +24,8 @@ namespace EasySave.Models
         
         public bool ShouldEncrypt { get; set; }
         public string EncryptionKey { get; set; }
+        [JsonIgnore] // Ne pas sérialiser le JobControl
         public BackupJobControl JobControl { get; set; } = new BackupJobControl();
-
         public BackupStatus Status
         {
             get => status;
@@ -130,15 +130,14 @@ namespace EasySave.Models
             }
         }
         
-// Dans Backup.cs
         public void Reset()
         {
             // Recrée un nouveau JobControl (donc un nouveau CancellationToken)
-            this.JobControl = new BackupJobControl();
+            JobControl = new BackupJobControl();
     
             // Remet la progression et le statut à zéro.
-            this.Progression = 0;
-            this.Status = BackupStatus.NotStarted;
+            Progression = 0;
+            Status = BackupStatus.NotStarted;
         }
 
 
