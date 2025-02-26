@@ -117,6 +117,7 @@ namespace EasySave.Models
                     // Une fois le logiciel arrêté, reprendre la sauvegarde
                     backup.JobControl.Resume(backup);
 
+
                     // Re-vérifier annulation et pause après coup
                     token.ThrowIfCancellationRequested();
                     backup.JobControl.WaitIfPaused();
