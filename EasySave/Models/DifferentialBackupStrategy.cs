@@ -102,12 +102,20 @@ namespace EasySave.Models
                         StateManager.UpdateState(state);
                     }
                     // Vérifier si un logiciel métier apparaît pendant la sauvegarde
+                    // Si le logiciel métier est détecté, mettre la sauvegarde en pause
+                    if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
+                    {
+                        backup.JobControl.Pause(backup);
+                    }
+
+                    // Attendre que le logiciel métier cesse de tourner
                     while (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
                     {
-                        PauseNotifierEvent.RequestPause();
                         Thread.Sleep(500);
                     }
-                    PauseNotifierEvent.Reset();
+
+                    // Une fois le logiciel arrêté, reprendre la sauvegarde
+                    backup.JobControl.Resume(backup);
 
                     // Re-vérifier annulation et pause après coup
                     token.ThrowIfCancellationRequested();
