@@ -401,7 +401,7 @@ namespace EasySave.GUI.ViewModels
             var progressVM = new BackupProgressViewModel();
 
             // Assurez-vous que Backup.Status est bien mis à jour dans vos stratégies.
-            foreach (var backup in allBackups.Where(b => b.Status == BackupStatus.Active))
+            foreach (var backup in allBackups.Where(b => b.Status == BackupStatus.Active || b.Status == BackupStatus.Paused))
             {
                 progressVM.RunningBackups.Add(backup);
             }
