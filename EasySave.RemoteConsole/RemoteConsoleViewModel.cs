@@ -22,36 +22,72 @@ namespace EasySave.RemoteConsole
 
         public ObservableCollection<BackupState> BackupStates { get; set; } = new ObservableCollection<BackupState>();
 
-        // Commandes pour agir sur une sauvegarde donnée (commande paramétrée)
+        // Propriétés pour l'adresse IP et le port
+        private string serverIP = ""; // Pas de valeur par défaut pour l'IP
+        public string ServerIP
+        {
+            get => serverIP;
+            set { serverIP = value; OnPropertyChanged(nameof(ServerIP)); }
+        }
+
+        private string serverPort = "5000"; // Port par défaut
+        public string ServerPort
+        {
+            get => serverPort;
+            set { serverPort = value; OnPropertyChanged(nameof(ServerPort)); }
+        }
+
+        // Propriété pour afficher le statut de connexion
+        private string connectionStatus = "Déconnecté";
+        public string ConnectionStatus
+        {
+            get => connectionStatus;
+            set { connectionStatus = value; OnPropertyChanged(nameof(ConnectionStatus)); }
+        }
+
+        // Commandes pour agir sur une sauvegarde donnée
         public ICommand PauseBackupCommand { get; }
         public ICommand ResumeBackupCommand { get; }
         public ICommand StopBackupCommand { get; }
 
+        // Commande pour se connecter
+        public ICommand ConnectCommand { get; }
+
         public RemoteConsoleViewModel()
         {
-            // Instanciation des commandes avec un paramètre de type BackupState
             PauseBackupCommand = new RelayCommand<BackupState>(PauseBackup);
             ResumeBackupCommand = new RelayCommand<BackupState>(ResumeBackup);
             StopBackupCommand = new RelayCommand<BackupState>(StopBackup);
-
-            ConnectToServer();
+            ConnectCommand = new RelayCommand(ConnectToServer);
         }
 
         private async void ConnectToServer()
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(ServerIP))
+                {
+                    MessageBox.Show("Veuillez renseigner l'adresse IP du serveur.");
+                    return;
+                }
+                if (!int.TryParse(ServerPort, out int port))
+                {
+                    MessageBox.Show("Port invalide. Veuillez entrer un nombre valide.");
+                    return;
+                }
+
                 client = new TcpClient();
-                // Assurez-vous que l'adresse IP correspond bien à celle du serveur distant
-                await client.ConnectAsync("10.131.130.100", 5000);
+                await client.ConnectAsync(ServerIP, port);
                 stream = client.GetStream();
                 isConnected = true;
-                Console.WriteLine("Client connected successfully to server.");
+                ConnectionStatus = $"Connecté au serveur {ServerIP}:{ServerPort}";
+                Console.WriteLine("Client connecté avec succès au serveur.");
                 StartListening();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error connecting to remote server: " + ex.Message);
+                ConnectionStatus = "Connexion échouée";
+                MessageBox.Show("Erreur lors de la connexion au serveur distant : " + ex.Message);
             }
         }
 
@@ -66,7 +102,6 @@ namespace EasySave.RemoteConsole
                     if (bytesRead > 0)
                     {
                         string json = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                        // Désérialisation des états (attendu sous forme de BackupState[])
                         var states = JsonSerializer.Deserialize<BackupState[]>(json);
                         Application.Current.Dispatcher.Invoke(() =>
                         {
@@ -80,13 +115,13 @@ namespace EasySave.RemoteConsole
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Connection lost: " + ex.Message);
+                    ConnectionStatus = "Connexion perdue";
+                    MessageBox.Show("Connexion perdue : " + ex.Message);
                     isConnected = false;
                 }
             }
         }
 
-        // Méthode exécutée quand l'utilisateur clique sur "Pause" dans la ligne de sauvegarde
         private void PauseBackup(BackupState backupState)
         {
             if (backupState != null)
@@ -125,7 +160,7 @@ namespace EasySave.RemoteConsole
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error sending command: " + ex.Message);
+                    MessageBox.Show("Erreur lors de l'envoi de la commande : " + ex.Message);
                 }
             }
         }
