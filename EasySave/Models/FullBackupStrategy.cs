@@ -198,9 +198,7 @@ namespace EasySave.Models
                             }
                             else
                             {
-                                Console.WriteLine(LocalizationManager.CurrentMessages["FullBackup_ErrorCopy"]
-                                    .Replace("{name}", fileInfo.Name)
-                                    .Replace("{error}", $"Extension {fileExtension} non autorisée pour le cryptage."));
+                                Console.WriteLine($"Fichier copié sans cryptage (extension non autorisée) : {fileInfo.Name}");
                             }
                         }
                     }

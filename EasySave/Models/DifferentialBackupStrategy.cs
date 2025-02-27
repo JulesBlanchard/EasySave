@@ -14,8 +14,6 @@ namespace EasySave.Models
     ///
     /// La copie ne s'effectue que si le fichier source est plus récent
     /// que le fichier de destination.
-    ///
-    /// TODO : Gérer la localisation (FR/EN) pour tous les messages (console, logs, pop-ups).
     /// </summary>
     public class DifferentialBackupStrategy : IBackupStrategy
     {
@@ -171,9 +169,7 @@ namespace EasySave.Models
                                 }
                                 else
                                 {
-                                    Console.WriteLine(LocalizationManager.CurrentMessages["DiffBackup_ErrorCopy"]
-                                        .Replace("{name}", fileInfo.Name)
-                                        .Replace("{error}", $"Extension {fileExtension} non autorisée pour le cryptage."));
+                                    Console.WriteLine($"Fichier copié sans cryptage (extension non autorisée) : {fileInfo.Name}");
                                 }
                             }
                         }
