@@ -13,35 +13,35 @@ namespace EasySave.Models
             pauseEvent = new ManualResetEventSlim(true); // signalé (non en pause) par défaut
         }
 
-        // Le token pour signaler l’arrêt
+        // The token to signal termination
         public CancellationToken CancellationToken => cancellationTokenSource.Token;
 
-        // Mettre en pause le travail et passer Status = Paused
+        // Pause the job and set Status = Paused
         public void Pause(Backup backup)
         {
             backup.Status = BackupStatus.Paused;
             pauseEvent.Reset();
         }
 
-        // Reprendre le travail et passer Status = Active
+        // Resume the job and set Status = Active
         public void Resume(Backup backup)
         {
             backup.Status = BackupStatus.Active;
             pauseEvent.Set();
         }
 
-        // Stopper immédiatement le travail, Status = End, annuler le token
+        // Immediately stop the job, set Status = End, cancel the token
         public void Stop(Backup backup)
         {
             backup.Status = BackupStatus.End;
             cancellationTokenSource.Cancel();
-            pauseEvent.Set(); // en cas de pause, on libère pour que le thread puisse voir l'annulation
+            pauseEvent.Set(); // In case of pause, release so the thread can see the cancellation
         }
 
-        // Méthode d’attente : bloque si en pause
+        // Waiting method: blocks if paused
         public void WaitIfPaused() => pauseEvent.Wait();
 
-        // Indique si le travail est en pause
+        // Indicates if the job is paused
         public bool IsPaused => !pauseEvent.IsSet;
     }
 }

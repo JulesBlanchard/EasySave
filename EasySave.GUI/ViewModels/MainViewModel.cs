@@ -72,7 +72,6 @@ namespace EasySave.GUI.ViewModels
             }
         }
 
-        // Propriété de recherche
         private string searchQuery;
 
         public string SearchQuery
@@ -84,7 +83,7 @@ namespace EasySave.GUI.ViewModels
                 {
                     searchQuery = value;
                     OnPropertyChanged();
-                    CurrentPage = 1; // Réinitialise la pagination
+                    CurrentPage = 1; 
                     UpdatePagedBackups();
                 }
             }
@@ -123,9 +122,7 @@ namespace EasySave.GUI.ViewModels
             OpenSettingsCommand = new RelayCommand(OpenSettings);
             OpenEncryptWindowCommand = new RelayCommand(OpenEncryptWindow);
 
-            // Nouvelle commande pour exécuter les sauvegardes sélectionnées
             ExecuteSelectedCommand = new RelayCommand(ExecuteSelectedBackups);
-            // Nouvelle commande pour supprimer les sauvegardes sélectionnées
             DeleteSelectedCommand = new RelayCommand(DeleteSelectedBackups);
 
             backupController.BackupsChanged += RefreshBackups;
@@ -166,7 +163,7 @@ namespace EasySave.GUI.ViewModels
         }
 
         /// <summary>
-        /// Retourne la liste complète filtrée selon le SearchQuery.
+        /// Returns the complete list filtered according to the SearchQuery.
         /// </summary>
         private IEnumerable<Backup> GetFilteredBackups()
         {
@@ -178,18 +175,18 @@ namespace EasySave.GUI.ViewModels
         private void RefreshBackups()
         {
             allBackups = new ObservableCollection<Backup>(backupController.GetBackups());
-            // On applique le filtre actuel
+            // Apply the current filter
             CurrentPage = 1;
             UpdatePagedBackups();
         }
 
         /// <summary>
-        /// Met à jour la liste paginée en fonction du filtre et de la page actuelle.
+        /// Updates the paginated list based on the filter and the current page.
         /// </summary>
         private void UpdatePagedBackups()
         {
             var filtered = GetFilteredBackups().ToList();
-            // S'assurer qu'on affiche au moins 1 page
+            // Ensure at least one page is displayed
             TotalPages = Math.Max(1, (int)Math.Ceiling(filtered.Count / (double)itemsPerPage));
             if (CurrentPage > TotalPages)
                 CurrentPage = TotalPages;
@@ -201,7 +198,7 @@ namespace EasySave.GUI.ViewModels
         }
 
         /// <summary>
-        /// Exécute en parallèle toutes les sauvegardes sélectionnées.
+        /// Executes all selected backups in parallel.
         /// </summary>
         private async void ExecuteSelectedBackups()
         {
@@ -224,65 +221,64 @@ namespace EasySave.GUI.ViewModels
                 return;
             }
 
-    // Prépare la liste de tâches
-    // Pour chaque backup, on lance ExecuteBackup dans un Task.Run
-    var tasks = selectedBackups.Select(backup =>
-    {
-        // Optionnel : si la sauvegarde est déjà End ou Error, on peut la reset avant
-        if (backup.Status == BackupStatus.End || backup.Status == BackupStatus.Error)
-        {
-            backup.Reset();
-        }
 
-        int index = allBackups.IndexOf(backup);
-        return Task.Run(() => backupController.ExecuteBackup(index));
-    }).ToList();
+            var tasks = selectedBackups.Select(backup =>
+            {
+                
+                if (backup.Status == BackupStatus.End || backup.Status == BackupStatus.Error)
+                {
+                    backup.Reset();
+                }
 
-    try
-    {
-        await Task.WhenAll(tasks);
-        bool allFullProgress = selectedBackups.All(b => b.Progression == 100);
+                int index = allBackups.IndexOf(backup);
+                return Task.Run(() => backupController.ExecuteBackup(index));
+            }).ToList();
 
-        if (allFullProgress)
-        {
-            MessageBox.Show(
-                (string)Application.Current.FindResource("Main_SuccessAll"),
-                (string)Application.Current.FindResource("Common_Success"),
-                MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-        else
-        {
-            MessageBox.Show(
-                (string)Application.Current.FindResource("Main_PartialSuccess"),
-                (string)Application.Current.FindResource("Common_Information"),
-                MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-    }
-    catch (AggregateException agex)
-    {
-        if (agex.InnerExceptions.Any(e => e is OperationCanceledException))
-        {
-            MessageBox.Show(
-                (string)Application.Current.FindResource("Main_Stopped"),
-                (string)Application.Current.FindResource("Common_Information"),
-                MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-        else
-        {
-            string msg = agex.Flatten().Message;
-            MessageBox.Show(
-                string.Format((string)Application.Current.FindResource("Main_ExecutionError"), msg),
-                (string)Application.Current.FindResource("Common_Error"),
-                MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-    }
-    catch (Exception ex)
-    {
-        MessageBox.Show(
-            string.Format((string)Application.Current.FindResource("Main_ExecutionError"), ex.Message),
-            (string)Application.Current.FindResource("Common_Error"),
-            MessageBoxButton.OK, MessageBoxImage.Error);
-    }
+            try
+            {
+                await Task.WhenAll(tasks);
+                bool allFullProgress = selectedBackups.All(b => b.Progression == 100);
+
+                if (allFullProgress)
+                {
+                    MessageBox.Show(
+                        (string)Application.Current.FindResource("Main_SuccessAll"),
+                        (string)Application.Current.FindResource("Common_Success"),
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        (string)Application.Current.FindResource("Main_PartialSuccess"),
+                        (string)Application.Current.FindResource("Common_Information"),
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (AggregateException agex)
+            {
+                if (agex.InnerExceptions.Any(e => e is OperationCanceledException))
+                {
+                    MessageBox.Show(
+                        (string)Application.Current.FindResource("Main_Stopped"),
+                        (string)Application.Current.FindResource("Common_Information"),
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    string msg = agex.Flatten().Message;
+                    MessageBox.Show(
+                        string.Format((string)Application.Current.FindResource("Main_ExecutionError"), msg),
+                        (string)Application.Current.FindResource("Common_Error"),
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    string.Format((string)Application.Current.FindResource("Main_ExecutionError"), ex.Message),
+                    (string)Application.Current.FindResource("Common_Error"),
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void DeleteSelectedBackups()
@@ -298,7 +294,6 @@ namespace EasySave.GUI.ViewModels
             if (MessageBox.Show("Voulez-vous supprimer les sauvegardes sélectionnées ?", "Confirmer la suppression",
                     MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                // Supprimer en commençant par les indices les plus élevés pour éviter les décalages
                 var indices = selectedBackups.Select(b => allBackups.IndexOf(b))
                     .OrderByDescending(i => i)
                     .ToList();
@@ -315,7 +310,6 @@ namespace EasySave.GUI.ViewModels
 
         private async void LaunchBackup(Backup backup)
         {
-            // Si la sauvegarde est déjà End ou Error, on la réinitialise
             if (backup.Status == BackupStatus.End || backup.Status == BackupStatus.Error)
             {
                 backup.Reset();
@@ -330,7 +324,6 @@ namespace EasySave.GUI.ViewModels
             }
             catch (OperationCanceledException)
             {
-                // En cas d’annulation (Stop)
                 MessageBox.Show($"La sauvegarde '{backup.Name}' a été arrêtée.", 
                     "Annulée", MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -373,7 +366,6 @@ namespace EasySave.GUI.ViewModels
 
         private void OpenSettings()
         {
-            // Ouvre la fenêtre de réglages (SettingsWindow)
             var settingsWindow = new Views.SettingsWindow();
             settingsWindow.ShowDialog();
         }
@@ -386,7 +378,6 @@ namespace EasySave.GUI.ViewModels
 
         private void OnPauseRequested()
         {
-            // S'assurer d'être sur le thread UI
             Application.Current.Dispatcher.Invoke(() =>
             {
                 MessageBox.Show(
@@ -400,7 +391,6 @@ namespace EasySave.GUI.ViewModels
             var progressWindow = new Views.BackupProgressWindow();
             var progressVM = new BackupProgressViewModel();
 
-            // Assurez-vous que Backup.Status est bien mis à jour dans vos stratégies.
             foreach (var backup in allBackups.Where(b => b.Status == BackupStatus.Active || b.Status == BackupStatus.Paused))
             {
                 progressVM.RunningBackups.Add(backup);

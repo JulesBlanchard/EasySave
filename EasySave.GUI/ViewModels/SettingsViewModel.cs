@@ -33,7 +33,6 @@ namespace EasySave.GUI.ViewModels
             set { allowedEncryptionFileTypes = value; OnPropertyChanged(); }
         }
 
-        // Propriété pour les extensions prioritaires
         public string PriorityExtensions
         {
             get => priorityExtensions;
@@ -46,14 +45,12 @@ namespace EasySave.GUI.ViewModels
             set { maxLargeFileSize = value; OnPropertyChanged(); }
         }
 
-        // Action pour fermer la fenêtre depuis le ViewModel
         public System.Action CloseAction { get; set; }
 
         public ICommand SaveSettingsCommand { get; }
 
         public SettingsViewModel()
         {
-            // Initialiser les valeurs à partir de GeneralSettings
             LogFormat = LoggingManager.LogFormat;
             BusinessSoftwareName = GeneralSettings.BusinessSoftwareName;
             AllowedEncryptionFileTypes = GeneralSettings.AllowedEncryptionFileTypes;
@@ -64,7 +61,6 @@ namespace EasySave.GUI.ViewModels
 
         private void SaveSettings()
         {
-            // Mettre à jour les paramètres globaux
             LoggingManager.LogFormat = LogFormat;
             GeneralSettings.BusinessSoftwareName = BusinessSoftwareName;
             GeneralSettings.AllowedEncryptionFileTypes = AllowedEncryptionFileTypes;
@@ -75,7 +71,6 @@ namespace EasySave.GUI.ViewModels
             }
             else
             {
-                // En cas d'erreur de saisie, on définit une valeur par défaut (2 Go)
                 GeneralSettings.MaxLargeFileSize = (2L * 1024 * 1024 * 1024);
             }
             CloseAction?.Invoke();

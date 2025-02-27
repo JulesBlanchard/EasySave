@@ -20,11 +20,11 @@ namespace EasySave.GUI.ViewModels
 
         private void SetLanguage(string lang)
         {
-            // Choix du dictionnaire à charger en fonction du paramètre lang
+            // Choose the dictionary to load based on the language parameter
             string uri = lang == "fr" ? "Ressources/Strings.fr.xaml" : "Ressources/Strings.en.xaml";
             ResourceDictionary dict = new ResourceDictionary { Source = new Uri(uri, UriKind.Relative) };
 
-            // Utilisation explicite de System.Windows.Application pour lever l'ambiguïté
+            // Explicit use of System.Windows.Application to resolve ambiguity
             System.Windows.Application.Current.Resources.MergedDictionaries.Clear();
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(dict);
         }

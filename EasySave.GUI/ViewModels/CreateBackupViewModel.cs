@@ -67,7 +67,7 @@ namespace EasySave.GUI.ViewModels
         public CreateBackupViewModel(Window window)
         {
             this.window = window;
-            // Utilisation du singleton
+            // Using singleton
             backupController = BackupController.Instance;
             BackupType = "full";
             CreateBackupCommand = new RelayCommand(CreateBackup);
@@ -78,7 +78,7 @@ namespace EasySave.GUI.ViewModels
 
         private void CreateBackup()
 {
-    // Vérification des champs obligatoires
+    // Validate required fields
     if (string.IsNullOrWhiteSpace(BackupName))
     {
         MessageBox.Show(
@@ -112,7 +112,7 @@ namespace EasySave.GUI.ViewModels
         return;
     }
 
-    // Si le dossier cible n'existe pas, proposer de le créer
+    // If the target folder does not exist, ask the user if they want to create it
     if (!Directory.Exists(TargetPath))
     {
         var result = MessageBox.Show(
@@ -139,16 +139,16 @@ namespace EasySave.GUI.ViewModels
             return;
         }
     }
-    // Normalisation du type de sauvegarde
-        string normalizedType = BackupType.ToLowerInvariant();
-        if (normalizedType.Contains("complète"))
-        {
-            normalizedType = "full";
-        }
-        else if (normalizedType.Contains("différentielle"))
-        {
-            normalizedType = "diff";
-        }
+    // Normalize backup type
+    string normalizedType = BackupType.ToLowerInvariant();
+    if (normalizedType.Contains("complète"))
+    {
+        normalizedType = "full";
+    }
+    else if (normalizedType.Contains("différentielle"))
+    {
+        normalizedType = "diff";
+    }
     backupController.CreateBackup(BackupName, SourcePath, TargetPath, normalizedType, ShouldEncrypt, EncryptionKey);
     MessageBox.Show(
         string.Format((string)WpfApp.Current.FindResource("CreateBackup_Success"), BackupName),

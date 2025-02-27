@@ -9,22 +9,22 @@ using System.Xml.Linq;
 namespace EasySave.Models
 {
     /// <summary>
-    /// Classe statique qui gère et met à jour l'état des sauvegardes.
-    /// Elle écrit le fichier d'état au format JSON ou XML selon LoggingManager.LogFormat.
+    /// Static class that manages and updates the state of backups.
+    /// It writes the state file in JSON or XML format based on LoggingManager.LogFormat.
     /// </summary>
     public static class StateManager
     {
-        // Chemins des fichiers d'état pour JSON et XML.
+        // Paths for JSON and XML state files.
         private static readonly string stateFilePathJson = Path.Combine(AppContext.BaseDirectory, "state.json");
         private static readonly string stateFilePathXml = Path.Combine(AppContext.BaseDirectory, "state.xml");
 
-        // Dictionnaire pour stocker les états des sauvegardes, indexé par le nom de la sauvegarde.
+        // Dictionary to store backup states, indexed by backup name.
         private static Dictionary<string, BackupState> states = new Dictionary<string, BackupState>();
 
-        // Verrou statique pour synchroniser l'accès aux fichiers d'état.
+        // Static lock to synchronize access to state files.
         private static readonly object _stateFileLock = new object();
         /// <summary>
-        /// Met à jour ou ajoute l'état d'une sauvegarde et écrit le fichier d'état.
+        /// Updates or adds a backup state and writes the state file.
         /// </summary>
         public static void UpdateState(BackupState state)
         {
@@ -40,11 +40,11 @@ namespace EasySave.Models
 
 
         /// <summary>
-        /// Écrit le fichier d'état en JSON ou XML selon LoggingManager.LogFormat.
+        /// Writes the state file in JSON or XML based on LoggingManager.LogFormat.
         /// </summary>
         private static void WriteStateFile()
         {
-            if (EasySave.Logging.LoggingManager.LogFormat.ToUpper() == "XML")
+            if (Logging.LoggingManager.LogFormat.ToUpper() == "XML")
             {
                 WriteStateFileXml();
             }
@@ -55,7 +55,7 @@ namespace EasySave.Models
         }
 
         /// <summary>
-        /// Sérialise et écrit les états des sauvegardes dans un fichier JSON.
+        /// Serializes and writes backup states to a JSON file.
         /// </summary>
         private static void WriteStateFileJson()
         {
@@ -64,7 +64,6 @@ namespace EasySave.Models
                 try
                 {
                     var options = new JsonSerializerOptions { WriteIndented = true };
-                    // Convertir les enums en chaînes
                     options.Converters.Add(new JsonStringEnumConverter());
                     string json = JsonSerializer.Serialize(states.Values.ToList(), options);
                     File.WriteAllText(stateFilePathJson, json);
@@ -77,7 +76,7 @@ namespace EasySave.Models
         }
 
         /// <summary>
-        /// Sérialise et écrit les états des sauvegardes dans un fichier XML.
+        /// Serializes and writes backup states to an XML file.
         /// </summary>
         private static void WriteStateFileXml()
         {

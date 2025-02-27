@@ -60,9 +60,7 @@ namespace EasySave.GUI.Remote
                 try
                 {
                     TcpClient client = await listener.AcceptTcpClientAsync();
-                    // Affichage de la notification dans la console avec l'adresse du client connecté.
                     Console.WriteLine($"[RemoteConsoleServer] Client connected from {((IPEndPoint)client.Client.RemoteEndPoint).Address}");
-                    // Notifier les abonnés que ce client s'est connecté.
                     ClientConnected?.Invoke(client);
             
                     lock (clients)
@@ -116,7 +114,6 @@ namespace EasySave.GUI.Remote
 
         private void ProcessCommand(string command)
         {
-            // Format attendu : "COMMAND <backupName> <action>"
             try
             {
                 var parts = command.Trim().Split(' ');
@@ -156,7 +153,6 @@ namespace EasySave.GUI.Remote
             {
                 try
                 {
-                    // Récupère les états actuels
                     var states = StateManager.GetCurrentStates();
                     string json = JsonSerializer.Serialize(states);
                     byte[] data = Encoding.UTF8.GetBytes(json);
@@ -177,7 +173,7 @@ namespace EasySave.GUI.Remote
                             }
                         }
                     }
-                    await Task.Delay(1000, token); // actualisation toutes les secondes
+                    await Task.Delay(1000, token); 
                 }
                 catch (TaskCanceledException) { }
                 catch (Exception ex)

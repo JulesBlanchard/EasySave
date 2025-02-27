@@ -4,17 +4,17 @@ using System.IO;
 namespace EasySave.Utils
 {
     /// <summary>
-    /// Fournit une méthode pour vérifier si le logiciel métier est en cours d'exécution.
+    /// Provides a method to check if the business software is running.
     /// </summary>
     public static class BusinessSoftwareChecker
     {
         public static bool IsBusinessSoftwareRunning()
         {
             if (string.IsNullOrWhiteSpace(GeneralSettings.BusinessSoftwareName))
-                return false; // Aucun logiciel métier défini.
+                return false; 
 
             string searchName = GeneralSettings.BusinessSoftwareName.ToLower();
-            // Récupérer tous les processus et vérifier si l'un d'eux contient la chaîne recherchée.
+            // Retrieve all processes and check if any contain the searched string.
             return Process.GetProcesses()
                 .Any(p => p.ProcessName.ToLower().Contains(searchName));
         }

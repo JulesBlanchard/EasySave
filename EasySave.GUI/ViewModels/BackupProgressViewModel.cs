@@ -8,10 +8,10 @@ namespace EasySave.GUI.ViewModels
 {
     public class BackupProgressViewModel : INotifyPropertyChanged
     {
-        // Collection des sauvegardes en cours (à mettre à jour en temps réel)
+        // Collection of running backups (to be updated in real-time)
         public ObservableCollection<Backup> RunningBackups { get; set; } = new ObservableCollection<Backup>();
 
-        // Commandes de contrôle pour chaque sauvegarde
+        // Control commands for each backup
         public ICommand PauseCommand { get; }
         public ICommand ResumeCommand { get; }
         public ICommand StopCommand { get; }

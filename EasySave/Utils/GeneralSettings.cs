@@ -3,20 +3,20 @@ using System;
 namespace EasySave.Utils
 {
     /// <summary>
-    /// Classe statique pour stocker les paramètres généraux de l'application.
-    /// L'utilisateur pourra définir ici le nom du logiciel métier.
-    /// Par exemple, pour les démonstrations, "calc" pourra être utilisé pour la calculatrice.
+    /// Static class to store general application settings.
+    /// The user can define the business software name here.
+    /// For example, for demonstrations, "calc" can be used for the calculator.
     /// </summary>
     public static class GeneralSettings
     {
-        // Par défaut, vide (aucun logiciel métier défini)
-        // L'utilisateur pourra le modifier via l'interface de paramètres.
+        // Default is empty (no business software defined)
+// The user can modify it via the settings interface.
         public static string BusinessSoftwareName { get; set; } = "";
         
         public static string AllowedEncryptionFileTypes { get; set; } = ".txt,.docx,.pdf";
         
         public static long MaxLargeFileSize { get; set; } = 300 * 1024;
-        public static string PriorityExtensions { get; set; } = "exe,.pdf"; 
+        public static string PriorityExtensions { get; set; } = ".exe,.pdf"; 
 
 
     }

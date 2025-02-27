@@ -23,8 +23,8 @@ namespace EasySave.Utils
         }
 
         /// <summary>
-        /// Réinitialise le flag pour permettre l'affichage d'une nouvelle popup 
-        /// lors d'une nouvelle détection.
+        /// Resets the flag to allow displaying a new popup 
+        /// upon a new detection.
         /// </summary>
         public static void Reset()
         {

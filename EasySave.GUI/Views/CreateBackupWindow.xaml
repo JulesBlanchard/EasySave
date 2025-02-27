@@ -29,10 +29,12 @@
         <!-- Ligne 0 : Nom de la sauvegarde -->
         <Label Grid.Row="0" Grid.Column="0"
                Content="{DynamicResource CreateBackup_BackupNameLabel}"
-               Margin="5"/>
+               Margin="5"
+               Width="auto"/>
         <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
                  Text="{Binding BackupName, Mode=TwoWay}"
-                 Margin="5"/>
+                 Margin="5"
+                 Width="auto"/>
         <!-- Ligne 1 : Dossier source avec bouton -->
         <Label Grid.Row="1" Grid.Column="0"
                Content="{DynamicResource CreateBackup_SourcePathLabel}"

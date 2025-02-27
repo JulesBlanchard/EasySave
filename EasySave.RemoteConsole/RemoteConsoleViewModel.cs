@@ -22,22 +22,22 @@ namespace EasySave.RemoteConsole
 
         public ObservableCollection<BackupState> BackupStates { get; set; } = new ObservableCollection<BackupState>();
 
-        // Propriétés pour l'adresse IP et le port
-        private string serverIP = ""; // Pas de valeur par défaut pour l'IP
+        // Properties for IP address and port
+        private string serverIP = ""; // No default value for IP
         public string ServerIP
         {
             get => serverIP;
             set { serverIP = value; OnPropertyChanged(nameof(ServerIP)); }
         }
 
-        private string serverPort = "5000"; // Port par défaut
+        private string serverPort = "5000"; // Default port
         public string ServerPort
         {
             get => serverPort;
             set { serverPort = value; OnPropertyChanged(nameof(ServerPort)); }
         }
 
-        // Propriété pour afficher le statut de connexion
+        // Property to display connection status
         private string connectionStatus = "Déconnecté";
         public string ConnectionStatus
         {
@@ -45,12 +45,12 @@ namespace EasySave.RemoteConsole
             set { connectionStatus = value; OnPropertyChanged(nameof(ConnectionStatus)); }
         }
 
-        // Commandes pour agir sur une sauvegarde donnée
+        // Commands to act on a specific backup
         public ICommand PauseBackupCommand { get; }
         public ICommand ResumeBackupCommand { get; }
         public ICommand StopBackupCommand { get; }
 
-        // Commande pour se connecter
+        // Command to connect to the server
         public ICommand ConnectCommand { get; }
 
         public RemoteConsoleViewModel()

@@ -9,18 +9,17 @@ using EasySave.Utils;
 namespace EasySave.Models
 {
     /// <summary>
-    /// Implémente une stratégie de sauvegarde FULL avec parallélisation, gestion des fichiers prioritaires,
-    /// vérification du logiciel métier et contrôle temps réel (pause/play/stop).
+    /// Implements a FULL backup strategy with parallelization, priority file management,
+    /// business software verification, and real-time control (pause/play/stop).
     /// </summary>
     public class FullBackupStrategy : IBackupStrategy
     {
         public void Execute(Backup backup, IBackupLogger logger)
         {
-            // 1) Indiquer que la sauvegarde démarre
             backup.Status = BackupStatus.Active;
             Console.WriteLine(LocalizationManager.CurrentMessages["FullBackup_Executing"].Replace("{name}", backup.Name));
 
-            // Vérifier si un logiciel métier est déjà lancé
+            // Check if a business software is already running
             if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
             {
                 backup.Status = BackupStatus.End;
@@ -32,12 +31,12 @@ namespace EasySave.Models
                 return;
             }
 
-            // 2) Récupérer la liste de tous les fichiers
+            // Retrieve the list of all files
             var allFiles = backup.GetFileList();
             int totalFiles = allFiles.Count;
             if (totalFiles == 0)
             {
-                // S'il n'y a aucun fichier, on termine immédiatement
+                // If there are no files, terminate immediately
                 backup.Status = BackupStatus.End;
                 Console.WriteLine($"[FULL] Aucune ressource à copier pour {backup.Name}. Fin immédiate.");
                 return;
@@ -45,7 +44,6 @@ namespace EasySave.Models
 
             long totalSize = allFiles.Sum(f => f.Length);
 
-            // 3) Créer l'objet BackupState pour le suivi (StateManager)
             var state = new BackupState
             {
                 Name = backup.Name,
@@ -59,7 +57,7 @@ namespace EasySave.Models
             };
             StateManager.UpdateState(state);
 
-            // 4) Gestion des fichiers prioritaires
+            // Manage priority files
             var priorityExtensions = GeneralSettings.PriorityExtensions
                 .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(ext => ext.Trim().ToLowerInvariant()).ToList();
@@ -67,22 +65,21 @@ namespace EasySave.Models
                 priorityExtensions.Contains(Path.GetExtension(file.FullName).ToLowerInvariant())).ToList();
             var nonPriorityFiles = allFiles.Except(priorityFiles).ToList();
 
-            // Ajouter le nombre de fichiers prioritaires au compteur global
+            // Add the number of priority files to the global counter
             PriorityManager.AddPriorityFiles(priorityFiles.Count);
 
-            // Traiter d'abord les prioritaires
+            // Process priority files first
             var sortedFiles = priorityFiles.Concat(nonPriorityFiles).ToList();
             
-            // 5) Variables pour le traitement parallèle
+            // Variables for parallel processing
             int processedFiles = 0;
             object stateLock = new object();
             long thresholdBytes = GeneralSettings.MaxLargeFileSize;
             SemaphoreSlim largeFileSemaphore = new SemaphoreSlim(1, 1);
 
-            // Récupération du token d'annulation pour le Stop
+            // Retrieve the cancellation token for Stop
             CancellationToken token = backup.JobControl.CancellationToken;
 
-            // 6) Préparer les options Parallel
             var parallelOptions = new ParallelOptions
             {
                 MaxDegreeOfParallelism = Environment.ProcessorCount,
@@ -93,7 +90,7 @@ namespace EasySave.Models
             {
                 Parallel.ForEach(sortedFiles, parallelOptions, fileInfo =>
                 {
-                    // Vérifier si Stop a été demandé
+                    // Check if Stop was requested
                     token.ThrowIfCancellationRequested();
 
                     if (backup.JobControl.IsPaused)
@@ -104,9 +101,8 @@ namespace EasySave.Models
                             StateManager.UpdateState(state);
                         }
                     }
-                    // Vérifier si Pause a été enclenchée
+                    // Check if Pause was triggered
                     backup.JobControl.WaitIfPaused();
-                    // Dès que la pause est levée, remettre l'état à Active
                     lock (stateLock)
                     {
                         state.Status = BackupStatus.Active;
@@ -114,27 +110,24 @@ namespace EasySave.Models
                     }
                     bool isPriority = priorityExtensions.Contains(Path.GetExtension(fileInfo.FullName).ToLowerInvariant());
                     
-                    // Si le logiciel métier est détecté, mettre la sauvegarde en pause
+                    // If the business software is detected, pause the backup
                     if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
                     {
                         backup.JobControl.Pause(backup);
                     }
 
-                    // Attendre que le logiciel métier cesse de tourner
+                    // Wait until the business software stops running
                     while (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
                     {
                         Thread.Sleep(500);
                     }
 
-                    // Une fois le logiciel arrêté, reprendre la sauvegarde
                     backup.JobControl.Resume(backup);
-
-
-                    // Re-vérifier annulation et pause
+                    // Re-check for cancellation and pause
                     token.ThrowIfCancellationRequested();
                     backup.JobControl.WaitIfPaused();
 
-                    // Attendre si c'est un fichier non prioritaire mais qu'il reste des priorités
+                    // Wait if it is a non-priority file but there are still priority files
                     if (!isPriority)
                     {
                         while (PriorityManager.GetPendingCount() > 0)
@@ -145,12 +138,12 @@ namespace EasySave.Models
                         }
                     }
 
-                    // Création du dossier cible
+                    // Create the target directory
                     var relativePath = fileInfo.FullName.Substring(backup.SourcePath.Length).TrimStart('\\', '/');
                     var destFilePath = Path.Combine(backup.TargetPath, relativePath);
                     Directory.CreateDirectory(Path.GetDirectoryName(destFilePath));
 
-                    // Mise à jour de l'état avant la copie
+                    // Update state before copying
                     lock (stateLock)
                     {
                         state.SourceFilePath = fileInfo.FullName;
@@ -158,7 +151,7 @@ namespace EasySave.Models
                         StateManager.UpdateState(state);
                     }
 
-                    // Fichiers volumineux : utiliser un sémaphore pour bloquer le transfert concurrent
+                    // Large file handling: use a semaphore to block concurrent transfers
                     if (fileInfo.Length > thresholdBytes)
                     {
                         largeFileSemaphore.Wait();
@@ -166,16 +159,16 @@ namespace EasySave.Models
 
                     try
                     {
-                        // Copie du fichier
+                        // File copy
                         var startTime = DateTime.Now;
                         FileHelper.CopyFileWithCancellation(fileInfo.FullName, destFilePath, backup);
                         long transferTimeMs = (long)((DateTime.Now - startTime).TotalMilliseconds);
 
-                        // Logger la copie
+                        // Log copy
                         logger.LogTransfer(backup.Name, fileInfo.FullName, destFilePath, fileInfo.Length, transferTimeMs);
                         Console.WriteLine(LocalizationManager.CurrentMessages["FullBackup_Copied"].Replace("{name}", fileInfo.Name));
 
-                        // Cryptage si nécessaire
+                        // Encryption if necessary
                         if (backup.ShouldEncrypt)
                         {
                             string fileExtension = Path.GetExtension(fileInfo.FullName).ToLowerInvariant();
@@ -204,35 +197,33 @@ namespace EasySave.Models
                     }
                     finally
                     {
-                        // Libérer le sémaphore si fichier volumineux
+                        // Release the semaphore if the file was large
                         if (fileInfo.Length > thresholdBytes)
                         {
                             largeFileSemaphore.Release();
                         }
                     }
 
-                    // Si le fichier était prioritaire, décrémenter le compteur
+                    // If the file was priority, decrement the counter
                     if (isPriority)
                     {
                         PriorityManager.DecrementPriorityFiles();
                     }
 
-                    // Mise à jour de la progression et de l'état
+                    // Update progress and state
                     lock (stateLock)
                     {
                         processedFiles++;
-                        // Empêcher le pourcentage de dépasser 100
                         int progress = (int)((processedFiles / (double)totalFiles) * 100);
                         progress = Math.Min(progress, 100);
                         state.NbFilesLeftToDo = totalFiles - processedFiles;
                         state.Progression = progress;
-                        backup.Progression = progress; // mise à jour de backup.Progression
+                        backup.Progression = progress; 
 
                         StateManager.UpdateState(state);
                     }
                 });
 
-                // Si on arrive ici sans exception => terminé normalement
                 Console.WriteLine(LocalizationManager.CurrentMessages["FullBackup_Finished"].Replace("{name}", backup.Name));
                 state.Status = BackupStatus.End;
                 backup.Status = BackupStatus.End;
@@ -242,7 +233,6 @@ namespace EasySave.Models
             }
             catch (OperationCanceledException)
             {
-                // Stop demandé => on sort proprement
                 Console.WriteLine($"[FULL] Sauvegarde {backup.Name} arrêtée par l'utilisateur (Stop).");
                 backup.Status = BackupStatus.End;
                 state.Status = BackupStatus.End;
@@ -252,7 +242,6 @@ namespace EasySave.Models
             }
             catch (Exception ex)
             {
-                // Autre exception => mettre en Error
                 backup.Status = BackupStatus.Error;
                 state.Status = BackupStatus.Error;
                 StateManager.UpdateState(state);

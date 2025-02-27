@@ -7,8 +7,8 @@ using EasySave.Utils;
 namespace EasySave.Controllers
 {
     /// <summary>
-    /// Controller central pour gérer les sauvegardes.
-    /// Implémenté en singleton pour que toutes les vues utilisent la même instance.
+    /// Central controller for managing backups.
+    /// Implemented as a singleton so that all views use the same instance.
     /// </summary>
     public class BackupController
     {
@@ -18,10 +18,10 @@ namespace EasySave.Controllers
         // Singleton
         public static BackupController Instance { get; } = new BackupController();
 
-        // Événement notifiant du changement de la liste des sauvegardes
+        // Event notifying when the backup list changes
         public event Action BackupsChanged;
 
-        // Constructeur privé
+        // Private constructor
         public BackupController()
         {
             logger = LoggingManager.GetLogger("Logs");
@@ -29,7 +29,7 @@ namespace EasySave.Controllers
         }
 
         /// <summary>
-        /// Crée une sauvegarde et la stocke dans le manager.
+        /// Creates a backup and stores it in the manager.
         /// </summary>
         public void CreateBackup(string name, string source, string target, string strategyType, bool shouldEncrypt, string encryptionKey)
         {
@@ -49,16 +49,15 @@ namespace EasySave.Controllers
 
             string message = LocalizationManager.CurrentMessages["ControllerBackupCreated"];
             message = message.Replace("{name}", name).Replace("{strategy}", strategyType);
-            // Vous pouvez logger ou afficher ce message selon vos besoins.
         }
 
         
         /// <summary>
-        /// Permet de modifier une backup
+        /// Allows modifying a backup.
         /// </summary>
         public void UpdateBackup(Backup backup)
         {
-            // Recalculez la stratégie en fonction du type de sauvegarde
+            // Recalculate the strategy based on the backup type
             if (!string.IsNullOrEmpty(backup.BackupType))
             {
                 if (backup.BackupType.ToLower().StartsWith("f"))
@@ -67,14 +66,14 @@ namespace EasySave.Controllers
                     backup.Strategy = new DifferentialBackupStrategy();
             }
 
-            // Enregistrer la liste des sauvegardes mise à jour
+            // Save the updated list of backups
             manager.UpdateBackupsFile();
             OnBackupsChanged();
         }
 
 
         /// <summary>
-        /// Supprime une sauvegarde par index.
+        /// Deletes a backup by index.
         /// </summary>
         public void DeleteBackup(int index)
         {
@@ -97,7 +96,7 @@ namespace EasySave.Controllers
             return manager.GetBackups();
         }
 
-        // Méthode privée pour notifier les abonnés
+        // Private method to notify subscribers
         private void OnBackupsChanged()
         {
             BackupsChanged?.Invoke();

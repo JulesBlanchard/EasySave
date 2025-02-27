@@ -7,7 +7,7 @@ using System.Windows.Input;
 using EasySave.Controllers;
 using EasySave.Models;
 using WpfApp = System.Windows.Application;
-using System.Windows.Forms; // Pour FolderBrowserDialog
+using System.Windows.Forms;
 using MessageBox = System.Windows.MessageBox;
 
 namespace EasySave.GUI.ViewModels
@@ -61,7 +61,7 @@ namespace EasySave.GUI.ViewModels
 
         private void Save()
 {
-    // Vérifier que les champs ne sont pas vides
+    // Validate that fields are not empty
     if (string.IsNullOrWhiteSpace(BackupName))
     {
         MessageBox.Show(
@@ -112,7 +112,7 @@ namespace EasySave.GUI.ViewModels
             return;
         }
     }
-    // Normaliser le type de sauvegarde : si l'utilisateur sélectionne "complète", on le remplace par "full"
+    // Normalize backup type: if the user selects "complète", replace it with "full"
     string normalizedType = BackupType.ToLowerInvariant();
     if (normalizedType.Contains("complète"))
     {

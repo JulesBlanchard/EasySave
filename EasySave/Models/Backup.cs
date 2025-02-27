@@ -24,7 +24,7 @@ namespace EasySave.Models
         
         public bool ShouldEncrypt { get; set; }
         public string EncryptionKey { get; set; }
-        [JsonIgnore] // Ne pas sérialiser le JobControl
+        [JsonIgnore] // Don't serialize JobControl
         public BackupJobControl JobControl { get; set; } = new BackupJobControl();
         public BackupStatus Status
         {
@@ -70,8 +70,8 @@ namespace EasySave.Models
         
         
         /// <summary>
-        /// Propriété utilisée pour la sélection dans l'interface. 
-        /// Elle ne sera pas sérialisée.
+        /// Property used for selection in the interface. 
+        /// It will not be serialized.
         /// </summary>
         [JsonIgnore]
         public bool IsSelected
@@ -91,7 +91,7 @@ namespace EasySave.Models
         [JsonIgnore]
         public IBackupStrategy Strategy { get; set; }
         
-        // Implémentation de INotifyPropertyChanged
+        // Implementation of INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -132,10 +132,10 @@ namespace EasySave.Models
         
         public void Reset()
         {
-            // Recrée un nouveau JobControl (donc un nouveau CancellationToken)
+            // Recreates a new JobControl (thus a new CancellationToken)
             JobControl = new BackupJobControl();
     
-            // Remet la progression et le statut à zéro.
+            // Resets progress and status to zero.
             Progression = 0;
             Status = BackupStatus.NotStarted;
         }

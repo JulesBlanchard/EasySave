@@ -9,20 +9,20 @@ using EasySave.Utils;
 namespace EasySave.Models
 {
     /// <summary>
-    /// Implémente une stratégie de sauvegarde DIFFÉRENTIELLE avec parallélisation,
-    /// vérification du logiciel métier, et contrôle temps réel (pause / stop).
+    /// Implements a DIFFERENTIAL backup strategy with parallelization,
+    /// business software verification, and real-time control (pause/stop).
     ///
-    /// La copie ne s'effectue que si le fichier source est plus récent
-    /// que le fichier de destination.
+    /// Copy only occurs if the source file is more recent
+    /// than the destination file.
     /// </summary>
     public class DifferentialBackupStrategy : IBackupStrategy
     {
         public void Execute(Backup backup, IBackupLogger logger)
         {
-            // Marquer la sauvegarde comme active
+            // Mark the backup as active
             backup.Status = BackupStatus.Active;
 
-            // Vérifier si un logiciel métier est déjà lancé avant de démarrer
+            // Check if a business software is already running before starting
             if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
             {
                 backup.Status = BackupStatus.End;
@@ -36,20 +36,17 @@ namespace EasySave.Models
 
             Console.WriteLine(LocalizationManager.CurrentMessages["DiffBackup_Executing"].Replace("{name}", backup.Name));
 
-            // Récupérer la liste de fichiers
+            // Retrieve the file list
             var files = backup.GetFileList();
             int totalFiles = files.Count;
             if (totalFiles == 0)
             {
-                // Pas de fichier à traiter
                 backup.Status = BackupStatus.End;
                 Console.WriteLine($"[DIFF] Aucun fichier à copier pour {backup.Name}. Fin immédiate.");
                 return;
             }
 
             long totalSize = files.Sum(f => f.Length);
-
-            // Créer un BackupState pour StateManager
             var state = new BackupState
             {
                 Name = backup.Name,
@@ -63,13 +60,13 @@ namespace EasySave.Models
             };
             StateManager.UpdateState(state);
 
-            // Variables pour le traitement parallèle
+            // Variables for parallel processing
             int processedFiles = 0;
             object stateLock = new object();
             long thresholdBytes = GeneralSettings.MaxLargeFileSize;
             SemaphoreSlim largeFileSemaphore = new SemaphoreSlim(1, 1);
 
-            // Récupérer le token d'annulation pour Stop
+            // Get the cancellation token for Stop
             CancellationToken token = backup.JobControl.CancellationToken;
             var parallelOptions = new ParallelOptions
             {
@@ -79,10 +76,10 @@ namespace EasySave.Models
 
             try
             {
-                // Traitement en parallèle
+                // Parallel processing
                 Parallel.ForEach(files, parallelOptions, fileInfo =>
                 {
-                    // Vérifier annulation
+                    // Check for cancellation
                     token.ThrowIfCancellationRequested();
                     if (backup.JobControl.IsPaused)
                     {
@@ -99,28 +96,26 @@ namespace EasySave.Models
                         state.Status = BackupStatus.Active;
                         StateManager.UpdateState(state);
                     }
-                    // Vérifier si un logiciel métier apparaît pendant la sauvegarde
-                    // Si le logiciel métier est détecté, mettre la sauvegarde en pause
+                    // If the business software is detected, pause the backup
                     if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
                     {
                         backup.JobControl.Pause(backup);
                     }
 
-                    // Attendre que le logiciel métier cesse de tourner
+                    // Wait until the business software stops running
                     while (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
                     {
                         Thread.Sleep(500);
                     }
 
-                    // Une fois le logiciel arrêté, reprendre la sauvegarde
+                    // Once the software stops, resume the backup
                     backup.JobControl.Resume(backup);
 
-
-                    // Re-vérifier annulation et pause après coup
+                    // Re-check for cancellation and pause afterward
                     token.ThrowIfCancellationRequested();
                     backup.JobControl.WaitIfPaused();
 
-                    // Vérifier si le fichier doit être copié (différentiel)
+                    // Check if the file should be copied (differential)
                     var relativePath = fileInfo.FullName.Substring(backup.SourcePath.Length).TrimStart('\\', '/');
                     var destFilePath = Path.Combine(backup.TargetPath, relativePath);
                     bool needCopy = !File.Exists(destFilePath) ||
@@ -135,10 +130,10 @@ namespace EasySave.Models
 
                     if (needCopy)
                     {
-                        // Créer le répertoire cible
+                        // Create the target directory
                         Directory.CreateDirectory(Path.GetDirectoryName(destFilePath));
 
-                        // Gestion des gros fichiers
+                        // Large file handling
                         if (fileInfo.Length > thresholdBytes)
                             largeFileSemaphore.Wait();
 
@@ -153,7 +148,6 @@ namespace EasySave.Models
                             Console.WriteLine(LocalizationManager.CurrentMessages["DiffBackup_Copied"]
                                               .Replace("{name}", fileInfo.Name));
 
-                            // Vérifier si on doit crypter le fichier
                             if (backup.ShouldEncrypt)
                             {
                                 string fileExtension = Path.GetExtension(fileInfo.FullName).ToLowerInvariant();
@@ -188,12 +182,12 @@ namespace EasySave.Models
                     }
                     else
                     {
-                        // Fichier déjà à jour
+                        // File already up to date
                         Console.WriteLine(LocalizationManager.CurrentMessages["DiffBackup_Skipped"]
                                           .Replace("{name}", fileInfo.Name));
                     }
 
-                    // Mettre à jour la progression
+                    // Update progress
                     lock (stateLock)
                     {
                         processedFiles++;
@@ -206,7 +200,7 @@ namespace EasySave.Models
                     }
                 });
 
-                // Fin normale (aucune exception)
+                // Normal completion (no exceptions)
                 Console.WriteLine(LocalizationManager.CurrentMessages["DiffBackup_Finished"]
                                   .Replace("{count}", processedFiles.ToString()));
                 state.Status = BackupStatus.End;
@@ -217,7 +211,7 @@ namespace EasySave.Models
             }
             catch (OperationCanceledException)
             {
-                // Stop demandé
+                // Stop requested
                 Console.WriteLine($"[DIFF] Sauvegarde {backup.Name} arrêtée par l'utilisateur (Stop).");
                 backup.Status = BackupStatus.End;
                 state.Status = BackupStatus.End;
@@ -226,7 +220,7 @@ namespace EasySave.Models
             }
             catch (Exception ex)
             {
-                // Autre exception => Error
+                // Other exception => Error
                 backup.Status = BackupStatus.Error;
                 state.Status = BackupStatus.Error;
                 StateManager.UpdateState(state);

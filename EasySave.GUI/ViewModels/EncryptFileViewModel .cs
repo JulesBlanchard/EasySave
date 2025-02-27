@@ -31,7 +31,7 @@ namespace EasySave.GUI.ViewModels
         public ICommand EncryptCommand { get; }
         public ICommand CancelCommand { get; }
         
-        // Pour fermer la fenêtre depuis le ViewModel
+        // To close the window from the ViewModel
         public Action CloseAction { get; set; }
         
         public EncryptFileViewModel()
@@ -69,7 +69,7 @@ namespace EasySave.GUI.ViewModels
         return;
     }
 
-    // Vérification de l'extension autorisée
+    // Check if the file extension is allowed
     string allowedTypes = GeneralSettings.AllowedEncryptionFileTypes;
     var allowedExtensions = allowedTypes.Split(',', StringSplitOptions.RemoveEmptyEntries)
                                         .Select(ext => ext.Trim().ToLowerInvariant())
