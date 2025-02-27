@@ -11,7 +11,9 @@ namespace EasySave.GUI.ViewModels
         private string logFormat;
         private string businessSoftwareName;
         private string allowedEncryptionFileTypes;
-        private string priorityExtensions; // Nouvelle propriété
+        private string priorityExtensions; 
+        private string maxLargeFileSize; 
+
 
         public string LogFormat
         {
@@ -37,6 +39,12 @@ namespace EasySave.GUI.ViewModels
             get => priorityExtensions;
             set { priorityExtensions = value; OnPropertyChanged(); }
         }
+        
+        public string MaxLargeFileSize
+        {
+            get => maxLargeFileSize;
+            set { maxLargeFileSize = value; OnPropertyChanged(); }
+        }
 
         // Action pour fermer la fenêtre depuis le ViewModel
         public System.Action CloseAction { get; set; }
@@ -50,7 +58,7 @@ namespace EasySave.GUI.ViewModels
             BusinessSoftwareName = GeneralSettings.BusinessSoftwareName;
             AllowedEncryptionFileTypes = GeneralSettings.AllowedEncryptionFileTypes;
             PriorityExtensions = GeneralSettings.PriorityExtensions;  // Initialisation de la nouvelle propriété
-
+            MaxLargeFileSize = GeneralSettings.MaxLargeFileSize.ToString();
             SaveSettingsCommand = new RelayCommand(SaveSettings);
         }
 
@@ -61,7 +69,15 @@ namespace EasySave.GUI.ViewModels
             GeneralSettings.BusinessSoftwareName = BusinessSoftwareName;
             GeneralSettings.AllowedEncryptionFileTypes = AllowedEncryptionFileTypes;
             GeneralSettings.PriorityExtensions = PriorityExtensions;  // Mise à jour des extensions prioritaires
-
+            if (long.TryParse(MaxLargeFileSize, out long parsedSize))
+            {
+                GeneralSettings.MaxLargeFileSize = parsedSize;
+            }
+            else
+            {
+                // En cas d'erreur de saisie, on définit une valeur par défaut (2 Go)
+                GeneralSettings.MaxLargeFileSize = (2L * 1024 * 1024 * 1024);
+            }
             CloseAction?.Invoke();
         }
 

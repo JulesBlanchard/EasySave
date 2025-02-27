@@ -11,8 +11,6 @@ namespace EasySave.Models
     /// <summary>
     /// Implémente une stratégie de sauvegarde FULL avec parallélisation, gestion des fichiers prioritaires,
     /// vérification du logiciel métier et contrôle temps réel (pause/play/stop).
-    /// /// TODO : Gérer la localisation (FR/EN) pour tous les messages 
-    ///        (console, logs, pop-ups). 
     /// </summary>
     public class FullBackupStrategy : IBackupStrategy
     {
@@ -74,11 +72,11 @@ namespace EasySave.Models
 
             // Traiter d'abord les prioritaires
             var sortedFiles = priorityFiles.Concat(nonPriorityFiles).ToList();
-
+            
             // 5) Variables pour le traitement parallèle
             int processedFiles = 0;
             object stateLock = new object();
-            int thresholdBytes = GeneralSettings.MaxLargeFileSize;
+            long thresholdBytes = GeneralSettings.MaxLargeFileSize;
             SemaphoreSlim largeFileSemaphore = new SemaphoreSlim(1, 1);
 
             // Récupération du token d'annulation pour le Stop
@@ -115,12 +113,7 @@ namespace EasySave.Models
                         StateManager.UpdateState(state);
                     }
                     bool isPriority = priorityExtensions.Contains(Path.GetExtension(fileInfo.FullName).ToLowerInvariant());
-
-                    // TODO : Pendant la détection du logiciel métier, 
-                    //        on voudrait griser le bouton Pause dans l'IHM de suivi.
-                    //        Actuellement, on met en pause la sauvegarde automatiquement 
-                    //        via PauseNotifierEvent.RequestPause().
-                    // Vérifier si un logiciel métier apparaît en cours d'exécution
+                    
                     // Si le logiciel métier est détecté, mettre la sauvegarde en pause
                     if (BusinessSoftwareChecker.IsBusinessSoftwareRunning())
                     {
