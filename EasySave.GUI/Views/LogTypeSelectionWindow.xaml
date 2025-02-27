@@ -1,0 +1,19 @@
+<Window x:Class="EasySave.GUI.Views.LogTypeSelectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{DynamicResource LogTypeSelectionWindow_Title}" Height="300" Width="400"
+        WindowStartupLocation="CenterScreen">
+    <Grid Background="White">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="{DynamicResource LogTypeSelection_Text}" 
+                       FontSize="24" Margin="0,0,0,20" 
+                       HorizontalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="{DynamicResource LogTypeSelection_XML}" Width="120" Height="40" Margin="10" 
+                        Command="{Binding SelectXmlCommand}" />
+                <Button Content="{DynamicResource LogTypeSelection_JSON}" Width="120" Height="40" Margin="10" 
+                        Command="{Binding SelectJsonCommand}" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

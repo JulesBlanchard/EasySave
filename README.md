@@ -71,6 +71,7 @@ git push origin feature/nom-fonctionnalite
 | `main` | Versions stables validées |
 | `develop` | Branche principale de développement |
 | `feature/*` | Développement d'une nouvelle fonctionnalité |
+| `versions/*`| Branche pour livrer les différentes versions du projet |'
 
 ---
 
