@@ -23,7 +23,6 @@ namespace EasySave.Models
 
         // Verrou statique pour synchroniser l'accès aux fichiers d'état.
         private static readonly object _stateFileLock = new object();
-
         /// <summary>
         /// Met à jour ou ajoute l'état d'une sauvegarde et écrit le fichier d'état.
         /// </summary>
@@ -32,9 +31,13 @@ namespace EasySave.Models
             if (state == null || string.IsNullOrWhiteSpace(state.Name))
                 return;
 
-            states[state.Name] = state;
-            WriteStateFile();
+            lock (_stateFileLock)
+            {
+                states[state.Name] = state;
+                WriteStateFile();
+            }
         }
+
 
         /// <summary>
         /// Écrit le fichier d'état en JSON ou XML selon LoggingManager.LogFormat.
@@ -104,6 +107,13 @@ namespace EasySave.Models
                 {
                     Console.WriteLine("[StateManager] Error writing state file (XML): " + ex.Message);
                 }
+            }
+        }
+        public static List<BackupState> GetCurrentStates()
+        {
+            lock (_stateFileLock)
+            {
+                return states.Values.ToList();
             }
         }
     }

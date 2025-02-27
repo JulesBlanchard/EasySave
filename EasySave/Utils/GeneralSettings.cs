@@ -15,7 +15,7 @@ namespace EasySave.Utils
         
         public static string AllowedEncryptionFileTypes { get; set; } = ".txt,.docx,.pdf";
         
-        public static int MaxLargeFileSize { get; set; } = 500 * 1024;
+        public static long MaxLargeFileSize { get; set; } = 300 * 1024;
         public static string PriorityExtensions { get; set; } = "exe,.pdf"; 
 
 

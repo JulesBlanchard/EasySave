@@ -66,7 +66,7 @@ namespace EasySave.Models
             // Variables pour le traitement parallèle
             int processedFiles = 0;
             object stateLock = new object();
-            int thresholdBytes = GeneralSettings.MaxLargeFileSize;
+            long thresholdBytes = GeneralSettings.MaxLargeFileSize;
             SemaphoreSlim largeFileSemaphore = new SemaphoreSlim(1, 1);
 
             // Récupérer le token d'annulation pour Stop
